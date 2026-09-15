@@ -1,9 +1,9 @@
 {
   "name": "steptrace-local",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "private": true,
   "type": "module",
-  "description": "Local source-linked application tasks with versioned JSON backups. Session 2.",
+  "description": "Local source versions, conservative comparison, human review, and JSON backups. Session 3.",
   "scripts": {
     "start": "node scripts/serve.mjs",
     "check": "node scripts/check.mjs"

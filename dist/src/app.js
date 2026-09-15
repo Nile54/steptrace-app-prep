@@ -1,7 +1,8 @@
-import { createApplication, createTask, updateTask, isTaskCompleted, LIMITS } from './model.js';
+import { createApplication, createTask, updateTask, isTaskCompleted, addSourceVersion, resolveSourceReview, getTaskAnchor, getTaskReviewState, LIMITS } from './model.js';
 import { createStorage, serializeBackup, parseBackup, mergeWorkspaces, STORAGE_KEY } from './storage.js';
 import { anchorFromSelection, selectionFromAnchor } from './source-selection.js';
 import { passages } from './demo.js';
+import { renderComparison, renderTaskReviews } from './review-ui.js';
 
 // Never interpret application content, task wording, or imported labels as HTML.
 function element(tag, text, className) {
@@ -34,6 +35,9 @@ export function startApp(storage = createStorage()) {
   let originalFileText = null;
   let sourceReadSequence = 0;
   let restoreReadSequence = 0;
+  let viewedSourceId = null;
+  let comparedSourceId = null;
+  let versionCandidate = null;
   const activeApplication = () => workspace.applications.find(app => app.id === activeId);
   function report(message) { $('#action-error').hidden = true; $('#action-status').textContent = message; }
   function reportError(error) {
@@ -82,23 +86,55 @@ export function startApp(storage = createStorage()) {
     select.value = value;
     return select;
   }
+  function renderSource() {
+    const app = activeApplication();
+    const source = app.sources.find(source => source.id === viewedSourceId) ?? app.sources.at(-1);
+    viewedSourceId = source.id;
+    $('#source-version-select').value = source.id;
+    $('#source-snapshot').value = source.text;
+    $('#source-version-label').textContent = `Version ${app.sources.indexOf(source) + 1} · Read-only`;
+    $('#source-meta').textContent = `${source.label} · Captured ${dateLabel(source.createdAt)}`;
+    $('#use-selection').disabled = source.id !== app.sources.at(-1).id;
+    $('#source-location').textContent = ''; $('#located-quote').hidden = true;
+  }
+  function showAnchor(anchor, title) {
+    viewedSourceId = anchor.sourceVersionId; renderSource();
+    const source = activeApplication().sources.find(source => source.id === viewedSourceId);
+    const range = selectionFromAnchor(source.text, anchor);
+    $('#source-snapshot').focus(); $('#source-snapshot').setSelectionRange(range.start, range.end);
+    $('#located-quote').hidden = false; $('#located-quote-text').textContent = anchor.quote;
+    $('#source-location').textContent = `Showing the exact source excerpt for “${title}”, version ${activeApplication().sources.indexOf(source) + 1}.`;
+  }
+  function renderSavedComparison() {
+    const app = activeApplication();
+    const index = app.sources.findIndex(source => source.id === comparedSourceId);
+    if (index < 1) {
+      $('#saved-comparison').textContent = 'One source version is saved. Add updated instructions to compare versions.';
+      return;
+    }
+    renderComparison($('#saved-comparison'), app.sources[index - 1], app.sources[index], app);
+  }
   function renderTask(task) {
     const item = element('li', null, 'saved-task'); item.id = `task-${task.id}`;
     const heading = element('h3', task.title); heading.id = `task-heading-${task.id}`; heading.tabIndex = -1;
     const completed = isTaskCompleted(task);
-    item.append(heading, element('p', completed ? 'Completed' : 'Not completed', 'completion-state'), element('p', `Applicability: ${labels[task.applicability]}`, 'helper'), element('p', task.reviewState === 'needs-review' ? 'Review: Needs review (retained record)' : 'Review: Not reviewed — change review is not available yet.', 'review-state'));
+    const state = getTaskReviewState(task);
+    item.append(heading, element('p', completed ? 'Completed' : 'Not completed', 'completion-state'), element('p', `Applicability: ${labels[task.applicability]}`, 'helper'), element('p', state === 'needs-review' ? 'Review: Needs review — completion is retained.' : state === 'reviewed' ? 'Review: No open source-version reviews. This does not establish checklist completeness.' : 'Review: No source-version review recorded.', 'review-state'));
+    if (task.reviewState === 'needs-review') item.append(element('p', 'An earlier backup retained a review flag without a version-specific reason. It remains separate from the source reviews below.', 'helper'));
     if (task.anchor) {
       item.append(element('blockquote', task.anchor.quote, 'task-quote'));
       const sourceButton = element('button', 'View exact source', 'secondary'); sourceButton.type = 'button';
       sourceButton.setAttribute('aria-label', `View exact source for ${task.title}`);
       sourceButton.addEventListener('click', () => {
-        const source = activeApplication().sources.find(source => source.id === task.anchor.sourceVersionId);
-        const range = selectionFromAnchor(source.text, task.anchor);
-        $('#source-snapshot').focus(); $('#source-snapshot').setSelectionRange(range.start, range.end);
-        $('#located-quote').hidden = false; $('#located-quote-text').textContent = task.anchor.quote;
-        $('#source-location').textContent = `Showing the exact source excerpt for “${task.title}”, version 1.`;
+        showAnchor(task.anchor, task.title);
       });
       item.append(sourceButton);
+      const latestAnchor = getTaskAnchor(task, activeApplication().sources.at(-1).id);
+      if (latestAnchor && latestAnchor.sourceVersionId !== task.anchor.sourceVersionId) {
+        const latestButton = element('button', 'View latest mapped source', 'secondary'); latestButton.type = 'button';
+        latestButton.setAttribute('aria-label', `View latest mapped source for ${task.title}`);
+        latestButton.addEventListener('click', () => showAnchor(latestAnchor, task.title)); item.append(latestButton);
+      } else if (!latestAnchor) item.append(element('p', 'No confirmed mapping to the latest source version. Inspect the source reviews below.', 'helper'));
     } else item.append(element('p', 'No source linked · Manually entered task', 'no-source-label'));
     const checkboxRow = element('label', null, 'checkbox-row');
     const checkbox = element('input'); checkbox.type = 'checkbox'; checkbox.checked = completed; checkbox.id = `complete-${task.id}`;
@@ -132,7 +168,15 @@ export function startApp(storage = createStorage()) {
     for (const event of events) historyList.append(element('li', `${event.text} · ${dateLabel(event.at)}`));
     history.append(historyList);
     if (!task.completionHistory.length) history.append(element('p', 'No completion recorded yet.', 'helper'));
-    item.append(history); return item;
+    item.append(history);
+    if (task.sourceReviews.length) item.append(renderTaskReviews(task, activeApplication(), {
+      report, reportError,
+      onResolve(taskId, reviewId, resolution) {
+        accept(resolveSourceReview(workspace, activeId, taskId, reviewId, resolution), 'Resolution recorded for the selected version. Other reviews and completion history are unchanged.');
+        document.getElementById(`task-heading-${taskId}`).focus();
+      },
+    }));
+    return item;
   }
   function renderWorkspace() {
     const app = activeApplication(); $('#application-workspace').hidden = !app;
@@ -140,9 +184,17 @@ export function startApp(storage = createStorage()) {
     for (const application of workspace.applications) { const option = element('option', application.title); option.value = application.id; $('#application-select').append(option); }
     if (!app) return;
     $('#application-select').value = app.id; $('#current-application-title').textContent = app.title;
-    const source = app.sources[0]; $('#source-snapshot').value = source.text;
-    $('#source-meta').textContent = `${source.label} · Captured ${dateLabel(source.createdAt)}`;
-    $('#source-location').textContent = ''; $('#located-quote').hidden = true;
+    $('#source-version-select').replaceChildren(...app.sources.map((source, index) => { const option = element('option', `Version ${index + 1} · ${source.label}${index === app.sources.length - 1 ? ' · Latest' : ''}`); option.value = source.id; return option; }));
+    renderSource();
+    if (!app.sources.some(source => source.id === comparedSourceId)) comparedSourceId = app.sources.at(-1).id;
+    $('#comparison-version').replaceChildren(...app.sources.slice(1).map((source, index) => { const option = element('option', `Version ${index + 2} compared with version ${index + 1}`); option.value = source.id; return option; }));
+    $('#comparison-version').disabled = app.sources.length < 2; $('#comparison-version').value = comparedSourceId;
+    renderSavedComparison();
+    const pending = app.tasks.reduce((count, task) => count + task.sourceReviews.filter(review => review.kind !== 'exact' && !review.resolution).length, 0);
+    $('#review-overview').textContent = `${app.sources.length} source version(s) · ${pending} open task source review(s). Compare saved versions to inspect new or unlinked material. Completion history is preserved.`;
+    const legacyFlags = app.tasks.filter(task => task.reviewState === 'needs-review').length;
+    if (legacyFlags) $('#review-overview').textContent += ` ${legacyFlags} earlier review flag(s) also retained.`;
+    if (versionCandidate && (versionCandidate.applicationId !== app.id || versionCandidate.sourceId !== app.sources.at(-1).id)) clearVersionPreview();
     $('#task-count').textContent = `${app.tasks.length} task${app.tasks.length === 1 ? '' : 's'}`;
     $('#task-list').replaceChildren(...app.tasks.map(renderTask)); $('#empty-tasks').hidden = app.tasks.length > 0;
   }
@@ -150,7 +202,7 @@ export function startApp(storage = createStorage()) {
     event.preventDefault();
     try {
       const next = createApplication(workspace, { title: $('#application-title').value, text: originalFileText ?? $('#source-input').value, label: $('#source-label').value });
-      activeId = next.applications.at(-1).id; clearSelection(); accept(next, 'Application created with a read-only source snapshot.');
+      activeId = next.applications.at(-1).id; viewedSourceId = null; comparedSourceId = null; clearSelection(); accept(next, 'Application created with a read-only source snapshot.');
       $('#application-form').reset(); originalFileText = null; sourceReadSequence += 1;
       $('#new-application').open = false; $('#current-application-title').focus();
     } catch (error) { reportError(error); }
@@ -177,10 +229,13 @@ export function startApp(storage = createStorage()) {
     } catch (error) { if (sequence === sourceReadSequence) reportError(error); }
     finally { if (sequence === sourceReadSequence) $('#application-form button[type="submit"]').disabled = false; }
   });
-  $('#application-select').addEventListener('change', () => { activeId = $('#application-select').value; clearSelection(); $('#task-form').reset(); renderWorkspace(); });
+  $('#application-select').addEventListener('change', () => { activeId = $('#application-select').value; viewedSourceId = null; comparedSourceId = null; clearVersionPreview(); $('#version-form').reset(); clearSelection(); $('#task-form').reset(); renderWorkspace(); });
+  $('#source-version-select').addEventListener('change', () => { viewedSourceId = $('#source-version-select').value; clearSelection(); renderSource(); });
+  $('#comparison-version').addEventListener('change', () => { comparedSourceId = $('#comparison-version').value; renderSavedComparison(); });
   $('#use-selection').addEventListener('click', () => {
     try {
-      const input = $('#source-snapshot'); selectedAnchor = anchorFromSelection(activeApplication().sources[0].text, input.selectionStart, input.selectionEnd);
+      if (viewedSourceId !== activeApplication().sources.at(-1).id) throw new Error('Choose the latest source version before linking a new task.');
+      const input = $('#source-snapshot'); selectedAnchor = anchorFromSelection(activeApplication().sources.at(-1).text, input.selectionStart, input.selectionEnd);
       $('#selected-quote').textContent = selectedAnchor.quote; $('#selected-excerpt').hidden = false; $('#no-source-notice').hidden = true;
       report('Exact source excerpt selected. Add your task wording below.'); $('#task-title').focus();
     } catch (error) { reportError(error); }
@@ -191,6 +246,27 @@ export function startApp(storage = createStorage()) {
     try {
       const next = createTask(workspace, activeId, { title: $('#task-title').value, anchor: selectedAnchor, applicability: $('#task-applicability').value });
       clearSelection(); accept(next, 'Task added. Review is separate from completion.'); $('#task-form').reset(); $('#task-title').focus();
+    } catch (error) { reportError(error); }
+  });
+  function clearVersionPreview() { versionCandidate = null; $('#version-preview').hidden = true; $('#version-preview-diff').replaceChildren(); }
+  $('#version-form').addEventListener('input', clearVersionPreview);
+  $('#version-form').addEventListener('submit', event => {
+    event.preventDefault(); clearVersionPreview();
+    try {
+      const app = activeApplication(); const text = $('#version-input').value; const label = $('#version-label').value.trim();
+      if (!text.trim() || text.length > LIMITS.sourceChars || !label || label.length > LIMITS.titleChars) throw new Error('Enter a source label and complete instructions of up to 100,000 characters.');
+      versionCandidate = { applicationId: app.id, sourceId: app.sources.at(-1).id, text, label };
+      renderComparison($('#version-preview-diff'), app.sources.at(-1), { text, label });
+      $('#version-preview').hidden = false; $('#version-preview-heading').focus(); report('Preview only. Save the new source version to retain it and open task reviews.');
+    } catch (error) { clearVersionPreview(); reportError(error); }
+  });
+  $('#save-version').addEventListener('click', () => {
+    try {
+      if (!versionCandidate || versionCandidate.applicationId !== activeId || versionCandidate.sourceId !== activeApplication().sources.at(-1).id) throw new Error('Preview these instructions again before saving the version.');
+      const next = addSourceVersion(workspace, activeId, { text: versionCandidate.text, label: versionCandidate.label });
+      viewedSourceId = next.applications.find(app => app.id === activeId).sources.at(-1).id; comparedSourceId = viewedSourceId;
+      clearVersionPreview(); clearSelection(); accept(next, 'New immutable source version added. Inspect the comparison and task reviews. Completion history is unchanged.');
+      $('#version-form').reset(); $('#new-version').open = false; $('#source-changes').open = true; $('#review-overview').focus();
     } catch (error) { reportError(error); }
   });
   $('#retry-save').addEventListener('click', () => { persist(); if (!unsaved) report('Previously unsaved work is now saved on this device.'); });
@@ -207,7 +283,7 @@ export function startApp(storage = createStorage()) {
   function renderRestorePreview() {
     $('#restore-preview').hidden = false;
     $('#restore-summary').textContent = `${restoreCandidate.applications.length} application(s), ${restoreCandidate.applications.reduce((sum, app) => sum + app.tasks.length, 0)} task(s). Current workspace: ${workspace.applications.length} application(s), which will remain.`;
-    $('#restore-applications').replaceChildren(...restoreCandidate.applications.map(app => element('li', `${app.title} — ${app.tasks.length} task(s); source: ${app.sources[0].label}`)));
+    $('#restore-applications').replaceChildren(...restoreCandidate.applications.map(app => element('li', `${app.title} — ${app.tasks.length} task(s); ${app.sources.length} source version(s), including exact mappings and review resolutions`)));
     let problem = ''; try { mergeWorkspaces(workspace, restoreCandidate); } catch (error) { problem = error.message; }
     if (!restoreCandidate.applications.length) problem = 'This backup has no applications to add.';
     $('#restore-problem').textContent = problem; $('#restore-problem').hidden = !problem; $('#apply-restore').disabled = Boolean(problem);
@@ -242,6 +318,9 @@ export function startApp(storage = createStorage()) {
   if (initial.error) {
     showSaveStatus(`Local storage could not be loaded. ${initial.error} New work will stay only in this tab; export a backup before leaving.`, true);
     $('#download-original').hidden = typeof initial.raw !== 'string';
+  } else if (initial.migrated) {
+    showSaveStatus('Session 2 data opened safely in the new format. Original stored data is unchanged until your next save. Prepare a JSON backup before editing.');
+    $('#download-original').hidden = false; $('#download-original').textContent = 'Download original stored data';
   } else showSaveStatus(initial.raw === null ? 'No work saved yet. Backup & restore is available below.' : 'Loaded saved work from this device. Download backups regularly.');
   $('#new-application').open = !workspace.applications.length; renderWorkspace();
 }

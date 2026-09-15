@@ -1,79 +1,61 @@
-# Session 2 checks
+# Session 3 checks
 
-Run from the repository:
+All inputs and examples were fictional. Session 2 evidence is preserved in [history/SESSION-2-CHECKS.md](history/SESSION-2-CHECKS.md).
 
-```sh
-./run.sh check
-./run.sh
-```
+## Automated verification — September 15, 2026
 
-Open [the local workspace](http://127.0.0.1:4173). All checked content is fictional. Session 3 comparison and dependency behavior must not be inferred from these results.
+Run `./run.sh check` from the repository. The bundled Node v24.19.0 runtime passed syntax/asset/retained-preview checks and **66 tests**:
 
-## Automated checks — September 14, 2026
+- 19 comparison tests: exact ranges, whitespace/CRLF, duplicate paragraphs and phrases, moves, adjacent heading/context changes, additions/removals, number changes, negation, multi-paragraph selections, Unicode boundaries, complete deterministic passage coverage and a large fixture.
+- 19 version/migration tests: immutable snapshots, automatic and human mappings, historical/current resolution ordering, reversion through unresolved versions, explicit no-mapping decisions, completion/applicability preservation, schema-1 fidelity, quota recovery, strict imports, version limits and near-capacity migration failure.
+- 23 model/storage tests: original source invariants, independent histories, JSON roundtrip, global IDs, malformed fields, corrupt/unavailable storage, quota/security/read failures and conflicting writes. Literal stored JSON `null` is rejected and left untouched.
+- 3 source-selection tests: exact repeated/Unicode/mixed-newline selections and invalid ranges.
+- 2 unlinked-span tests: partially linking a paragraph cannot hide a newly added requirement; overlapping links cover only their exact union.
 
-`./run.sh check` passed with the existing Node v24.19.0 runtime and no installed packages. It checks JavaScript syntax, required assets, and the retained Session 1 fixture, then runs **26 tests**:
+With Node on PATH, individual files run through `node --test tests/<name>.test.mjs`. No packages were installed. Automated tests do not establish usability, accessibility conformance, or semantic correctness.
 
-- **23 model/storage tests:** immutable source retention, repeated/Unicode quote offsets, manual tasks, separate applicability/completion/review, append-only history, exact reload and backup roundtrip, safe text retention, additive restore, global ID collisions, invalid references/fields/enums/timestamps/histories, size limits, corrupt/unavailable storage, quota/security/read failures, and optimistic conflicts. CRLF and surrogate-pair splits are rejected in direct creation and import.
-- **3 source-selection tests:** repeated text after Unicode and mixed line endings, multiline CRLF selection retained through backup/restore, and invalid/empty selections.
+## Actual browser verification
 
-With Node 22+ on PATH, run those tests directly:
+Used the Codex in-app browser at the normal origin `http://127.0.0.1:4173` and isolated test origins. Existing fictional Session 2 data remained in place; no browser storage was cleared.
 
-```sh
-node --test tests/model-storage.test.mjs tests/source-selection.test.mjs
-```
-
-On this Mac without Node on PATH:
-
-```sh
-/Users/nileshnandakumar/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node --test tests/model-storage.test.mjs tests/source-selection.test.mjs
-```
-
-The automated text-retention test does not prove DOM inertness. That behavior was checked through the real browser interface below.
-
-## Manual browser verification — September 14, 2026
-
-Primary browser: Codex in-app browser. Supplementary browser: Chrome for native backup download and restore by pasted JSON. Browser engine versions were not recorded.
-
-| Scenario | Observed result |
+| Check | Observed result |
 | --- | --- |
-| Create/edit/link | Created fictional Maple Grove from the supplied example, linked its essay passage, edited task wording/applicability, and retained completion. View exact source selected offsets 0–105. |
-| Manual and conditional tasks | No-source task displayed its explicit label. A conditional task retained **Does not apply**, independent of completion. |
-| Reload and export | Exported workspace data remained byte-equivalent after reload; only a newly generated backup export timestamp differed. Source links still worked. |
-| Restore by pasted JSON | Restored into an isolated browser origin with identical workspace data. Duplicate/current IDs and malformed JSON were rejected; existing work stayed unchanged. |
-| Additive restore | Preview stated that the original application would remain. Applying a distinct second application left the original application exactly unchanged. |
-| Plain-text file | Loaded `tests/fixtures/fictional-instructions.txt` through the in-app file chooser. Export retained its CRLF line breaks. The selected second `Include a study plan.` matched raw offsets 126–147. |
-| Untrusted content | HTML-looking source and task text remained inert. Inspection found zero image or script elements inside the main content. |
-| Quota failure and retry | The real UI with an injected quota-once adapter showed **Not saved**. Export contained the unsaved application; retry subsequently saved it. |
-| Unavailable storage | UI reported the load error. New work remained unsaved and could be exported. |
-| Actual downloaded backup | Chrome created `/Users/nileshnandakumar/Downloads/steptrace-backup.json`. The file passed `parseBackup`, was copied to ignored `work/browser-export.json`, and was restored through the in-app file chooser on port 4177 with working source links. |
-| Layout | Inspected desktop width 1280 visually. Narrow width 360 had no measured horizontal document overflow. |
-| Final handoff | Reopened the saved three-task example, followed the essay link to offsets 0–105, and observed no warning/error console entries. App assets returned HTTP 200, repository/test paths 404, and POST 405. |
+| Legacy workspace opening | Schema-1 saved Maple Grove workspace opened with a migration notice, three tasks, original source and prior completion records. Migration export used schema 2. |
+| Preview and immutable version | Pasted complete updated instructions: 500→400-word essay maximum and a budget statement. Preview retained one saved version until Save; saving added version 2 and flagged directly linked tasks. |
+| Newer update before resolution | Added version 3 with a 350-word maximum and a transcript sentence. Both affected linked tasks had two distinct pending reviews; manual proofreading had none. |
+| Historical resolution | Mapped essay version 2 to its exact 400-word excerpt and chose Applies. Version 3 remained pending; current applicability remained Not decided. Completion stayed true. |
+| Current resolution | Mapped only the essay sentence in version 3 and recorded Applies. Its version 2 and 3 resolutions persisted independently; other tasks' open reviews remained. |
+| Partial paragraph link | The additional “Include a transcript.” sentence remained explicitly displayed as unreviewed after the essay sentence was mapped. Other unlinked passages also remained visible. |
+| Exact source and history | Original 500-word source and completion history were identical to the pre-update exported records. Latest source navigation displayed the exact 350-word excerpt at version 3. |
+| Reload | Reloaded and exported. Entire workspace JSON was identical, excluding the backup envelope's fresh export timestamp. |
+| Restore | Pasted the real UI's schema-2 export into empty origin 4183. Preview showed three versions without applying; applying and re-exporting yielded identical workspace data. |
+| Rejected restores | Duplicate IDs disabled Add restored applications. Malformed JSON showed an error. The existing three-version workspace remained intact. |
+| Quota failure/retry | At fault origin 4184, restoring the versioned backup showed Not saved after a synthetic write failure. Export still exactly matched the workspace. Retry showed saved only after the adapter's write succeeded. |
+| Final UI/server checks | Original source navigation returned to version 1 and disabled new-task linking on that older snapshot. The narrow in-app before/after layout was inspected visually. No warning/error console entries were observed. App assets returned HTTP 200; repository/test paths 404; POST 405. |
 
-The in-app browser's native download did not expose an observable completed file during testing. Its visible JSON copy fallback worked. Chrome's actual download was validated; no backup corruption was observed. Chrome automation's file chooser required its extension's **Allow access to file URLs** setting, which was not enabled; file selection was tested in the in-app browser instead. These are tool/browser limitations, not completed cross-browser coverage.
+No new native file-download claim is made for Session 3; Session 2's Chrome download and real file-restore evidence remains in the historical checks. This session tested migration and versioned restore through the actual paste interface. Browser selectors sometimes timed out; accessibility controls were used to complete the flow.
 
-## Repeat the browser checks
+## Reproduce the demonstrated scenario
 
-1. Create the fictional example, select an exact passage, add a task, edit it, choose applicability, and mark it completed. Add a no-source task. Check the separate labels and history.
-2. Export and reload on the same browser/host/port. Return to the original source and compare the workspace data, allowing the backup envelope's export timestamp to change.
-3. Preview and cancel a restore; confirm no existing work changes. Preview duplicate IDs and malformed JSON; confirm rejection. Restore a disjoint backup and compare the original application before and after.
-4. Load `tests/fixtures/fictional-instructions.txt`. Select the second repeated study-plan instruction, export, and confirm its quote, raw offsets, and unchanged CRLF text. Inspect source/task rendering for inert HTML-looking content.
-5. Download a backup in Chrome and verify that the file arrived. Restore that real file into an isolated empty workspace, then follow an exact source link. A separate test port intentionally has separate storage.
-6. Use the fault harness below to check **Not saved**, export of unsaved work, and retry. Keep test tabs separate from the normal editing workspace.
-
-The browser harness is development-only and is not exposed by the normal server's asset allowlist. With Node on PATH, run one command per terminal and stop each with Ctrl+C:
+1. Follow README's fictional 500→400-word flow, adding `Include a short budget statement.` as a new paragraph.
+2. Before resolving the essay review, add a third version changing 400→350 and appending `Include a transcript.` to the essay paragraph.
+3. Resolve version 2 first; observe version 3 remains open. Then resolve only the essay sentence in version 3, retaining the transcript as unreviewed material.
+4. Prepare a backup; reload and compare workspace data. Restore it on a separate empty test origin; compare again.
+5. Run the development harness for quota recovery. It is excluded from the normal server's allowlist:
 
 ```sh
-PORT=4177 node tests/browser-server.mjs
-STEPTRACE_STORAGE_FAULT=quota-once PORT=4175 node tests/browser-server.mjs
-STEPTRACE_STORAGE_FAULT=unavailable PORT=4176 node tests/browser-server.mjs
+PORT=4183 node tests/browser-server.mjs
+STEPTRACE_STORAGE_FAULT=quota-once PORT=4184 node tests/browser-server.mjs
 ```
 
-On this Mac, replace `node` with `/Users/nileshnandakumar/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node`. Open the corresponding `http://127.0.0.1:PORT` URL. The normal harness uses real browser storage; fault modes use a synthetic in-memory adapter that resets on reload. `quota` and `corrupt` are also available for further manual checks; only quota-once and unavailable UI checks are claimed above. Corrupt storage protection is covered by the automated tests.
+On this Mac replace `node` with `/Users/nileshnandakumar/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node`. The normal harness uses storage for its separate origin; quota-once uses synthetic in-memory storage. Stop each server with Ctrl+C.
 
-## Retained preview and limits
+## Limits
 
-`/preview.html` retains the Session 1 scripted 500-to-400-word example. Its prior source navigation, keyboard show/hide, three unchanged fixture completion dates, and two authored review reasons were checked in Session 1. The fixture is still checked automatically. Those reasons are not outputs of an implemented comparison or dependency engine.
+Matching checks immediate text context, not distant headings or global conditions. Positional changed pairs are not semantic matches. Blank-line separators are preserved but not separate diff rows. Source review does not compare actual essay files or determine whether work satisfies instructions.
 
-Local storage checks detect an already-written change from another tab; they do not provide atomic multi-tab transactions. Use one editing tab and keep downloaded backups. Form drafts that have not been submitted are not workspace records or part of a backup.
+Only directly linked tasks receive source reviews. There is no graph, transitive review, OCR, scraping, AI, or application submission. A no-source manual task is outside source impact detection.
 
-No real applicants, interviews, or human understandability study were involved. No full screen-reader, zoom, automated accessibility, offline/service-worker, or broad cross-browser audit was performed. Do not claim WCAG conformance, measured usability benefit, or working change-analysis algorithms. No remote repository, deployment, AI feature, billing, or third-party text upload was added.
+Forms must be submitted to become saved records. Updating another task can discard unsubmitted drafts. Browser-local data is tied to the same browser/profile/origin; use one editing tab and separate backups. These tests do not prove transactionally safe multi-tab edits or installed offline operation.
+
+No full screen-reader, browser-zoom, automated accessibility, or broad cross-browser audit was performed. No participant evidence or measured benefit is claimed.

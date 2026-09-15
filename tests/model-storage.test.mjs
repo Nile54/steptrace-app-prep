@@ -170,7 +170,7 @@ test('reload and versioned export/import preserve source IDs, exact anchors, and
   assert.deepEqual(reloaded.workspace, workspace);
   const json = serializeBackup(reloaded.workspace);
   assert.equal(JSON.parse(json).format, 'steptrace-backup');
-  assert.equal(JSON.parse(json).schemaVersion, 1);
+  assert.equal(JSON.parse(json).schemaVersion, 2);
   const restored = parseBackup(json);
   assert.deepEqual(restored, workspace);
   assert.equal(Object.isFrozen(restored.applications[0].tasks[0].anchor), true);
@@ -245,7 +245,7 @@ test('validation rejects missing, cross-application, inaccurate, or empty source
 test('validation rejects unknown or missing fields, future schemas, bad enums, and malformed timestamps', () => {
   const valid = linkedWorkspace();
   const cases = [
-    value => { value.schemaVersion = 2; },
+    value => { value.schemaVersion = 99; },
     value => { value.schemaVersion = '1'; },
     value => { value.extra = true; },
     value => { delete value.applications[0].title; },
@@ -284,7 +284,7 @@ test('input and import size limits reject blank or oversized material before it 
   assert.throws(() => application('x'.repeat(LIMITS.sourceChars + 1)), /at most/);
   assert.throws(() => createApplication(createWorkspace(), { title: 'x'.repeat(LIMITS.titleChars + 1), text: SOURCE }), /at most/);
   assert.throws(() => parseBackup(' '.repeat(LIMITS.payloadBytes + 1)), /2 MiB/);
-  const tooMany = { schemaVersion: 1, applications: Array.from({ length: LIMITS.applications + 1 }, () => ({})) };
+  const tooMany = { schemaVersion: 2, applications: Array.from({ length: LIMITS.applications + 1 }, () => ({})) };
   assert.throws(() => validateWorkspace(tooMany), /0–100/);
 });
 
@@ -300,7 +300,7 @@ test('backup parser rejects malformed input, unknown envelopes, and invalid embe
 });
 
 test('corrupt or unsupported stored data is left untouched and blocks all writes', () => {
-  for (const raw of ['{broken', JSON.stringify({ schemaVersion: 99, applications: [] }), ' '.repeat(LIMITS.payloadBytes + 1)]) {
+  for (const raw of ['null', '{broken', JSON.stringify({ schemaVersion: 99, applications: [] }), ' '.repeat(LIMITS.payloadBytes + 1)]) {
     const adapter = memoryStorage(raw);
     const storage = createStorage(() => adapter);
     const loaded = storage.load();

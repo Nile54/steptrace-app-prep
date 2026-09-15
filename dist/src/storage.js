@@ -1,4 +1,4 @@
-import { createWorkspace, validateWorkspace, jsonByteLength, LIMITS, SCHEMA_VERSION, ValidationError } from './model.js';
+import { createWorkspace, validateWorkspace, migrateWorkspace, jsonByteLength, LIMITS, SCHEMA_VERSION, ValidationError } from './model.js';
 
 export const STORAGE_KEY = 'steptrace.workspace.v1';
 export const BACKUP_FORMAT = 'steptrace-backup';
@@ -34,14 +34,18 @@ export function createStorage(getStorage = () => globalThis.localStorage) {
       try {
         const storage = getStorage();
         raw = storage.getItem(STORAGE_KEY);
-        const workspace = raw === null ? createWorkspace() : validateWorkspace(parseJson(raw, 'Stored workspace'));
+        const stored = raw === null ? null : parseJson(raw, 'Stored workspace');
+        const workspace = raw === null ? createWorkspace() : migrateWorkspace(stored);
+        const migrated = stored?.schemaVersion === 1;
         blockedReason = null;
-        return { workspace, raw, error: null, blocked: false };
+        // Migration is read-only until an explicit user action saves. expectedRaw
+        // continues to be the exact old bytes, protecting recoverability/conflicts.
+        return { workspace, raw, error: null, blocked: false, migrated };
       } catch (error) {
         blockedReason = error instanceof ValidationError
           ? `Stored workspace could not be opened: ${error.message} Existing stored data has been left untouched. Export it for recovery before clearing browser data.`
           : storageError(error, 'Loading');
-        return { workspace: createWorkspace(), raw, error: blockedReason, blocked: true };
+        return { workspace: createWorkspace(), raw, error: blockedReason, blocked: true, migrated: false };
       }
     },
     save(workspace, expectedRaw) {
@@ -100,14 +104,17 @@ export function parseBackup(text) {
     || Object.keys(backup).length !== keys.length || !keys.every(key => Object.hasOwn(backup, key))) {
     throw new ValidationError('Backup has missing or unsupported fields.');
   }
-  if (backup.format !== BACKUP_FORMAT || backup.schemaVersion !== SCHEMA_VERSION) {
-    throw new ValidationError('Unsupported backup format or schema version. This app supports StepTrace backup version 1.');
+  if (backup.format !== BACKUP_FORMAT || ![1, SCHEMA_VERSION].includes(backup.schemaVersion)) {
+    throw new ValidationError('Unsupported backup format or schema version. This app supports StepTrace backup versions 1 and 2.');
+  }
+  if (backup.workspace?.schemaVersion !== backup.schemaVersion) {
+    throw new ValidationError('Backup envelope and workspace schema versions must agree.');
   }
   if (typeof backup.exportedAt !== 'string' || !/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/.test(backup.exportedAt)
     || !Number.isFinite(Date.parse(backup.exportedAt)) || new Date(backup.exportedAt).toISOString() !== backup.exportedAt) {
     throw new ValidationError('Backup export time must be a valid UTC timestamp, including milliseconds.');
   }
-  return validateWorkspace(backup.workspace);
+  return migrateWorkspace(backup.workspace);
 }
 
 export function mergeWorkspaces(current, incoming) {

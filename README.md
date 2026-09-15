@@ -1,71 +1,67 @@
-# StepTrace — Session 2
+# StepTrace — Session 3
 
-A local application-preparation workspace with exact source links, human decisions, completion history, and JSON backups. Use fictional information in this development version. StepTrace remains a working name with known conflicts; no public slug has been chosen.
+A local application-preparation workspace with immutable instructions, exact source links, human review, completion history, and JSON backups. Use fictional information in this development version. StepTrace remains a provisional name with known conflicts.
 
-## Run locally
+## Run
 
 Repository: `/Users/nileshnandakumar/Documents/Codex/2026-09-14/before-session-one-supplying-your-github/outputs/steptrace-local`.
 
-From this repository:
-
 ```sh
 ./run.sh
+./run.sh check
 ```
 
-Open [the local workspace](http://127.0.0.1:4173). Stop with **Ctrl+C**. `PORT=4174 ./run.sh` uses another port, with a separate browser workspace.
+Open [the workspace](http://127.0.0.1:4173). Stop the server with Ctrl+C. No install or build step; the launcher uses Node on PATH or this Mac's bundled runtime. Other machines need Node 22+. There are no package dependencies. `dist/` contains authored source.
 
-The launcher uses Node on PATH or this Mac's existing bundled Codex runtime. Other machines need Node.js 22 or later. There are **no package dependencies** and no install/build step. With Node on PATH, `node scripts/serve.mjs` also works. Opening the HTML directly as a file is unsupported because the app uses JavaScript modules.
+Use the same browser/profile, host, and port to reopen saved work, and one editing tab. A different port, `localhost` instead of `127.0.0.1`, or another browser has separate storage. Browser storage is not a backup or encryption.
 
-Keep using the **same browser, host, and port** to find saved work. `localhost` and `127.0.0.1`, different ports, and different browsers have separate storage. Use one editing tab. Browser storage is not a backup and is not encrypted by this app.
+## Try a real before/after flow
 
-## Try the working flow
+1. Create an application with **Fill fictional example**, or paste instructions/load a UTF-8 `.txt` file.
+2. Select the essay instruction in the source snapshot, choose **Use selected excerpt**, and create a task. Mark it completed.
+3. Prepare a JSON backup. Open **Add updated instructions** and paste the complete instructions with the essay maximum changed from 500 to 400 words. Add a new budget instruction.
+4. Choose **Preview changes**, inspect the old/new passages, then **Save new source version**. The completed essay now needs source review. New and unlinked text stays visible in **Compare saved source versions**.
+5. Expand the task's source review. Select the correct passage from the target version, choose **Use selected passage**, confirm applicability, and record the resolution. You can instead explicitly retain the task without a mapping and explain why.
+6. To check version isolation, add another update before resolving the older one. Resolving the older review leaves the newer review open. The original source link and completion history remain.
+7. Export, reload, and follow both original and latest mapped source links. Preview a restore in an empty workspace on another test port; applying restores all versions and decisions. Importing the same IDs into the original workspace is rejected.
 
-1. Choose **Fill fictional example**, review the instructions, and choose **Create application**. Alternatively paste text or load a UTF-8 `.txt` file. The snapshot is read-only after creation.
-2. Highlight a passage in **Source snapshot**, then choose **Use selected excerpt**. Enter your own task wording, choose **Applies / Does not apply / Not decided**, and add the task.
-3. Choose **View exact source** to highlight the original excerpt. **Edit wording or applicability** changes the task without changing its source link or completion history.
-4. Add a task without selecting an excerpt to create an explicitly labeled **No source linked** task. Mark tasks completed and inspect **Completion & decision history**. Applicability and review remain separate from completion.
-5. Choose **Prepare JSON backup**, then **Download JSON backup**. The visible read-only JSON also provides a copy fallback. Export includes any changes that failed to save locally.
-6. Paste a backup or choose its JSON file, then **Preview restore**. Review its applications before choosing **Add restored applications**. Existing work stays intact; an application already present is rejected by ID, even when names differ.
-7. Reload and return to an exact source link. To verify restoration, use an empty workspace on a separate test port; importing into the original workspace correctly reports duplicate IDs.
+Manual tasks retain **No source linked**. Task wording and applicability can be edited independently. These features do not determine eligibility, submit applications, or establish checklist completeness. Dependency propagation has not been implemented: an unlinked proofreading task is not automatically flagged when the essay changes.
 
-The committed `tests/fixtures/fictional-instructions.txt` contains repeated passages, CRLF line breaks, a condition, and harmless HTML-looking text for testing. No real application documents are included. A checklist does not establish eligibility or prove that every source requirement was captured.
+## Matching and decisions
+
+Automatic source matching requires a unique identical containing paragraph, a unique selected phrase in both documents, and unchanged immediate neighboring paragraphs or document boundaries. Formatting changes, duplicate text, changed context, uncertain matches, and selections across paragraphs need confirmation. The matcher uses text structure; it cannot interpret distant conditions or meaning.
+
+Paragraph differences retain every nonblank passage. “Changed” pairs are positional reading aids, not proven requirement equivalence. Original whitespace remains in the complete snapshots; blank-line separators are not separate rows. Unlinked spans stay marked unreviewed even if another sentence in their paragraph has a task link.
+
+A review resolution belongs to one review ID and one source version. It never clears a later update or removes completion events. A historical applicability resolution records the old-version decision without rewriting the current choice. See [the comparison and data design](docs/COMPARISON.md) for details and an interview explanation.
 
 ## Storage and recovery
 
-Valid changes save to this browser's `localStorage`. A successful status appears only after the storage write succeeds. If a save fails, the latest changes remain in this open tab with a **Not saved** message; prepare and download a backup before leaving. Quota failures offer **Retry saving**.
+The schema-2 workspace remains under the existing `steptrace.workspace.v1` storage key. Schema-1 saved work and backups are strictly validated and migrated in memory. Opening older work does not write storage. The original bytes remain until the next successful save and can be downloaded for recovery while that page is open. Prepare a regular backup before editing.
 
-Unreadable or unavailable storage blocks writes instead of replacing existing data. When unreadable bytes are available, **Download unreadable stored data** preserves them separately. A valid backup can still be inspected and restored into memory, then exported, while saving is blocked.
+Saved status appears only after the write succeeds. On failure, work remains in the current tab with **Not saved** and can still be exported. Quota errors offer retry. Invalid/unreadable stored data, including a stored JSON `null`, is preserved and blocks writes. Another tab's completed write is detected before saving; simultaneous edits are not atomic.
 
-Backups have a named format and schema version. Import validates sizes, IDs, timestamps, fields, source references, quotes, and histories. Restore adds disjoint applications only; it does not replace existing applications or merge their histories. Duplicate IDs are rejected, and the merge is checked again when applied. Save checks detect storage changes already written by another tab; `localStorage` cannot guarantee atomic simultaneous edits across tabs.
+Backups validate versions, IDs, exact quotes/ranges, histories, and review decisions. Restore previews before adding noncolliding applications; replacement, deduplication, and deletion are not implemented. Chrome file download was verified in Session 2. The in-app browser offers visible backup JSON to copy when its download does not complete. Confirm the backup file arrived.
 
-Chrome successfully downloaded a JSON backup during verification. The in-app browser did not expose an observable completed native download in that check; use the visible JSON copy fallback or open the workspace in Chrome when making a downloaded backup. Confirm that the file arrived. This browser limitation did not indicate corrupted backup data.
-
-Limits: 100,000 UTF-16 code units per source, 200 per title/label, 100 applications, 2,000 tasks in total, 2,000 events per history, and a 2 MiB JSON payload. Saved work reserves space for its backup envelope.
+Limits: 100 applications, 2,000 tasks, 100,000 UTF-16 code units per source, 50 versions per application, 2,000 events per history, 1,000 characters per review note, and 2 MiB JSON. New version input is pasted text; initial application creation also accepts `.txt` files. Unsubmitted forms are not saved or backed up, and other task changes can discard those drafts.
 
 ## Code to understand
 
 | File | Responsibility |
 | --- | --- |
-| `dist/index.html`, `dist/styles.css` | Semantic forms, source/task layout, status messages, and focus styles |
-| `dist/src/app.js`, `bootstrap.js` | UI orchestration; render user content with `textContent` or input values; show save results and restore previews |
-| `dist/src/model.js` | Validate and return fresh, deeply frozen workspaces; retain one immutable snapshot per application; append decision/completion events |
-| `dist/src/source-selection.js` | Map textarea selections to untouched source text, including CRLF/CR normalization |
-| `dist/src/storage.js` | Local save/load boundary, versioned JSON backup validation, conflict detection, and additive restore |
-| `dist/src/demo.js`, `preview.js`, `dist/preview.html` | Preserved Session 1 fictional data and scripted change-review example |
-| `scripts/serve.mjs` | Node's built-in HTTP server, bound to `127.0.0.1`, serving an explicit asset allowlist |
+| `dist/src/comparison.js` | Pure paragraph comparison and conservative exact-anchor matching |
+| `dist/src/model.js` | Validated frozen records, immutable source versions, independent completion/applicability histories, version-specific resolutions |
+| `dist/src/schema-v1.js` | Strict legacy reader retained for migration |
+| `dist/src/storage.js` | Migration boundary, local saves, versioned backups, validation and additive restore |
+| `dist/src/source-selection.js` | Map textarea positions to original UTF-16 text, including CRLF |
+| `dist/src/review-ui.js` | Before/after passages, uncovered source text, and explicit review forms |
+| `dist/src/app.js` | Interface state, source navigation, accurate save feedback |
+| `scripts/serve.mjs` | Local Node server with explicit public-asset allowlist |
 
-A source link stores a snapshot ID, UTF-16 start/end offsets, and the exact quote. Validation checks `source.text.slice(start, end) === quote`; repeated text is identified by its selected position. Offsets cannot split a CRLF pair or a Unicode surrogate pair. Source text stays unchanged even when a textarea displays normalized line breaks.
+## Verified scope
 
-An honest interview explanation: “I made source links verifiable and storage failures visible. Task wording can change while its source reference stays fixed. Completion is an append-only history, separate from applicability and review. Restore validates a preview and never silently overwrites current applications.”
+`./run.sh check` passes **66 automated tests** plus syntax/asset/fixture checks. Browser checks verified migration, two successive updates, historical and current resolutions, exact links, reload/export equality, additive restore equality, malformed/duplicate rejection, and quota export/retry. See [CHECKS](docs/CHECKS.md) for evidence and limits.
 
-## Checks and milestone boundary
+Session 3 stops here. The [earlier Session 1 preview](http://127.0.0.1:4173/preview.html) remains scripted and includes future dependency behavior. The working workspace uses actual comparison. No OCR, scraping, LLM, remote repository, deployment, billing, or third-party text upload was added.
 
-```sh
-./run.sh check
-```
-
-This passes syntax/fixture checks and **26 automated tests**. Actual browser flow, file restore, inert text, save-failure/retry, and layout checks are recorded separately in `docs/CHECKS.md`; they are not automated end-to-end tests or accessibility certification.
-
-Session 2 is complete. [The earlier change-review example](http://127.0.0.1:4173/preview.html) remains **scripted**. Version comparison, dependency propagation, and review resolution are not implemented; Session 3 has not started. There are no accounts, analytics, third-party text uploads, AI features, billing, remote repository, or deployment.
-
-Later sessions must read `AGENTS.md`, `docs/BRIEF.md`, `docs/ROADMAP.md`, and `docs/STATE.md`. Five interview questions remain in `docs/INTERVIEWS.md`; no participants have been contacted and no usability or demand results are claimed.
+Later sessions must read AGENTS, BRIEF, ROADMAP, and STATE, preserve user changes and saved data, implement only their requested milestone, run relevant checks, update STATE, and make a logical local commit. The five interview questions remain in `docs/INTERVIEWS.md`; no one has been contacted.

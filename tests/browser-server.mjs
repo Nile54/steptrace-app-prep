@@ -6,7 +6,7 @@ import { readFile } from 'node:fs/promises';
 const port = Number(process.env.PORT ?? 4174);
 const fault = process.env.STEPTRACE_STORAGE_FAULT ?? '';
 if (!['', 'quota', 'unavailable', 'corrupt', 'quota-once'].includes(fault)) throw new Error('Unsupported test fault');
-const assets = new Map([['/', 'index.html'], ['/styles.css', 'styles.css'], ...['app', 'bootstrap', 'demo', 'model', 'storage', 'source-selection'].map(name => [`/src/${name}.js`, `src/${name}.js`])]);
+const assets = new Map([['/', 'index.html'], ['/styles.css', 'styles.css'], ...['app', 'bootstrap', 'demo', 'model', 'storage', 'source-selection', 'schema-v1', 'comparison', 'review-ui'].map(name => [`/src/${name}.js`, `src/${name}.js`])]);
 createServer(async (request, response) => {
   const asset = assets.get(new URL(request.url, 'http://127.0.0.1').pathname);
   if (!asset) { response.writeHead(404).end(); return; }

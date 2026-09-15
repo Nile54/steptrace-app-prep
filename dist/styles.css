@@ -131,3 +131,18 @@ input[type="checkbox"] { width: 1.25rem; height: 1.25rem; accent-color: var(--na
   .workspace-toolbar > div { max-width: 100%; min-width: 0; }
 }
 @media (max-width: 480px) { .panel { padding: 1rem; } .application-heading { flex-wrap: wrap; } }
+
+/* Version comparisons and human review. Status is always conveyed in words. */
+.diff-row, .version-review { border: 1px solid var(--line); border-radius: .45rem; margin: 1rem 0; padding: .75rem 1rem; background: #fafbfd; }
+.diff-quote, .chosen-mapping, .resolution-note { white-space: pre-wrap; overflow-wrap: anywhere; }
+.diff-row .comparison, .version-review .comparison { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+.diff-row summary, .version-review summary { overflow-wrap: anywhere; }
+.unreviewed-material { padding: .65rem .85rem; background: #fff3d9; border-left: 3px solid #a56808; color: #704710; font-size: .875rem; }
+.source-reviews { margin-top: 1rem; }
+.version-review { font-size: .9375rem; }
+.version-review form { padding-top: .5rem; border-top: 1px solid var(--line); }
+.version-review .button-row button { flex-shrink: 1; }
+.chosen-mapping { padding: .6rem .75rem; background: #edf4fc; border-left: 3px solid #286698; }
+.saved-task > button { margin: .25rem .25rem .25rem 0; }
+#version-preview { margin-top: 1.5rem; }
+@media (max-width: 800px) { .diff-row .comparison, .version-review .comparison { grid-template-columns: 1fr; } }

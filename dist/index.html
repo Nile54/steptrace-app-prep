@@ -9,7 +9,7 @@
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to workspace</a>
-  <header class="masthead"><div class="brand"><span class="brand-mark" aria-hidden="true">S</span> StepTrace <span class="working-name">Working name</span></div><span class="session-label">Session 02 / On this device</span></header>
+  <header class="masthead"><div class="brand"><span class="brand-mark" aria-hidden="true">S</span> StepTrace <span class="working-name">Working name</span></div><span class="session-label">Session 03 / On this device</span></header>
   <main id="main" tabindex="-1">
     <div class="preview-notice"><strong>Development version — use fictional information.</strong> Application text stays in this browser. Browser storage can be cleared; a downloaded backup is a separate copy. Data is not encrypted by this app.</div>
     <div class="application-heading"><div><p class="eyebrow">Keep your instructions and work together</p><h1>Your application workspace</h1></div><a href="#backups">Backup &amp; restore</a></div>
@@ -23,17 +23,30 @@
         <label for="source-file">Load a .txt file instead of pasting</label><input id="source-file" type="file" accept=".txt,text/plain" aria-describedby="source-file-help">
         <p id="source-file-help" class="helper">UTF-8 plain text; up to 100,000 characters. Loading a file fills the draft below. It is never uploaded.</p>
         <label for="source-input">Instructions</label><textarea id="source-input" name="text" rows="7" maxlength="100000" required aria-describedby="source-input-help"></textarea>
-        <p id="source-input-help" class="helper">Review this text before creating the snapshot. Source edits and version comparison arrive in a later session.</p>
+        <p id="source-input-help" class="helper">Review this text before creating the snapshot. Later instructions are saved as a new version; original text stays intact.</p>
         <button type="submit">Create application</button>
       </form>
     </details>
     <section id="application-workspace" hidden aria-labelledby="current-application-title">
       <div class="workspace-toolbar"><div><label for="application-select">Choose an application</label><select id="application-select"></select></div><h2 id="current-application-title" tabindex="-1"></h2></div>
+      <p id="review-overview" class="person-decides" role="status" tabindex="-1"></p>
+      <details id="new-version" class="panel"><summary>Add updated instructions</summary>
+        <p>Paste the complete new instructions, including unchanged parts. This adds a read-only version and retains every earlier snapshot and completion record.</p>
+        <form id="version-form"><label for="version-label">New source label</label><input id="version-label" maxlength="200" required value="Updated instructions">
+          <label for="version-input">Complete updated instructions</label><textarea id="version-input" rows="7" maxlength="100000" required></textarea>
+          <button type="submit" class="secondary">Preview changes</button>
+        </form>
+        <section id="version-preview" hidden aria-labelledby="version-preview-heading"><h3 id="version-preview-heading" tabindex="-1">Preview before saving a new version</h3><p>Nothing has changed yet. Adding this version will flag uncertain source links for your review. Completed work stays completed.</p><div id="version-preview-diff"></div><button id="save-version" type="button">Save new source version</button></section>
+      </details>
+      <details id="source-changes" class="panel"><summary>Compare saved source versions</summary>
+        <p>These are text differences, not eligibility decisions. A unique identical paragraph and phrase can match automatically when neighboring paragraphs also stay unchanged. Formatting changes, repeated text, and uncertain mappings need your confirmation. A “changed” row pairs passages by position for display only.</p>
+        <label for="comparison-version">Compare this version with its predecessor</label><select id="comparison-version"></select><div id="saved-comparison"></div>
+      </details>
       <div class="workspace">
         <section class="source-panel" aria-labelledby="source-heading">
-          <div class="section-heading"><h2 id="source-heading">Source snapshot</h2><span class="version">Version 1 · Read-only</span></div><p id="source-meta" class="section-note"></p>
+          <div class="section-heading"><h2 id="source-heading">Source snapshot</h2><span id="source-version-label" class="version"></span></div><label for="source-version-select">View a source version</label><select id="source-version-select"></select><p id="source-meta" class="section-note"></p>
           <label for="source-snapshot">Select the exact instruction for a task</label><textarea id="source-snapshot" class="snapshot" rows="11" readonly aria-describedby="selection-help"></textarea>
-          <p id="selection-help" class="helper">Highlight text with a pointer or Shift + arrow keys, then choose Use selected excerpt.</p><button id="use-selection" class="secondary" type="button">Use selected excerpt</button><p id="source-location" class="helper" role="status"></p>
+          <p id="selection-help" class="helper">Highlight text with a pointer or Shift + arrow keys, then choose Use selected excerpt. New tasks link to the latest version; earlier versions remain available for lookup.</p><button id="use-selection" class="secondary" type="button">Use selected excerpt</button><p id="source-location" class="helper" role="status"></p>
           <section id="located-quote" class="excerpt" hidden aria-label="Exact source for task"><h3>Exact linked excerpt</h3><blockquote id="located-quote-text"></blockquote></section>
         </section>
         <section class="checklist-panel" aria-labelledby="checklist-heading">
@@ -54,7 +67,7 @@
       <form id="restore-form"><h3>Restore from a backup</h3><label for="restore-file">Choose a StepTrace JSON backup</label><input id="restore-file" type="file" accept=".json,application/json" aria-describedby="restore-help"><p id="restore-help" class="helper">Or paste backup JSON below. Maximum 2 MB. Nothing is applied until you inspect the preview and choose Add restored applications. Existing applications stay in place.</p><label for="restore-json">Backup JSON to inspect</label><textarea id="restore-json" rows="4" spellcheck="false"></textarea><button class="secondary" type="submit">Preview restore</button></form>
       <section id="restore-preview" class="restore-preview" hidden aria-labelledby="restore-preview-heading"><h3 id="restore-preview-heading" tabindex="-1">Review this restore</h3><p id="restore-summary"></p><ul id="restore-applications"></ul><p id="restore-problem" class="error-message" hidden></p><p>Names may be the same; application and task IDs must be different. A backup already present here is rejected to prevent duplicates.</p><div class="button-row"><button id="apply-restore" type="button">Add restored applications</button><button id="cancel-restore" class="secondary" type="button">Cancel restore</button></div></section>
     </section>
-    <p class="helper"><a href="./preview.html">View the earlier scripted change-review example</a>. Real version comparison and dependency review are not implemented.</p><noscript><p class="error-message">Enable JavaScript to use the local workspace. No application data will be uploaded.</p></noscript>
+    <p class="helper"><a href="./preview.html">View the earlier scripted change-review example</a>. The workspace now compares versions and reviews directly linked tasks. Dependency propagation remains a future milestone.</p><noscript><p class="error-message">Enable JavaScript to use the local workspace. No application data will be uploaded.</p></noscript>
   </main>
   <footer><p>Preparation stays in your hands. StepTrace does not decide eligibility, guarantee completeness, or submit applications.</p><span>Local only · No account</span></footer>
 </body>
