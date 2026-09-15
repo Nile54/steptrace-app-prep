@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="A fictional preview of a source-linked scholarship checklist and a planned instruction-change review.">
+    <title>StepTrace · Fictional scholarship preview</title>
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%231c3553'/%3E%3Cpath d='M8 23h5v-7h6V9h5' fill='none' stroke='%238ce3d4' stroke-width='3'/%3E%3C/svg%3E">
+    <link rel="stylesheet" href="./styles.css">
+    <script type="module" src="./src/preview.js"></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to example</a>
+    <header class="masthead">
+      <div class="brand"><span class="brand-mark" aria-hidden="true">S</span> StepTrace <span class="working-name">Working name</span></div>
+      <span class="session-label">Session 01 / Local preview</span>
+    </header>
+    <main id="main" tabindex="-1">
+      <div class="preview-notice"><strong>Earlier scripted example.</strong> Nothing on this page is saved. <a href="/">Return to your saved workspace</a>.</div>
+      <div class="application-heading">
+        <div>
+          <p class="eyebrow">Application workspace</p>
+          <h1>Maple Grove Scholarship</h1>
+          <p class="intro">See where each step comes from, and what you may need to revisit.</p>
+        </div>
+        <span class="fiction-label">Sample data only</span>
+      </div>
+
+      <div class="workspace">
+        <section class="source-panel" aria-labelledby="source-heading">
+          <div class="section-heading"><h2 id="source-heading">Source instructions</h2><span class="version">Version 1</span></div>
+          <p class="section-note">Fictional snapshot · supplied September 10, 2026</p>
+          <div id="source-passages"></div>
+          <p class="source-footnote">These passages stay linked to version 1. This preview does not monitor a website or accept pasted instructions.</p>
+        </section>
+
+        <section class="checklist-panel" aria-labelledby="checklist-heading">
+          <div class="section-heading"><h2 id="checklist-heading">Your linked checklist</h2><span class="version">3 sample steps</span></div>
+          <p class="section-note">Read-only sample history. Follow a source link to see the exact instruction.</p>
+          <ol id="task-list" class="task-list"></ol>
+          <p class="checklist-footnote">These example steps do not represent every application requirement.</p>
+        </section>
+      </div>
+
+      <section class="change-section" aria-labelledby="change-heading">
+        <div class="change-intro">
+          <div>
+            <p class="eyebrow">Try the planned workflow</p>
+            <h2 id="change-heading">What if an instruction changes?</h2>
+            <p>Preview a new essay limit after the draft and proofreading were completed.</p>
+          </div>
+          <button id="preview-toggle" type="button" aria-expanded="false" aria-controls="change-preview">Preview instruction change</button>
+        </div>
+        <p id="preview-status" class="status-message" role="status" aria-live="polite" aria-atomic="true"></p>
+        <div id="change-preview" hidden>
+          <div class="preview-heading"><h3>Essay limit changed</h3><span class="preview-badge">Scripted preview</span></div>
+          <div class="comparison">
+            <div><p class="comparison-label">Before · Version 1</p><blockquote id="before-quote"></blockquote></div>
+            <div><p class="comparison-label">After · Example version 2</p><blockquote id="after-quote"></blockquote></div>
+          </div>
+          <p class="explanation"><strong>2 completed steps are shown for review.</strong> The draft links to the essay instruction. Proofreading depends on the draft. The unchanged recommendation stays as it was.</p>
+          <div class="person-decides"><h3>You decide what needs editing</h3><p>A 380-word essay might already meet the new limit. Your earlier completion records remain visible. Resolving a review will be added in a later session.</p></div>
+          <p class="simulation-note">This result is written into the example. No text comparison, dependency calculation, or save has run.</p>
+        </div>
+      </section>
+      <noscript><p class="preview-notice">Enable JavaScript to load the fictional passages, checklist, and change preview. Nothing will be uploaded.</p></noscript>
+    </main>
+    <footer><p>Preparation stays in your hands. StepTrace does not decide eligibility, guarantee completeness, or submit applications.</p><span>Session 1 · No account needed</span></footer>
+  </body>
+</html>

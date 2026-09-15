@@ -5,9 +5,11 @@ import { readFile } from 'node:fs/promises';
 const routes = new Map([
   ['/', ['index.html', 'text/html; charset=utf-8']],
   ['/index.html', ['index.html', 'text/html; charset=utf-8']],
+  ['/preview.html', ['preview.html', 'text/html; charset=utf-8']],
   ['/styles.css', ['styles.css', 'text/css; charset=utf-8']],
   ['/src/app.js', ['src/app.js', 'text/javascript; charset=utf-8']],
   ['/src/demo.js', ['src/demo.js', 'text/javascript; charset=utf-8']],
+  ...['bootstrap', 'preview', 'model', 'storage', 'source-selection'].map(name => [`/src/${name}.js`, [`src/${name}.js`, 'text/javascript; charset=utf-8']]),
 ]);
 const port = Number(process.env.PORT ?? 4173);
 if (!Number.isInteger(port) || port < 1 || port > 65535) {
@@ -44,4 +46,4 @@ server.on('error', (error) => {
     : error.message);
   process.exitCode = 1;
 });
-server.listen(port, '127.0.0.1', () => console.log(`StepTrace Session 1 preview: http://127.0.0.1:${port}`));
+server.listen(port, '127.0.0.1', () => console.log(`StepTrace Session 2 workspace: http://127.0.0.1:${port}`));

@@ -1,8 +1,10 @@
-# StepTrace — Session 1
+# StepTrace — Session 2
 
-A fictional browser preview of a source-linked scholarship checklist. StepTrace is a working name with known conflicts; no public slug has been chosen.
+A local application-preparation workspace with exact source links, human decisions, completion history, and JSON backups. Use fictional information in this development version. StepTrace remains a working name with known conflicts; no public slug has been chosen.
 
 ## Run locally
+
+Repository: `/Users/nileshnandakumar/Documents/Codex/2026-09-14/before-session-one-supplying-your-github/outputs/steptrace-local`.
 
 From this repository:
 
@@ -10,44 +12,60 @@ From this repository:
 ./run.sh
 ```
 
-Open **http://127.0.0.1:4173**. Stop the server with **Ctrl+C**. To use a different port: `PORT=4174 ./run.sh`.
+Open [the local workspace](http://127.0.0.1:4173). Stop with **Ctrl+C**. `PORT=4174 ./run.sh` uses another port, with a separate browser workspace.
 
-The launcher uses Node on your PATH or the existing bundled Codex runtime on this Mac. On another machine, install Node.js 22 or later. There are **no package dependencies** and no install/build step. With Node on PATH, `node scripts/serve.mjs` also works; with npm installed, `npm start` is equivalent. Opening `index.html` directly as a file is not supported because the app uses JavaScript modules.
+The launcher uses Node on PATH or this Mac's existing bundled Codex runtime. Other machines need Node.js 22 or later. There are **no package dependencies** and no install/build step. With Node on PATH, `node scripts/serve.mjs` also works. Opening the HTML directly as a file is unsupported because the app uses JavaScript modules.
 
-## Try the example
+Keep using the **same browser, host, and port** to find saved work. `localhost` and `127.0.0.1`, different ports, and different browsers have separate storage. Use one editing tab. Browser storage is not a backup and is not encrypted by this app.
 
-1. Read the fictional Maple Grove Scholarship instructions.
-2. Follow a task's **Source** link. It takes you to the exact passage in version 1.
-3. Choose **Preview instruction change**. The essay maximum changes from 500 to 400 words in a scripted before/after example.
-4. Drafting and proofreading show **Needs review · preview**. All three previous completion dates remain visible; the recommendation is unaffected.
-5. Hide the preview or reload to return to the initial view.
+## Try the working flow
 
-A 380-word essay might already comply. The person would decide what needs editing. Proofreading is a personal preparation step, not a requirement claimed to appear in the source. The deadline has no linked task, illustrating why this sample is not a completeness claim.
+1. Choose **Fill fictional example**, review the instructions, and choose **Create application**. Alternatively paste text or load a UTF-8 `.txt` file. The snapshot is read-only after creation.
+2. Highlight a passage in **Source snapshot**, then choose **Use selected excerpt**. Enter your own task wording, choose **Applies / Does not apply / Not decided**, and add the task.
+3. Choose **View exact source** to highlight the original excerpt. **Edit wording or applicability** changes the task without changing its source link or completion history.
+4. Add a task without selecting an excerpt to create an explicitly labeled **No source linked** task. Mark tasks completed and inspect **Completion & decision history**. Applicability and review remain separate from completion.
+5. Choose **Prepare JSON backup**, then **Download JSON backup**. The visible read-only JSON also provides a copy fallback. Export includes any changes that failed to save locally.
+6. Paste a backup or choose its JSON file, then **Preview restore**. Review its applications before choosing **Add restored applications**. Existing work stays intact; an application already present is rejected by ID, even when names differ.
+7. Reload and return to an exact source link. To verify restoration, use an empty workspace on a separate test port; importing into the original workspace correctly reports duplicate IDs.
 
-## What works / what is simulated
+The committed `tests/fixtures/fictional-instructions.txt` contains repeated passages, CRLF line breaks, a condition, and harmless HTML-looking text for testing. No real application documents are included. A checklist does not establish eligibility or prove that every source requirement was captured.
 
-| Working now | Preview or deferred |
-| --- | --- |
-| Local browser server and static UI | No application creation, editing, or pasted instructions |
-| Three exact links to displayed fictional passages | Tasks and completion dates are fixed fixtures |
-| Keyboard-operable show/hide and source navigation | Before/after text and two review reasons are manually authored |
-| Completion text retained while showing/hiding review | No real comparison, dependency traversal, or review resolution |
-| Responsive layout, semantic controls, visible focus | No persistence, backup/restore, or installed offline support |
+## Storage and recovery
 
-The browser loads only local demo assets. There are no accounts, analytics, remote API calls, AI features, or uploads. Local-first storage is a later milestone; this version does not save application data.
+Valid changes save to this browser's `localStorage`. A successful status appears only after the storage write succeeds. If a save fails, the latest changes remain in this open tab with a **Not saved** message; prepare and download a backup before leaving. Quota failures offer **Retry saving**.
+
+Unreadable or unavailable storage blocks writes instead of replacing existing data. When unreadable bytes are available, **Download unreadable stored data** preserves them separately. A valid backup can still be inspected and restored into memory, then exported, while saving is blocked.
+
+Backups have a named format and schema version. Import validates sizes, IDs, timestamps, fields, source references, quotes, and histories. Restore adds disjoint applications only; it does not replace existing applications or merge their histories. Duplicate IDs are rejected, and the merge is checked again when applied. Save checks detect storage changes already written by another tab; `localStorage` cannot guarantee atomic simultaneous edits across tabs.
+
+Chrome successfully downloaded a JSON backup during verification. The in-app browser did not expose an observable completed native download in that check; use the visible JSON copy fallback or open the workspace in Chrome when making a downloaded backup. Confirm that the file arrived. This browser limitation did not indicate corrupted backup data.
+
+Limits: 100,000 UTF-16 code units per source, 200 per title/label, 100 applications, 2,000 tasks in total, 2,000 events per history, and a 2 MiB JSON payload. Saved work reserves space for its backup envelope.
 
 ## Code to understand
 
-- `dist/index.html` defines the semantic page sections and preview control.
-- `dist/styles.css` controls layout, readable text, responsive stacking, and keyboard focus.
-- `dist/src/demo.js` contains fictional passages, tasks, dates, and scripted review reasons. Each task's `sourceId` points to a passage's `id`.
-- `dist/src/app.js` imports those fixtures, builds DOM nodes with `textContent`, and handles one button. The click listener changes visibility and `aria-expanded`; it never modifies a completion record.
-- `scripts/serve.mjs` uses Node's built-in HTTP module and serves only five explicit routes on `127.0.0.1`. `dist/` contains authored source files, not generated build output.
+| File | Responsibility |
+| --- | --- |
+| `dist/index.html`, `dist/styles.css` | Semantic forms, source/task layout, status messages, and focus styles |
+| `dist/src/app.js`, `bootstrap.js` | UI orchestration; render user content with `textContent` or input values; show save results and restore previews |
+| `dist/src/model.js` | Validate and return fresh, deeply frozen workspaces; retain one immutable snapshot per application; append decision/completion events |
+| `dist/src/source-selection.js` | Map textarea selections to untouched source text, including CRLF/CR normalization |
+| `dist/src/storage.js` | Local save/load boundary, versioned JSON backup validation, conflict detection, and additive restore |
+| `dist/src/demo.js`, `preview.js`, `dist/preview.html` | Preserved Session 1 fictional data and scripted change-review example |
+| `scripts/serve.mjs` | Node's built-in HTTP server, bound to `127.0.0.1`, serving an explicit asset allowlist |
 
-An honest explanation for a tech/AI interview: “This milestone makes the interaction and state distinction inspectable. The future comparison will be deterministic; this demo uses authored examples. I can explain source IDs, DOM rendering, and why review must not erase completion.” This is not evidence of an implemented AI system.
+A source link stores a snapshot ID, UTF-16 start/end offsets, and the exact quote. Validation checks `source.text.slice(start, end) === quote`; repeated text is identified by its selected position. Offsets cannot split a CRLF pair or a Unicode surrogate pair. Source text stays unchanged even when a textarea displays normalized line breaks.
 
-## Checks and next step
+An honest interview explanation: “I made source links verifiable and storage failures visible. Task wording can change while its source reference stays fixed. Completion is an append-only history, separate from applicability and review. Restore validates a preview and never silently overwrites current applications.”
 
-Run `./run.sh check`. See `docs/CHECKS.md` for the browser walkthrough and actual verification. Start later sessions with `AGENTS.md`, `docs/BRIEF.md`, `docs/ROADMAP.md`, and `docs/STATE.md`.
+## Checks and milestone boundary
 
-Session 2 is source-linked task creation and reliable storage. It has **not** started. No remote repository or deployment exists. Five interview questions are in `docs/INTERVIEWS.md`; no one has been contacted.
+```sh
+./run.sh check
+```
+
+This passes syntax/fixture checks and **26 automated tests**. Actual browser flow, file restore, inert text, save-failure/retry, and layout checks are recorded separately in `docs/CHECKS.md`; they are not automated end-to-end tests or accessibility certification.
+
+Session 2 is complete. [The earlier change-review example](http://127.0.0.1:4173/preview.html) remains **scripted**. Version comparison, dependency propagation, and review resolution are not implemented; Session 3 has not started. There are no accounts, analytics, third-party text uploads, AI features, billing, remote repository, or deployment.
+
+Later sessions must read `AGENTS.md`, `docs/BRIEF.md`, `docs/ROADMAP.md`, and `docs/STATE.md`. Five interview questions remain in `docs/INTERVIEWS.md`; no participants have been contacted and no usability or demand results are claimed.

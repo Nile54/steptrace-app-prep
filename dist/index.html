@@ -1,70 +1,61 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="A fictional preview of a source-linked scholarship checklist and a planned instruction-change review.">
-    <title>StepTrace · Fictional scholarship preview</title>
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%231c3553'/%3E%3Cpath d='M8 23h5v-7h6V9h5' fill='none' stroke='%238ce3d4' stroke-width='3'/%3E%3C/svg%3E">
-    <link rel="stylesheet" href="./styles.css">
-    <script type="module" src="./src/app.js"></script>
-  </head>
-  <body>
-    <a class="skip-link" href="#main">Skip to example</a>
-    <header class="masthead">
-      <div class="brand"><span class="brand-mark" aria-hidden="true">S</span> StepTrace <span class="working-name">Working name</span></div>
-      <span class="session-label">Session 01 / Local preview</span>
-    </header>
-    <main id="main" tabindex="-1">
-      <div class="preview-notice"><strong>Fictional example.</strong> Explore source links and a scripted change review. Nothing is saved; reloading resets the preview.</div>
-      <div class="application-heading">
-        <div>
-          <p class="eyebrow">Application workspace</p>
-          <h1>Maple Grove Scholarship</h1>
-          <p class="intro">See where each step comes from, and what you may need to revisit.</p>
-        </div>
-        <span class="fiction-label">Sample data only</span>
-      </div>
-
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="A local application-preparation workspace with exact source links and JSON backups.">
+  <title>StepTrace · Application workspace</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%231c3553'/%3E%3Cpath d='M8 23h5v-7h6V9h5' fill='none' stroke='%238ce3d4' stroke-width='3'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="./styles.css"><script type="module" src="./src/bootstrap.js"></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to workspace</a>
+  <header class="masthead"><div class="brand"><span class="brand-mark" aria-hidden="true">S</span> StepTrace <span class="working-name">Working name</span></div><span class="session-label">Session 02 / On this device</span></header>
+  <main id="main" tabindex="-1">
+    <div class="preview-notice"><strong>Development version — use fictional information.</strong> Application text stays in this browser. Browser storage can be cleared; a downloaded backup is a separate copy. Data is not encrypted by this app.</div>
+    <div class="application-heading"><div><p class="eyebrow">Keep your instructions and work together</p><h1>Your application workspace</h1></div><a href="#backups">Backup &amp; restore</a></div>
+    <section class="save-panel" aria-label="Storage status"><p id="save-status" role="status" aria-live="polite" aria-atomic="true">Checking local storage…</p><div class="button-row"><button id="retry-save" class="secondary" type="button" hidden>Retry saving</button><button id="download-original" class="secondary" type="button" hidden>Download unreadable stored data</button></div></section>
+    <p id="action-status" role="status" aria-live="polite" aria-atomic="true"></p><p id="action-error" class="error-message" role="alert" tabindex="-1" hidden></p>
+    <details id="new-application" class="panel" open><summary>Create an application</summary>
+      <form id="application-form">
+        <div class="form-heading"><p>Paste instructions or load a plain-text file. Creating the application keeps a read-only snapshot.</p><button id="fill-example" class="secondary" type="button">Fill fictional example</button></div>
+        <label for="application-title">Application name</label><input id="application-title" name="title" required maxlength="200" autocomplete="off">
+        <label for="source-label">Source label</label><input id="source-label" name="label" maxlength="200" value="Pasted instructions" required autocomplete="off">
+        <label for="source-file">Load a .txt file instead of pasting</label><input id="source-file" type="file" accept=".txt,text/plain" aria-describedby="source-file-help">
+        <p id="source-file-help" class="helper">UTF-8 plain text; up to 100,000 characters. Loading a file fills the draft below. It is never uploaded.</p>
+        <label for="source-input">Instructions</label><textarea id="source-input" name="text" rows="7" maxlength="100000" required aria-describedby="source-input-help"></textarea>
+        <p id="source-input-help" class="helper">Review this text before creating the snapshot. Source edits and version comparison arrive in a later session.</p>
+        <button type="submit">Create application</button>
+      </form>
+    </details>
+    <section id="application-workspace" hidden aria-labelledby="current-application-title">
+      <div class="workspace-toolbar"><div><label for="application-select">Choose an application</label><select id="application-select"></select></div><h2 id="current-application-title" tabindex="-1"></h2></div>
       <div class="workspace">
         <section class="source-panel" aria-labelledby="source-heading">
-          <div class="section-heading"><h2 id="source-heading">Source instructions</h2><span class="version">Version 1</span></div>
-          <p class="section-note">Fictional snapshot · supplied September 10, 2026</p>
-          <div id="source-passages"></div>
-          <p class="source-footnote">These passages stay linked to version 1. This preview does not monitor a website or accept pasted instructions.</p>
+          <div class="section-heading"><h2 id="source-heading">Source snapshot</h2><span class="version">Version 1 · Read-only</span></div><p id="source-meta" class="section-note"></p>
+          <label for="source-snapshot">Select the exact instruction for a task</label><textarea id="source-snapshot" class="snapshot" rows="11" readonly aria-describedby="selection-help"></textarea>
+          <p id="selection-help" class="helper">Highlight text with a pointer or Shift + arrow keys, then choose Use selected excerpt.</p><button id="use-selection" class="secondary" type="button">Use selected excerpt</button><p id="source-location" class="helper" role="status"></p>
+          <section id="located-quote" class="excerpt" hidden aria-label="Exact source for task"><h3>Exact linked excerpt</h3><blockquote id="located-quote-text"></blockquote></section>
         </section>
-
         <section class="checklist-panel" aria-labelledby="checklist-heading">
-          <div class="section-heading"><h2 id="checklist-heading">Your linked checklist</h2><span class="version">3 sample steps</span></div>
-          <p class="section-note">Read-only sample history. Follow a source link to see the exact instruction.</p>
-          <ol id="task-list" class="task-list"></ol>
-          <p class="checklist-footnote">These example steps do not represent every application requirement.</p>
+          <div class="section-heading"><h2 id="checklist-heading">Your tasks</h2><span id="task-count" class="version"></span></div>
+          <p class="section-note">You choose what applies. A completed task can still be undecided or need review. This list does not prove that all requirements are captured.</p><ol id="task-list" class="task-list"></ol><p id="empty-tasks" class="helper">No tasks yet. Select an instruction or add a task with no source.</p>
         </section>
       </div>
-
-      <section class="change-section" aria-labelledby="change-heading">
-        <div class="change-intro">
-          <div>
-            <p class="eyebrow">Try the planned workflow</p>
-            <h2 id="change-heading">What if an instruction changes?</h2>
-            <p>Preview a new essay limit after the draft and proofreading were completed.</p>
-          </div>
-          <button id="preview-toggle" type="button" aria-expanded="false" aria-controls="change-preview">Preview instruction change</button>
-        </div>
-        <p id="preview-status" class="status-message" role="status" aria-live="polite" aria-atomic="true"></p>
-        <div id="change-preview" hidden>
-          <div class="preview-heading"><h3>Essay limit changed</h3><span class="preview-badge">Scripted preview</span></div>
-          <div class="comparison">
-            <div><p class="comparison-label">Before · Version 1</p><blockquote id="before-quote"></blockquote></div>
-            <div><p class="comparison-label">After · Example version 2</p><blockquote id="after-quote"></blockquote></div>
-          </div>
-          <p class="explanation"><strong>2 completed steps are shown for review.</strong> The draft links to the essay instruction. Proofreading depends on the draft. The unchanged recommendation stays as it was.</p>
-          <div class="person-decides"><h3>You decide what needs editing</h3><p>A 380-word essay might already meet the new limit. Your earlier completion records remain visible. Resolving a review will be added in a later session.</p></div>
-          <p class="simulation-note">This result is written into the example. No text comparison, dependency calculation, or save has run.</p>
-        </div>
-      </section>
-      <noscript><p class="preview-notice">Enable JavaScript to load the fictional passages, checklist, and change preview. Nothing will be uploaded.</p></noscript>
-    </main>
-    <footer><p>Preparation stays in your hands. StepTrace does not decide eligibility, guarantee completeness, or submit applications.</p><span>Session 1 · No account needed</span></footer>
-  </body>
+      <section class="panel" aria-labelledby="task-form-heading"><h2 id="task-form-heading">Add a task</h2><form id="task-form">
+        <div id="selected-excerpt" class="excerpt" hidden><h3>Selected source excerpt</h3><blockquote id="selected-quote"></blockquote><button id="clear-selection" class="secondary" type="button">Use no source instead</button></div><p id="no-source-notice" class="helper"><strong>No source linked.</strong> This is a manually entered preparation task.</p>
+        <label for="task-title">Task wording</label><input id="task-title" required maxlength="200" autocomplete="off">
+        <label for="task-applicability">Applicability — your decision</label><select id="task-applicability"><option value="not-decided">Not decided</option><option value="applies">Applies</option><option value="does-not-apply">Does not apply</option></select>
+        <p class="helper">For conditional instructions, retain the task and choose its applicability yourself. This does not decide your eligibility.</p><button type="submit">Add task</button>
+      </form></section>
+    </section>
+    <section class="panel" id="backups" aria-labelledby="backups-heading">
+      <h2 id="backups-heading">Backup &amp; restore</h2><p>Back up all applications, source snapshots, task links, decisions, and completion history. Export is available even when local saving fails.</p><button id="prepare-backup" type="button">Prepare JSON backup</button>
+      <section id="backup-preview" hidden class="backup-output" aria-label="Prepared backup"><p id="backup-summary" class="helper"></p><label for="backup-json">Backup JSON (read-only)</label><textarea id="backup-json" rows="5" readonly spellcheck="false"></textarea><button id="download-backup" class="secondary" type="button">Download JSON backup</button><p class="helper">If your browser does not download the file, select and copy all the JSON above, then save it as a UTF-8 .json text file. Keep that file outside browser storage.</p></section>
+      <form id="restore-form"><h3>Restore from a backup</h3><label for="restore-file">Choose a StepTrace JSON backup</label><input id="restore-file" type="file" accept=".json,application/json" aria-describedby="restore-help"><p id="restore-help" class="helper">Or paste backup JSON below. Maximum 2 MB. Nothing is applied until you inspect the preview and choose Add restored applications. Existing applications stay in place.</p><label for="restore-json">Backup JSON to inspect</label><textarea id="restore-json" rows="4" spellcheck="false"></textarea><button class="secondary" type="submit">Preview restore</button></form>
+      <section id="restore-preview" class="restore-preview" hidden aria-labelledby="restore-preview-heading"><h3 id="restore-preview-heading" tabindex="-1">Review this restore</h3><p id="restore-summary"></p><ul id="restore-applications"></ul><p id="restore-problem" class="error-message" hidden></p><p>Names may be the same; application and task IDs must be different. A backup already present here is rejected to prevent duplicates.</p><div class="button-row"><button id="apply-restore" type="button">Add restored applications</button><button id="cancel-restore" class="secondary" type="button">Cancel restore</button></div></section>
+    </section>
+    <p class="helper"><a href="./preview.html">View the earlier scripted change-review example</a>. Real version comparison and dependency review are not implemented.</p><noscript><p class="error-message">Enable JavaScript to use the local workspace. No application data will be uploaded.</p></noscript>
+  </main>
+  <footer><p>Preparation stays in your hands. StepTrace does not decide eligibility, guarantee completeness, or submit applications.</p><span>Local only · No account</span></footer>
+</body>
 </html>

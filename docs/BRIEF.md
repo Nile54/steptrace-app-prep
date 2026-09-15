@@ -7,7 +7,7 @@
 - User-supplied GitHub: [Nile54](https://github.com/Nile54), whose public profile displays Nilesh Nandakumar. Public profile viewed September 14, 2026; repository code was not audited.
 - Target: tech/AI jobs and internships, supplied by the user September 14, 2026. Emphasize explainable software design and tested behavior; do not invent AI capabilities.
 - Verified profile skills carried from the supplied research: JavaScript, HTML, CSS (and Java, unused here). The research verified the skills from LinkedIn, not GitHub code. No framework or backend skill is presumed.
-- Budget: zero. Session 1 is local only.
+- Budget: zero. Sessions 1–2 are local only.
 
 ## Problem and hypothesis
 
@@ -19,23 +19,34 @@ The person resolves applicability and uncertainty. The app does not decide eligi
 
 ## Scope
 
-Session 1: a runnable, fictional, read-only scholarship example with three source-linked tasks and a scripted 500-to-400-word essay-limit change. Display two review reasons while keeping the draft, proofreading, and recommendation completion dates visible. A 380-word draft may already meet the new limit. No real tasks or documents are entered.
+Session 1 established a runnable fictional preview, retained at `/preview.html`. Its 500-to-400-word essay change and two review reasons are scripted and do not affect the working workspace.
+
+Session 2 implements application creation from pasted or UTF-8 plain text, one immutable source snapshot per application, exact excerpt links, manual no-source tasks, task wording edits, human applicability choices, and completion/decision history. The working interface is `/`. Browser-local persistence and versioned JSON backup/restore are available together. Restore previews and validates before adding applications, never replacing existing ones. Use only fictional information while evaluating this development version.
 
 Planned core: one person/device, pasted text or plain-text files, immutable source versions, exact anchors, user-authored tasks and applicability, conservative comparison, explained dependency review, completion/work history, reliable local storage, and versioned JSON backup/restore.
 
-Outside the core: eligibility decisions, application submission, completeness guarantees, OCR/scanned PDF ingestion, automatic web monitoring, email ingestion, real recommendation-letter handling, multi-user editing, AI-generated completeness claims, or an unjustified backend. AI, public release, career-profile changes, and commercialization are not Session 1 work.
+Outside the core: eligibility decisions, application submission, completeness guarantees, OCR/scanned PDF ingestion, automatic web monitoring, email ingestion, real recommendation-letter handling, multi-user editing, AI-generated completeness claims, or an unjustified backend. AI, public release, career-profile changes, and commercialization are not Session 2 work.
 
 ## Architecture boundaries
 
-| Module | Session 1 state | Future responsibility |
+| Module | Session 2 state | Responsibility |
 | --- | --- | --- |
 | `dist/src/demo.js` | Fictional fixtures only | Keep public demo data synthetic |
-| `dist/src/app.js` | Render fixtures and show/hide preview | Interface orchestration |
-| `dist/src/storage.js` | Not created | Session 2: persistence, validation, backup/restore boundary |
+| `dist/src/app.js` | Working creation/edit/restore UI | Interface orchestration and accurate saved/unsaved feedback |
+| `dist/src/model.js` | Validated immutable records | Source snapshots, exact anchors, independent histories and review state |
+| `dist/src/source-selection.js` | Exact selection mapping | Map textarea LF display offsets to preserved CRLF/CR source offsets |
+| `dist/src/storage.js` | Local persistence and versioned backups | Explicit failures, strict validation, conflict checks, additive restore |
+| `dist/src/preview.js` | Earlier scripted preview only | Keep simulated future behavior distinct from saved work |
 | `dist/src/comparison.js` | Not created | Session 3: deterministic differences and conservative matching |
 | `dist/src/dependencies.js` | Not created | Session 4: graph validation and explained review propagation |
 
-Do not scatter future comparison, graph, or storage implementations through UI handlers. Source versions, completion records, and uniquely identified review reasons will be distinct data. Two work edits under one source version must remain separately reviewable. Do not design those engines in Session 1.
+Do not scatter future comparison or graph implementations through UI handlers. Source snapshots, completion events, and review state are distinct data. Future uniquely identified review reasons must remain separate from completion. Two work edits under one source version must remain separately reviewable. Do not implement those engines in Session 2.
+
+Storage uses schema-1 JSON under `steptrace.workspace.v1`. Exact anchors carry the source ID, UTF-16 start/end offsets, and quote; imported mismatches, split line-break/character boundaries, duplicate IDs, invalid histories, and unknown schemas are rejected. Source text stays unchanged; task wording can change independently. Records are copied and deeply frozen after validation. Completion is derived from its latest history event; applicability has its own history, and neither clears review.
+
+The app writes one validated workspace per localStorage operation and only reports success after the write returns successfully. Quota/unavailable/conflict errors leave current work exportable in memory. Unreadable preexisting storage is not overwritten and can be downloaded for recovery. Read-before-write conflict detection is not atomic cross-tab locking: use one editing tab. A new backup preview is required after further edits. Browser-local storage is not a separate backup or encryption. Current bounds: 100 applications, 2,000 tasks, 100,000 source characters per application, and 2 MiB JSON with envelope space reserved. No delete or replacement-restore feature is provided in this milestone.
+
+File downloads were verified in Chrome. The Codex in-app browser did not expose a completed download in this test; its read-only backup JSON can be copied and saved manually. Files and paste-based restoration were verified without sending text to a third-party service. Browser extensions and browser-sync behavior are outside the app's control.
 
 ## Known overlap and prior art
 

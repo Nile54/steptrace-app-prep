@@ -1,9 +1,9 @@
 import assert from 'node:assert/strict';
-import { readFile } from 'node:fs/promises';
+import { readFile, readdir } from 'node:fs/promises';
 import { spawnSync } from 'node:child_process';
 import { passages, tasks, changePreview } from '../dist/src/demo.js';
 
-for (const file of ['dist/src/app.js', 'dist/src/demo.js', 'scripts/serve.mjs', 'scripts/check.mjs']) {
+for (const file of [...(await readdir(new URL('../dist/src/', import.meta.url))).filter(file => file.endsWith('.js')).map(file => `dist/src/${file}`), 'scripts/serve.mjs', 'scripts/check.mjs', 'tests/browser-server.mjs']) {
   const result = spawnSync(process.execPath, ['--check', file], { cwd: new URL('../', import.meta.url), encoding: 'utf8' });
   assert.equal(result.status, 0, result.stderr);
 }
@@ -20,4 +20,6 @@ assert.equal(changePreview.before, passages.find(p => p.id === 'essay').text);
 assert.equal(changePreview.after, changePreview.before.replace('500', '400'));
 assert.deepEqual(Object.keys(changePreview.reasons).sort(), ['draft', 'proofread']);
 console.log('PASS: JavaScript syntax, required assets, source links, and fictional change fixture.');
-console.log('Browser checks are separate: follow docs/CHECKS.md. These checks do not validate future engines.');
+const tests = spawnSync(process.execPath, ['--test', 'tests/model-storage.test.mjs', 'tests/source-selection.test.mjs'], { cwd: new URL('../', import.meta.url), stdio: 'inherit' });
+assert.equal(tests.status, 0, 'Session 2 tests must pass.');
+console.log('Browser checks are separate: follow docs/CHECKS.md. Comparison and dependencies are still deferred.');

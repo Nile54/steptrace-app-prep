@@ -1,9 +1,9 @@
 {
-  "name": "steptrace-local-preview",
-  "version": "0.1.0",
+  "name": "steptrace-local",
+  "version": "0.2.0",
   "private": true,
   "type": "module",
-  "description": "A fictional source-linked scholarship checklist. Session 1 preview only.",
+  "description": "Local source-linked application tasks with versioned JSON backups. Session 2.",
   "scripts": {
     "start": "node scripts/serve.mjs",
     "check": "node scripts/check.mjs"

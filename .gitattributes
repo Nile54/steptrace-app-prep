@@ -1,0 +1,2 @@
+# This fixture intentionally exercises exact Windows line-ending preservation.
+tests/fixtures/fictional-instructions.txt -text whitespace=cr-at-eol

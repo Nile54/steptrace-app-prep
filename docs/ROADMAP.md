@@ -6,9 +6,9 @@ The original full prompts are in `references/session-prompts.md`. They are refer
 
 | Session | Milestone | Exit evidence |
 | --- | --- | --- |
-| 1 — current, complete | Establish repository and runnable example | Project docs, fictional linked checklist, clearly scripted review preview, browser smoke check, five interview questions |
-| 2 — next, not started | Source-linked tasks and reliable storage | Paste/text-file input, immutable snapshots, exact excerpts, task edits/manual no-source tasks, human applicability, local save and versioned export/import with safe validation/recovery |
-| 3 | Compare instructions without false certainty | New immutable versions, deterministic differences, direct review flags, visible added/removed/ambiguous material, version-specific resolutions; preserve history |
+| 1 — complete | Establish repository and runnable example | Project docs, fictional linked checklist, clearly scripted review preview, browser smoke check, five interview questions |
+| 2 — current, complete | Source-linked tasks and reliable storage | Paste/text-file input, immutable snapshots, exact excerpts, task edits/manual no-source tasks, human applicability, local save and versioned export/import with safe validation/recovery |
+| 3 — next, not started | Compare instructions without false certainty | New immutable versions, deterministic differences, direct review flags, visible added/removed/ambiguous material, version-specific resolutions; preserve history |
 | 4 | Explain which dependent work needs review | Cycle-safe links, direct/transitive reason chains, multiple unique change/work events, explicit work-edited action, independent acknowledgments and readiness gating |
 | 5 | Accessibility, offline use, and recovery | Keyboard, one-step/full views, focus, narrow/zoom/screen-reader checks where available, failure recovery, accurate privacy/accessibility notes; offline support if feasible |
 | 6 | Evaluate usefulness and fix observed problems | Reproducible comparison against a simple checklist; matched fictional briefs, counterbalancing, actual engineering results and human evaluation status; no invented evidence |

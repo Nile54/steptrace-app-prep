@@ -1,0 +1,4 @@
+FICTIONAL APPLICATION — 🎓
+Include a study plan.
+Example literal text: <img src=x onerror=alert(1)>
+If studying part-time: Include a study plan.
