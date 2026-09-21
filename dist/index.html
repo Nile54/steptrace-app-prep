@@ -9,12 +9,19 @@
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to workspace</a>
-  <header class="masthead"><div class="brand"><span class="brand-mark" aria-hidden="true">S</span> StepTrace <span class="working-name">Working name</span></div><span class="session-label">Session 03 / On this device</span></header>
+  <header class="masthead"><div class="brand"><span class="brand-mark" aria-hidden="true">S</span> StepTrace <span class="working-name">Working name</span></div><span class="session-label">Session 04 / On this device</span></header>
   <main id="main" tabindex="-1">
     <div class="preview-notice"><strong>Development version — use fictional information.</strong> Application text stays in this browser. Browser storage can be cleared; a downloaded backup is a separate copy. Data is not encrypted by this app.</div>
     <div class="application-heading"><div><p class="eyebrow">Keep your instructions and work together</p><h1>Your application workspace</h1></div><a href="#backups">Backup &amp; restore</a></div>
     <section class="save-panel" aria-label="Storage status"><p id="save-status" role="status" aria-live="polite" aria-atomic="true">Checking local storage…</p><div class="button-row"><button id="retry-save" class="secondary" type="button" hidden>Retry saving</button><button id="download-original" class="secondary" type="button" hidden>Download unreadable stored data</button></div></section>
     <p id="action-status" role="status" aria-live="polite" aria-atomic="true"></p><p id="action-error" class="error-message" role="alert" tabindex="-1" hidden></p>
+    <details id="dependency-example" class="panel"><summary>Try a fictional dependency example</summary>
+      <p>Create a separate sample application with a completed 380-word essay, proofreading, and recommendation. Choosing the button also confirms that proofreading depends on the essay. Existing applications remain.</p>
+      <button id="create-dependency-demo" type="button" class="secondary">Create and confirm fictional plan</button>
+      <ol><li>Inspect the three completed tasks and their dependencies.</li><li>Fill the sample update, then use <strong>Preview changes</strong> and <strong>Save new source version</strong>: the maximum changes from 500 to 400 words, and a conditional study plan is added.</li><li>Essay and proofreading need review. The recommendation stays complete. Add the conditional task as <strong>Not decided</strong> when ready to consider it.</li></ol>
+      <div class="button-row"><button id="fill-dependency-update" class="secondary" type="button" disabled>Fill fictional 400-word update</button><button id="add-demo-condition" class="secondary" type="button" disabled>Add undecided conditional task</button></div>
+      <p class="helper">These are working controls that save fictional records. The 380-word draft is a scenario description; no essay file is inspected. Needing review does not mean the draft is invalid. Before you link the added text, it remains visible as unreviewed material in the comparison.</p>
+    </details>
     <details id="new-application" class="panel" open><summary>Create an application</summary>
       <form id="application-form">
         <div class="form-heading"><p>Paste instructions or load a plain-text file. Creating the application keeps a read-only snapshot.</p><button id="fill-example" class="secondary" type="button">Fill fictional example</button></div>
@@ -62,12 +69,12 @@
       </form></section>
     </section>
     <section class="panel" id="backups" aria-labelledby="backups-heading">
-      <h2 id="backups-heading">Backup &amp; restore</h2><p>Back up all applications, source snapshots, task links, decisions, and completion history. Export is available even when local saving fails.</p><button id="prepare-backup" type="button">Prepare JSON backup</button>
+      <h2 id="backups-heading">Backup &amp; restore</h2><p>Back up applications, source snapshots, task links, dependencies, work-change reports, individual review decisions, and completion history. Export is available even when local saving fails.</p><button id="prepare-backup" type="button">Prepare JSON backup</button>
       <section id="backup-preview" hidden class="backup-output" aria-label="Prepared backup"><p id="backup-summary" class="helper"></p><label for="backup-json">Backup JSON (read-only)</label><textarea id="backup-json" rows="5" readonly spellcheck="false"></textarea><button id="download-backup" class="secondary" type="button">Download JSON backup</button><p class="helper">If your browser does not download the file, select and copy all the JSON above, then save it as a UTF-8 .json text file. Keep that file outside browser storage.</p></section>
       <form id="restore-form"><h3>Restore from a backup</h3><label for="restore-file">Choose a StepTrace JSON backup</label><input id="restore-file" type="file" accept=".json,application/json" aria-describedby="restore-help"><p id="restore-help" class="helper">Or paste backup JSON below. Maximum 2 MB. Nothing is applied until you inspect the preview and choose Add restored applications. Existing applications stay in place.</p><label for="restore-json">Backup JSON to inspect</label><textarea id="restore-json" rows="4" spellcheck="false"></textarea><button class="secondary" type="submit">Preview restore</button></form>
       <section id="restore-preview" class="restore-preview" hidden aria-labelledby="restore-preview-heading"><h3 id="restore-preview-heading" tabindex="-1">Review this restore</h3><p id="restore-summary"></p><ul id="restore-applications"></ul><p id="restore-problem" class="error-message" hidden></p><p>Names may be the same; application and task IDs must be different. A backup already present here is rejected to prevent duplicates.</p><div class="button-row"><button id="apply-restore" type="button">Add restored applications</button><button id="cancel-restore" class="secondary" type="button">Cancel restore</button></div></section>
     </section>
-    <p class="helper"><a href="./preview.html">View the earlier scripted change-review example</a>. The workspace now compares versions and reviews directly linked tasks. Dependency propagation remains a future milestone.</p><noscript><p class="error-message">Enable JavaScript to use the local workspace. No application data will be uploaded.</p></noscript>
+    <p class="helper"><a href="./preview.html">View the earlier scripted change-review example</a>. The workspace now records dependencies and propagates separate source-change and reported-work-change review reasons.</p><noscript><p class="error-message">Enable JavaScript to use the local workspace. No application data will be uploaded.</p></noscript>
   </main>
   <footer><p>Preparation stays in your hands. StepTrace does not decide eligibility, guarantee completeness, or submit applications.</p><span>Local only · No account</span></footer>
 </body>

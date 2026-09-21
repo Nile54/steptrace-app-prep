@@ -1,6 +1,6 @@
 # Source comparison and version-specific review
 
-Session 3 uses deterministic JavaScript text rules. It does not interpret eligibility, extract a complete checklist, use an LLM, or propagate review through dependencies.
+The Session 3 comparison engine uses deterministic JavaScript text rules and is unchanged in Session 4. It does not interpret eligibility, extract a complete checklist, or use an LLM. Session 4 dependency propagation is described separately in DEPENDENCIES.md.
 
 ## Two separate decisions
 
@@ -54,15 +54,15 @@ If the immediately preceding version lacked a mapping at update time, the newer 
 
 ## Storage and migration
 
-The workspace and exported backup use schema 2. `dist/src/schema-v1.js` retains the strict schema-1 reader. Migration validates old records, adds empty review lists, and preserves original IDs, source text, anchors, applicability, completion history, and legacy flags.
+Session 3 introduced schema 2. Session 4 uses schema 3 and preserves the schema-2 validator in `dist/src/schema-v2.js`; original sources, source-review rules and recorded decisions are unchanged. `dist/src/schema-v1.js` retains the strict schema-1 reader. Migration validates old records, adds empty review lists, and preserves original IDs, source text, anchors, applicability, completion history, and legacy flags.
 
 The storage key remains `steptrace.workspace.v1` so an existing local workspace can be found. Opening schema-1 data migrates only in memory and offers the original stored data for recovery. The original stored bytes remain unchanged until a successful explicit save action. Failed validation, migration, quota, or storage access never counts as a successful save. Near-capacity data that cannot accommodate migration overhead is left untouched for recovery.
 
-Backup envelopes and their embedded workspace versions must agree. Imports accept schema 1 or 2, validate exact anchors and globally unique IDs, and recompute immutable review descriptors against the applicable source texts and historical decision times. Restore remains previewed and additive; collisions cannot replace existing applications silently. The existing one-editing-tab and separate-backup limitations still apply.
+Backup envelopes and their embedded workspace versions must agree. Imports accept schema 1, 2 or 3, validate exact anchors and globally unique IDs, and recompute immutable review descriptors against the applicable source texts and historical decision times. Restore remains previewed and additive; collisions cannot replace existing applications silently. The existing one-editing-tab and separate-backup limitations still apply.
 
 **Future matching changes require compatibility work.** Schema 2 validation depends on this matching algorithm and its deterministic reason strings. A later session must retain a reader/comparison engine for existing records or introduce an explicit schema migration before changing those rules. Never silently recompute, discard, or relabel saved review history merely because the engine changed.
 
-Current bounds remain 100 applications, 2,000 tasks, 100,000 characters per source, 50 source versions per application, 1,000 characters per resolution note, and 2 MiB JSON with space reserved for the export envelope. No OCR, scraping, automatic requirement extraction, or dependency propagation is implemented here.
+Current bounds remain 100 applications, 2,000 tasks, 100,000 characters per source, 50 source versions per application, 1,000 characters per resolution note, and 2 MiB JSON with space reserved for the export envelope. No OCR, scraping or automatic requirement extraction is implemented. Dependency propagation remains separate from text comparison.
 
 ## Interview explanation
 

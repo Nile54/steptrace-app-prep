@@ -1,53 +1,45 @@
 # StepTrace state
 
-Updated September 15, 2026. **Session 3 — complete. Stop before Session 4.**
+Updated September 20, 2026. **Session 4 — complete. Stop before Session 5.**
 
 ## Repository and scope
 
 - Actual repository: `/Users/nileshnandakumar/Documents/Codex/2026-09-14/before-session-one-supplying-your-github/outputs/steptrace-local`.
-- Branch: `codex/session-3`, started from `20b56d2` (Session 2). Initial working tree was clean. Existing files and saved fictional browser work were preserved.
-- Prior STATE and CHECKS retained in `docs/history/SESSION-2-STATE.md` and `SESSION-2-CHECKS.md`. Original research and session prompts remain in `docs/references/`.
-- User: GitHub [Nile54](https://github.com/Nile54), targeting tech/AI jobs and internships. Continue the verified JavaScript, HTML, CSS stack; no package dependencies added.
-- StepTrace is still a working name with documented conflicts. Public slug deferred. Competitors/prior art and unresolved demand assumptions remain in BRIEF.
-- Only Session 3 was implemented. No dependency graph/propagation, work-edit tracking, OCR, scraping, LLM, real application documents, outreach, remote repository, push, deployment, billing, or spending.
+- Branch: `codex/session-4`, started from `4b1d27d` (Session 3). Initial working tree was clean. Earlier files, exact source data and saved fictional browser work were preserved.
+- Prior STATE and CHECKS are archived in `docs/history/SESSION-3-STATE.md` and `SESSION-3-CHECKS.md`. Original research/session prompts remain in `docs/references/`.
+- User: GitHub [Nile54](https://github.com/Nile54), targeting tech/AI jobs and internships. Stack remains JavaScript, HTML and CSS with no package dependencies added.
+- StepTrace is still a provisional name with documented conflicts. No public slug was selected. Competitors/prior art and demand assumptions remain in BRIEF.
+- Only Session 4 was implemented: confirmed dependencies, explained review propagation, reported work edits and compatible persistence. No Session 5 offline/accessibility expansion, OCR, scraping, LLM, real application documents, outreach, remote repository, push, deployment, billing or spending.
 
 ## Implemented
 
-- New immutable source versions from complete pasted instructions, with before-save comparison preview and version navigation. Initial application creation still accepts pasted text or UTF-8 `.txt` files.
-- Deterministic paragraph differences: unchanged, moved, whitespace, repeated/ambiguous, changed display candidates, additions and removals. Old/new exact text remains available; blank-line separators remain in full snapshots.
-- Conservative exact mappings require unique paragraph and selected phrase plus unchanged immediate neighbors or document edges. Formatting, repeated phrases, changed context and uncertain mappings need explicit confirmation. Multi-paragraph selections require manual mapping.
-- Original task anchors never change. Later automatic/confirmed anchors carry their own source version IDs and exact UTF-16 positions/quotes.
-- Each linked task receives a distinct review for each later version. Resolutions store exact target mappings or an explicit no-mapping decision, applicability and a note. No-mapping decisions require a note. Completion histories are untouched.
-- Older review acknowledgments cannot clear newer updates. A later version created while the previous mapping was unresolved remains separately unresolved, even after older confirmation or a reversion to original wording.
-- Historical applicability resolution is stored for that version only; current-version resolution appends current applicability history when changed. Old legacy review flags remain separately labeled.
-- Unlinked source spans stay visible as unreviewed material, including a new sentence inside a partially mapped paragraph. Overlap is never a completeness claim.
-- Schema 2 with strict schema-1 migration. Same storage key `steptrace.workspace.v1`; load migration is in memory without writes. Schema-1/2 backups restore additively with preview; incompatible/corrupt data is preserved.
-- Fixed a migration edge case: a stored JSON `null` is invalid data, not an empty key, and cannot be silently overwritten.
-- Clear save failures and export of unsaved versioned work remain available. No source or task text is interpreted as HTML.
+- Plain **This step depends on…** checklist interaction with explicit confirmation. Empty confirmation removes current links; all decisions retain history. Self, duplicate, missing, cross-application and cyclic references are rejected.
+- Direct and transitive dependency reviews from each nonexact source review. Each affected task receives one reason per unique cause with its own ID, arrival time, historical causal path and optional acknowledgment. Diamond paths do not duplicate the same cause.
+- **I changed this work** requires a person's note and creates a unique work event. Two edits under one source version remain separately reviewable. No external-file observation is claimed.
+- Source reviews, downstream reviews, applicability and completion remain distinct. Acknowledging one event on one task leaves other events, other tasks and newer source versions open. Completion history is never reset by a change/review.
+- Removing links preserves already-recorded reasons. New links account for unresolved source and inherited dependency reasons. Historical paths remain understandable if current edges differ.
+- Recorded blockers show unknown applicability, open reviews and incomplete applicable predecessors. Does not apply skips a branch's completion requirement while its own changed-condition review still blocks. Conflicts remain for the person to resolve; the app does not infer precedence from notes.
+- Schema 3 retains schema-1/2 compatibility. Opening older data migrates in memory, preserving old stored bytes until a successful save. Imports validate historical graph decisions and replay expected cause/path records, rejecting missing/invented reasons and invalid acknowledgments.
+- Opt-in working Cedar fixture: completed fictional 380-word essay, proofreading and recommendation; confirmed essay dependency; real preview/save of 500→400 words and added condition; explicit creation of that condition as Not decided. Existing work is not declared invalid.
 
-## Architecture to read
+## Architecture and decisions
 
-- `dist/src/comparison.js`: pure deterministic comparison and source matching.
-- `dist/src/model.js`: schema-2 validation, append-only source/review histories, migration and domain operations.
-- `dist/src/schema-v1.js`: strict legacy validation retained for migration.
-- `dist/src/storage.js`: read-only migration, conflict-aware saves, versioned JSON validation and additive restore.
-- `dist/src/review-ui.js`: before/after display, exact unlinked spans, human resolutions.
-- `dist/src/app.js` and `source-selection.js`: UI orchestration and original-text source navigation.
-- Full tradeoffs and compatibility obligations: `docs/COMPARISON.md`.
+- `dist/src/dependencies.js`: iterative cycle detection, reversed-graph traversal, historical event replay, causal descriptions and recorded blockers.
+- `dist/src/model.js`: validated immutable records and explicit dependency/work/review actions. `schema-v2.js` preserves the old validator alongside `schema-v1.js`.
+- `dist/src/storage.js`: schema-3 export, schema-1/2/3 import, read-only migration and honest local-save recovery.
+- `dist/src/dependency-ui.js`: linear controls, individual review forms and histories; `app.js` orchestrates saves and focus.
+- `dist/src/dependency-demo.js`: fictional example through the real domain API, with a model test.
+- `dist/src/comparison.js` is unchanged. Original text, exact anchors and comparison reason semantics remain intact. See COMPARISON before modifying them.
+- Read `docs/DEPENDENCIES.md` for the algorithm, schema, edge-history behavior, tradeoffs and interview explanation.
 
-Schema-2 validation depends on the current comparison algorithm and deterministic reason strings. Later algorithm changes must retain an appropriate legacy reader/engine or explicitly migrate records. Never recompute or delete past review descriptors silently.
+## Actual checks
 
-## Verification
-
-- `./run.sh check`: **66 tests passed**, plus syntax, required assets, and retained Session 1 fixture checks. Counts: 19 comparison, 19 versions/migration, 23 model/storage, 3 selection, 2 unlinked-span tests.
-- Fictional fixtures cover unchanged text, formatting/CRLF, duplicate paragraphs/phrases, paragraph moves, additions/removals, changed numbers, negation, changed separate headings, Unicode, uncertain multi-paragraph links, historical resolutions, migration limits, malformed imports and save failures.
-- Real browser: opened prior Session 2 data, exported schema 2, added 500→400-word version 2 with a budget instruction, then 350-word version 3 with a transcript sentence before resolving the older review.
-- Confirming version 2 did not clear version 3 or change the latest applicability. Confirming only the essay sentence in version 3 left the transcript explicitly unreviewed. Other task reviews stayed open; manual proofreading received no invented dependency review.
-- Original source record and completion history compared exactly equal to their pre-update exports. Full workspace equality verified after reload and after restoring the UI export into isolated origin 4183.
-- Duplicate restore disabled Apply; malformed JSON showed an error while existing work stayed intact. Quota-once origin 4184 reported Not saved, exported the entire versioned workspace unchanged, then reported success only after retry succeeded.
-- Original and latest mapped source navigation worked. Earlier snapshot views disable linking new tasks. Narrow in-app comparison layout inspected visually; no warning/error console entries observed in the checked main tab.
-- Browser controls used accessibility actions after some selector reads timed out. No new Session 3 native download or full cross-browser/zoom/screen-reader audit is claimed. Session 2 native-file evidence is preserved separately.
-- Detailed procedures: `docs/CHECKS.md`. No real participants, interviews, usability benefit, eligibility accuracy or market validation is claimed.
+- `./run.sh check`: **82 passed, 0 failed**, plus syntax/assets/scripted-fixture checks. 66 existing tests + 15 dependency tests + 1 working-demo test.
+- Covered direct/transitive effects, unaffected work, cycles/invalid references, multiple ancestors/diamonds, two same-version work edits, version-isolated acknowledgments, edge changes, historical path loops, blockers, strict restore validation, migration and quota failures.
+- Main real-browser demonstration: one direct essay review, one proofreading reason, all three completion histories retained, recommendation unchanged/no open review, added condition Not decided. Existing Session 3 application's exported record and original Cedar source/completion histories compared exactly equal.
+- Full workspace equality verified after reload and UI export/import to isolated origin `4185`. In that restored copy, a cycle was rejected; two work reports produced distinct reasons; acknowledging the first left the second and source review open. Completion remained unchanged. The resulting workspace survived another reload exactly.
+- The event-rich export restored in the quota-once harness at `4186`: failed save showed Not saved, unsaved export equaled the input workspace, retry reported success only when the write succeeded.
+- Linear causal-review layout visually inspected. No warning/error console entries appeared in the three checked tabs. Detailed procedure and limits: `docs/CHECKS.md`. No new full cross-browser, screen-reader, accessibility-conformance or offline audit. No participants, interviews, measured user benefit or market validation.
 
 ## Run and handoff
 
@@ -57,23 +49,26 @@ cd /Users/nileshnandakumar/Documents/Codex/2026-09-14/before-session-one-supplyi
 ./run.sh check
 ```
 
-Open `http://127.0.0.1:4173`. The local preview server was left running for the browser demonstration; if unavailable later, use `./run.sh`. Ctrl+C stops a server started in your terminal. Temporary recovery-test servers were stopped. Changing browser/profile, hostname or port changes the saved workspace; use one editing tab.
+Open `http://127.0.0.1:4173`. Choose **Cedar Scholarship — dependency example (fictional)** in the saved demo browser, or create your own fictional example using **Try a fictional dependency example**. README has the full before/after sequence. The app uses actual saved data; only `/preview.html` remains the earlier scripted preview.
 
-- Node runtime: `/Users/nileshnandakumar/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node` (v24.19.0). Other machines need Node 22+.
+The main server is left running for the demonstration; use `./run.sh` if it later stops. Ctrl+C stops a server started in your terminal. Test servers are stopped at handoff. Different browser/profile, host or port means different saved data. Use one editing tab; the user's separate Chrome workspace was not edited.
+
+- Node: `/Users/nileshnandakumar/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node` (v24.19.0). Other machines need Node 22+.
 - Git: `/Users/nileshnandakumar/.cache/codex-runtimes/codex-primary-runtime/dependencies/bin/fallback/git`.
-- No installation is needed. The normal shell lacks a working system Node/git toolchain; avoid OS developer-tools installation just to run commands.
-- Milestone commit subject: `Add immutable source versions and version-specific review`. Use the verified git executable with `log -1 --oneline` for its exact ID. Command-scoped `Codex <codex@local.invalid>` identity; no global git changes.
+- No installation is needed. Avoid triggering an OS developer-tools install just to run system git/python.
+- Milestone commit subject: `Add confirmed dependencies and independent work review`. Use the verified git executable with `log -1 --oneline` for its ID. Command-scoped `Codex <codex@local.invalid>` identity; no global identity changes.
 
 ## Limits and unresolved questions
 
-- Matching checks nearby textual context, not meaning or distant document-wide conditions. A person reads the complete instructions. Extra review is an intentional tradeoff.
-- The paragraph display pairs unmatched leftovers by order; changed pairs are not proven equivalents. Blank-line separators are not independent diff rows.
-- A resolution is permanent in this milestone; correction/reopening is not implemented. New updates receive new review records. Legacy flags without version reasons remain separate and cannot be resolved by newer source-review actions.
-- Unsubmitted form drafts are not saved/exported; changing another task can discard drafts. Forms should be submitted one at a time. LocalStorage can be cleared and is not encryption, atomic multi-tab coordination, or an installed offline mode.
-- Restore adds disjoint applications only; no replacement, deduplication or deletion. Bounds: 50 versions/application, 100 applications, 2,000 tasks, 100,000 characters/source, 1,000 characters/review note, 2 MiB JSON with backup space reserved.
-- New source versions currently accept paste only; initial applications also accept text files.
-- Instruction-change frequency, setup effort, source-link usefulness, accessibility needs, exact target role and a replacement public name remain unresolved. Five interview questions are in INTERVIEWS; no one was contacted.
+- Propagation follows only confirmed relationships. Missing links, semantic instruction conflicts and remote-file edits are not detected. Conservative matching may request extra review; it cannot prove eligibility or completeness.
+- A work report made before any downstream link exists remains historical, without retroactive flags when links are later added. Existing open downstream reasons can propagate to newly linked work. Confirm dependencies before reporting edits to track their effects.
+- One historical path is retained per cause/task, not every possible route. Names displayed along a path use current task titles. Full event replay favors correctness for small local workspaces; large dense histories are not performance-benchmarked.
+- Resolutions/acknowledgments cannot be corrected or reopened in this milestone. New updates/reports get new reasons. Legacy review flags remain visible without an invented cause or automatic resolution.
+- Applicability/conflict decisions rely on the person. The app cannot determine whether an acknowledgment note actually resolves uncertainty. No-recorded-blockers is limited to the recorded plan, not readiness to submit.
+- Unsubmitted form drafts are not persisted/exported; another action can discard them. Browser storage can be cleared and is not encryption, atomic multi-tab locking or installed offline support. Back up separately.
+- Additive restore only; no replacement/deletion/deduplication. Bounds: 100 applications, 2,000 tasks across the workspace, 50 source versions/application, 100,000 characters/source, 2,000 dependency decisions and work reports each/application, 2,000 dependency reviews/task, 1,000 characters/note and 2 MiB JSON with envelope space reserved.
+- Instruction-change frequency, setup effort, accessibility needs, source-link usefulness, exact target role and replacement public name remain unresolved. Five interview questions are prepared; nobody was contacted.
 
-Only on a new Session 4 request: read AGENTS, BRIEF, ROADMAP, STATE, COMPARISON and the saved Session 4 prompt; inspect user changes and current data. Implement user-confirmed acyclic dependencies and independent direct/transitive source/work-change reasons while retaining completion, original mappings and version-specific resolutions. Preserve schema-1/2 compatibility. Run relevant checks, update STATE, make a logical local commit, then stop.
+Only on a new Session 5 request: read AGENTS, BRIEF, ROADMAP, STATE and the saved prompt; preserve user changes/data; address the authorized accessibility, offline and recovery milestone; run relevant checks, update STATE, commit logically, then stop.
 
-**Session 3 is the stopping point.**
+**Session 4 is the stopping point.**

@@ -3,6 +3,9 @@ import { createStorage, serializeBackup, parseBackup, mergeWorkspaces, STORAGE_K
 import { anchorFromSelection, selectionFromAnchor } from './source-selection.js';
 import { passages } from './demo.js';
 import { renderComparison, renderTaskReviews } from './review-ui.js';
+import { setTaskDependencies, recordWorkChange, acknowledgeDependencyReview } from './model.js';
+import { renderDependencies } from './dependency-ui.js';
+import { createDependencyDemo, addDemoCondition, demoBefore, demoAfter, conditionalQuote } from './dependency-demo.js';
 
 // Never interpret application content, task wording, or imported labels as HTML.
 function element(tag, text, className) {
@@ -119,7 +122,7 @@ export function startApp(storage = createStorage()) {
     const heading = element('h3', task.title); heading.id = `task-heading-${task.id}`; heading.tabIndex = -1;
     const completed = isTaskCompleted(task);
     const state = getTaskReviewState(task);
-    item.append(heading, element('p', completed ? 'Completed' : 'Not completed', 'completion-state'), element('p', `Applicability: ${labels[task.applicability]}`, 'helper'), element('p', state === 'needs-review' ? 'Review: Needs review — completion is retained.' : state === 'reviewed' ? 'Review: No open source-version reviews. This does not establish checklist completeness.' : 'Review: No source-version review recorded.', 'review-state'));
+    item.append(heading, element('p', completed ? 'Completed' : 'Not completed', 'completion-state'), element('p', `Applicability: ${labels[task.applicability]}`, 'helper'), element('p', state === 'needs-review' ? 'Review: Needs review — completion is retained.' : state === 'reviewed' ? 'Review: No open recorded reviews. This does not establish checklist completeness.' : 'Review: No change reviews recorded.', 'review-state'));
     if (task.reviewState === 'needs-review') item.append(element('p', 'An earlier backup retained a review flag without a version-specific reason. It remains separate from the source reviews below.', 'helper'));
     if (task.anchor) {
       item.append(element('blockquote', task.anchor.quote, 'task-quote'));
@@ -176,6 +179,21 @@ export function startApp(storage = createStorage()) {
         document.getElementById(`task-heading-${taskId}`).focus();
       },
     }));
+    item.append(renderDependencies(task, activeApplication(), {
+      reportError,
+      onDependencies(taskId, dependencyIds) {
+        accept(setTaskDependencies(workspace, activeId, taskId, dependencyIds), 'Dependencies confirmed. Existing review reasons and completion history are retained.');
+        document.getElementById(`task-heading-${taskId}`).focus();
+      },
+      onWorkChange(taskId, change) {
+        accept(recordWorkChange(workspace, activeId, taskId, change), 'Your work change was recorded as a new event. Dependent tasks have separate review reasons; completion is retained.');
+        document.getElementById(`task-heading-${taskId}`).focus();
+      },
+      onAcknowledge(taskId, reviewId, resolution) {
+        accept(acknowledgeDependencyReview(workspace, activeId, taskId, reviewId, resolution), 'Reviewed this one change for this task. Other reasons and completion history are retained.');
+        document.getElementById(`task-heading-${taskId}`).focus();
+      },
+    }));
     return item;
   }
   function renderWorkspace() {
@@ -191,7 +209,10 @@ export function startApp(storage = createStorage()) {
     $('#comparison-version').disabled = app.sources.length < 2; $('#comparison-version').value = comparedSourceId;
     renderSavedComparison();
     const pending = app.tasks.reduce((count, task) => count + task.sourceReviews.filter(review => review.kind !== 'exact' && !review.resolution).length, 0);
-    $('#review-overview').textContent = `${app.sources.length} source version(s) · ${pending} open task source review(s). Compare saved versions to inspect new or unlinked material. Completion history is preserved.`;
+    const downstream = app.tasks.reduce((count, task) => count + task.dependencyReviews.filter(review => !review.resolution).length, 0);
+    $('#review-overview').textContent = `${app.sources.length} source version(s) · ${pending} open task source review(s) · ${downstream} open dependent-work review(s). Compare saved versions to inspect new or unlinked material. Completion history is preserved.`;
+    $('#fill-dependency-update').disabled = app.sources.at(-1).text !== demoBefore;
+    $('#add-demo-condition').disabled = app.sources.at(-1).text !== demoAfter || app.tasks.some(task => task.anchor?.quote === conditionalQuote);
     const legacyFlags = app.tasks.filter(task => task.reviewState === 'needs-review').length;
     if (legacyFlags) $('#review-overview').textContent += ` ${legacyFlags} earlier review flag(s) also retained.`;
     if (versionCandidate && (versionCandidate.applicationId !== app.id || versionCandidate.sourceId !== app.sources.at(-1).id)) clearVersionPreview();
@@ -212,6 +233,27 @@ export function startApp(storage = createStorage()) {
     $('#application-title').value = 'Maple Grove Scholarship (fictional)'; $('#source-label').value = 'Fictional scholarship instructions';
     $('#source-input').value = `${passages.map(p => p.text).join('\n\n')}\n\nIf you are applying as a part-time student, include a study plan.`;
     report('Fictional draft filled. Review it and choose Create application.');
+  });
+  $('#create-dependency-demo').addEventListener('click', () => {
+    try {
+      const next = createDependencyDemo(workspace);
+      activeId = next.applications.at(-1).id; viewedSourceId = null; comparedSourceId = null;
+      clearSelection(); clearVersionPreview(); $('#version-form').reset();
+      accept(next, 'Fictional plan created: three completed tasks and a confirmed proofreading → essay dependency. The sample 380-word draft has not been inspected by this app.');
+      $('#new-application').open = false; $('#current-application-title').focus();
+    } catch (error) { reportError(error); }
+  });
+  $('#fill-dependency-update').addEventListener('click', () => {
+    if (activeApplication()?.sources.at(-1).text !== demoBefore) return;
+    clearVersionPreview(); $('#version-label').value = 'Fictional update: 400-word maximum'; $('#version-input').value = demoAfter;
+    $('#new-version').open = true; $('#version-input').focus();
+    report('Fictional update filled. Preview and save it using the normal source-version controls. A 380-word essay is not automatically invalid under a 400-word maximum.');
+  });
+  $('#add-demo-condition').addEventListener('click', () => {
+    try {
+      accept(addDemoCondition(workspace, activeId), 'Conditional sample task linked with applicability Not decided. You decide whether it applies.');
+      document.getElementById(`task-heading-${activeApplication().tasks.at(-1).id}`).focus();
+    } catch (error) { reportError(error); }
   });
   $('#source-input').addEventListener('input', () => { originalFileText = null; sourceReadSequence += 1; $('#application-form button[type="submit"]').disabled = false; });
   $('#source-file').addEventListener('change', async () => {
@@ -283,7 +325,7 @@ export function startApp(storage = createStorage()) {
   function renderRestorePreview() {
     $('#restore-preview').hidden = false;
     $('#restore-summary').textContent = `${restoreCandidate.applications.length} application(s), ${restoreCandidate.applications.reduce((sum, app) => sum + app.tasks.length, 0)} task(s). Current workspace: ${workspace.applications.length} application(s), which will remain.`;
-    $('#restore-applications').replaceChildren(...restoreCandidate.applications.map(app => element('li', `${app.title} — ${app.tasks.length} task(s); ${app.sources.length} source version(s), including exact mappings and review resolutions`)));
+    $('#restore-applications').replaceChildren(...restoreCandidate.applications.map(app => element('li', `${app.title} — ${app.tasks.length} task(s); ${app.sources.length} source version(s), including mappings, dependencies, work changes, and individual review resolutions`)));
     let problem = ''; try { mergeWorkspaces(workspace, restoreCandidate); } catch (error) { problem = error.message; }
     if (!restoreCandidate.applications.length) problem = 'This backup has no applications to add.';
     $('#restore-problem').textContent = problem; $('#restore-problem').hidden = !problem; $('#apply-restore').disabled = Boolean(problem);
@@ -319,7 +361,7 @@ export function startApp(storage = createStorage()) {
     showSaveStatus(`Local storage could not be loaded. ${initial.error} New work will stay only in this tab; export a backup before leaving.`, true);
     $('#download-original').hidden = typeof initial.raw !== 'string';
   } else if (initial.migrated) {
-    showSaveStatus('Session 2 data opened safely in the new format. Original stored data is unchanged until your next save. Prepare a JSON backup before editing.');
+    showSaveStatus('Earlier saved data opened safely in the new format. Original stored data is unchanged until your next save. Prepare a JSON backup before editing.');
     $('#download-original').hidden = false; $('#download-original').textContent = 'Download original stored data';
   } else showSaveStatus(initial.raw === null ? 'No work saved yet. Backup & restore is available below.' : 'Loaded saved work from this device. Download backups regularly.');
   $('#new-application').open = !workspace.applications.length; renderWorkspace();

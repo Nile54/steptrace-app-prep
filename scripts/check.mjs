@@ -22,4 +22,4 @@ assert.deepEqual(Object.keys(changePreview.reasons).sort(), ['draft', 'proofread
 console.log('PASS: JavaScript syntax, required assets, source links, and fictional change fixture.');
 const tests = spawnSync(process.execPath, ['--test', ...(await readdir(new URL('../tests/', import.meta.url))).filter(file => file.endsWith('.test.mjs')).map(file => `tests/${file}`)], { cwd: new URL('../', import.meta.url), stdio: 'inherit' });
 assert.equal(tests.status, 0, 'Project tests must pass.');
-console.log('Browser checks are separate: follow docs/CHECKS.md. Dependency propagation is still deferred.');
+console.log('Browser checks are separate: follow docs/CHECKS.md. Dependency and work-change checks are included.');

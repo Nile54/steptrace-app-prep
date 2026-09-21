@@ -1,61 +1,58 @@
-# Session 3 checks
+# Session 4 checks
 
-All inputs and examples were fictional. Session 2 evidence is preserved in [history/SESSION-2-CHECKS.md](history/SESSION-2-CHECKS.md).
+Completed September 20, 2026 (initial implementation and demo checks September 15; continued recovery checks September 20). Only fictional records were used. Earlier evidence is preserved in `docs/history/SESSION-3-CHECKS.md` and Session 2 history files.
 
-## Automated verification — September 15, 2026
+## Automated checks
 
-Run `./run.sh check` from the repository. The bundled Node v24.19.0 runtime passed syntax/asset/retained-preview checks and **66 tests**:
+Run `./run.sh check` from the repository. The command checks JavaScript syntax, required assets, the retained scripted fixture, and Node's meaningful domain tests.
 
-- 19 comparison tests: exact ranges, whitespace/CRLF, duplicate paragraphs and phrases, moves, adjacent heading/context changes, additions/removals, number changes, negation, multi-paragraph selections, Unicode boundaries, complete deterministic passage coverage and a large fixture.
-- 19 version/migration tests: immutable snapshots, automatic and human mappings, historical/current resolution ordering, reversion through unresolved versions, explicit no-mapping decisions, completion/applicability preservation, schema-1 fidelity, quota recovery, strict imports, version limits and near-capacity migration failure.
-- 23 model/storage tests: original source invariants, independent histories, JSON roundtrip, global IDs, malformed fields, corrupt/unavailable storage, quota/security/read failures and conflicting writes. Literal stored JSON `null` is rejected and left untouched.
-- 3 source-selection tests: exact repeated/Unicode/mixed-newline selections and invalid ranges.
-- 2 unlinked-span tests: partially linking a paragraph cannot hide a newly added requirement; overlapping links cover only their exact union.
+**82 tests passed, 0 failed.** The earlier 66 comparison, source, selection, version and storage tests remain; 15 dependency tests and 1 working-demo test were added.
 
-With Node on PATH, individual files run through `node --test tests/<name>.test.mjs`. No packages were installed. Automated tests do not establish usability, accessibility conformance, or semantic correctness.
+New coverage:
+
+- Direct and transitive source effects; unchanged unrelated work and completion records.
+- Missing, self, duplicate and cross-application references; direct and indirect cycles.
+- Multiple changed ancestors, diamond deduplication and readable causal paths.
+- Two work reports under one source version, independent acknowledgments, source/work coexistence and completion separation.
+- Acknowledgments across source versions and across dependent tasks.
+- Open reasons when confirming later edges; removed-edge history and reversed historical paths without loops.
+- Unknown applicability, incomplete required predecessors, changed Does not apply conditions and open-review blockers.
+- Long iterative traversal; strict import rejection of missing/fabricated causes, paths, IDs, decisions and times.
+- Schema-2 migration, original mapping/history preservation, save/reload/export/import and failed quota writes.
+- Actual fictional demo operations: 500→400 words, completed fictional 380-word draft, proofreading review, unchanged recommendation and undecided added condition.
+
+These are engineering correctness fixtures, not participant results or proof of application completeness.
 
 ## Actual browser verification
 
-Used the Codex in-app browser at the normal origin `http://127.0.0.1:4173` and isolated test origins. Existing fictional Session 2 data remained in place; no browser storage was cleared.
+Used the real served interface in the Codex in-app browser. Used origin `127.0.0.1:4173` for the main fictional demonstration, `4185` for a separate restore, and the development-only quota-once harness at `4186`. No browser storage was cleared. Existing Session 3 sample work was preserved. The user's separate Chrome workspace was not edited.
 
-| Check | Observed result |
-| --- | --- |
-| Legacy workspace opening | Schema-1 saved Maple Grove workspace opened with a migration notice, three tasks, original source and prior completion records. Migration export used schema 2. |
-| Preview and immutable version | Pasted complete updated instructions: 500→400-word essay maximum and a budget statement. Preview retained one saved version until Save; saving added version 2 and flagged directly linked tasks. |
-| Newer update before resolution | Added version 3 with a 350-word maximum and a transcript sentence. Both affected linked tasks had two distinct pending reviews; manual proofreading had none. |
-| Historical resolution | Mapped essay version 2 to its exact 400-word excerpt and chose Applies. Version 3 remained pending; current applicability remained Not decided. Completion stayed true. |
-| Current resolution | Mapped only the essay sentence in version 3 and recorded Applies. Its version 2 and 3 resolutions persisted independently; other tasks' open reviews remained. |
-| Partial paragraph link | The additional “Include a transcript.” sentence remained explicitly displayed as unreviewed after the essay sentence was mapped. Other unlinked passages also remained visible. |
-| Exact source and history | Original 500-word source and completion history were identical to the pre-update exported records. Latest source navigation displayed the exact 350-word excerpt at version 3. |
-| Reload | Reloaded and exported. Entire workspace JSON was identical, excluding the backup envelope's fresh export timestamp. |
-| Restore | Pasted the real UI's schema-2 export into empty origin 4183. Preview showed three versions without applying; applying and re-exporting yielded identical workspace data. |
-| Rejected restores | Duplicate IDs disabled Add restored applications. Malformed JSON showed an error. The existing three-version workspace remained intact. |
-| Quota failure/retry | At fault origin 4184, restoring the versioned backup showed Not saved after a synthetic write failure. Export still exactly matched the workspace. Retry showed saved only after the adapter's write succeeded. |
-| Final UI/server checks | Original source navigation returned to version 1 and disabled new-task linking on that older snapshot. The narrow in-app before/after layout was inspected visually. No warning/error console entries were observed. App assets returned HTTP 200; repository/test paths 404; POST 405. |
+1. Opened schema-2 data in Session 4. The UI reported migration in memory and offered original stored data. Prepared the backup through the visible UI before editing.
+2. Created and confirmed the separate Cedar fictional plan. It contained three completed tasks and an explicit proofreading-to-essay dependency. The preexisting application's entire exported record was unchanged.
+3. Filled the fictional 400-word update, previewed old/new passages and the added conditional study-plan instruction, then saved through the normal source-version control.
+4. Verified one direct essay review and one proofreading dependency review. Both tasks remained completed. The recommendation had an exact source mapping, remained complete and had no open review. The added condition stayed visibly unreviewed until explicitly linked, then remained Not decided with an applicability blocker.
+5. Compared exported records: original source snapshot and all three original completion histories were exactly equal before/after. Reloaded and compared the entire workspace from the UI backup field: equal.
+6. Previewed and applied that export at the empty `4185` origin. Prepared another UI export and compared complete workspace JSON: equal, including IDs, sources, links, decisions and histories.
+7. In this restored test copy, tried to make the essay depend on proofreading. The interface rejected the cycle with a focused error; no dependency decision was saved.
+8. Used **I changed this work** twice on the essay, under source version 2. Proofreading showed three reasons: the source change plus two distinct work reports. Acknowledged only the first work report with a note. The source reason and second work report remained open. All completion histories remained exactly equal to the earlier backup.
+9. Reloaded that copy and compared the full exported workspace again: equal, including both unique work-event IDs and the single acknowledgment.
+10. Restored the resulting event-rich backup into the quota-once harness. The failed write displayed **Not saved**, preserved the full workspace in memory, and exported JSON exactly equal to the input workspace. **Retry saving** reported success only after the retry succeeded.
+11. Visually inspected the linear proofreading reason, version label, causal list, blockers and independent acknowledgment form. Main demonstration remains saved with the 400-word version, essay/proofreading reviews open, recommendation complete and conditional task undecided.
 
-No new native file-download claim is made for Session 3; Session 2's Chrome download and real file-restore evidence remains in the historical checks. This session tested migration and versioned restore through the actual paste interface. Browser selectors sometimes timed out; accessibility controls were used to complete the flow.
+Browser tests used native accessibility controls and inspected the visible backup JSON rather than injecting application state. No new native download, full accessibility audit, screen-reader audit, offline-install test or broad cross-browser certification is claimed. File-download evidence from Session 2 remains separately documented. Console observations and final command checks are recorded in STATE.
 
-## Reproduce the demonstrated scenario
-
-1. Follow README's fictional 500→400-word flow, adding `Include a short budget statement.` as a new paragraph.
-2. Before resolving the essay review, add a third version changing 400→350 and appending `Include a transcript.` to the essay paragraph.
-3. Resolve version 2 first; observe version 3 remains open. Then resolve only the essay sentence in version 3, retaining the transcript as unreviewed material.
-4. Prepare a backup; reload and compare workspace data. Restore it on a separate empty test origin; compare again.
-5. Run the development harness for quota recovery. It is excluded from the normal server's allowlist:
+## Reproduce
 
 ```sh
-PORT=4183 node tests/browser-server.mjs
-STEPTRACE_STORAGE_FAULT=quota-once PORT=4184 node tests/browser-server.mjs
+./run.sh
+./run.sh check
 ```
 
-On this Mac replace `node` with `/Users/nileshnandakumar/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node`. The normal harness uses storage for its separate origin; quota-once uses synthetic in-memory storage. Stop each server with Ctrl+C.
+In the main interface follow README's **Try the working before/after example**. For isolated recovery tests, use the bundled Node path in STATE, or a working Node 22+:
 
-## Limits
+```sh
+PORT=4185 node tests/browser-server.mjs
+STEPTRACE_STORAGE_FAULT=quota-once PORT=4186 node tests/browser-server.mjs
+```
 
-Matching checks immediate text context, not distant headings or global conditions. Positional changed pairs are not semantic matches. Blank-line separators are preserved but not separate diff rows. Source review does not compare actual essay files or determine whether work satisfies instructions.
-
-Only directly linked tasks receive source reviews. There is no graph, transitive review, OCR, scraping, AI, or application submission. A no-source manual task is outside source impact detection.
-
-Forms must be submitted to become saved records. Updating another task can discard unsubmitted drafts. Browser-local data is tied to the same browser/profile/origin; use one editing tab and separate backups. These tests do not prove transactionally safe multi-tab edits or installed offline operation.
-
-No full screen-reader, browser-zoom, automated accessibility, or broad cross-browser audit was performed. No participant evidence or measured benefit is claimed.
+The harness is not served by the production asset allowlist. Stop its servers after checking. Use a fresh unused test origin or inspect existing data rather than clearing it. Only synthetic fixtures belong in tests and exports.

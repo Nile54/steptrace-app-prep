@@ -224,10 +224,14 @@ test('new tasks link the current version only; manual tasks are not given invent
 test('schema-1 migration preserves every source, original anchor, ID, history, and legacy flag', () => {
   const legacy = legacyFixture();
   const migrated = migrateWorkspace(legacy);
-  assert.equal(migrated.schemaVersion, 2);
+  assert.equal(migrated.schemaVersion, 3);
   const reverted = structuredClone(migrated);
   reverted.schemaVersion = 1;
-  reverted.applications.forEach(app => app.tasks.forEach(task => { delete task.sourceReviews; }));
+  reverted.applications.forEach(app => {
+    delete app.dependencyHistory;
+    delete app.workChanges;
+    app.tasks.forEach(task => { delete task.sourceReviews; delete task.dependencyReviews; });
+  });
   assert.deepEqual(reverted, legacy);
   assert.equal(Object.isFrozen(legacy), false);
   assert.equal(Object.isFrozen(migrated), true);
@@ -235,7 +239,7 @@ test('schema-1 migration preserves every source, original anchor, ID, history, a
   const envelope = { format: 'steptrace-backup', schemaVersion: 1,
     exportedAt: '2026-09-14T00:00:00.006Z', workspace: legacy };
   assert.deepEqual(parseBackup(JSON.stringify(envelope)), migrated);
-  assert.equal(JSON.parse(serializeBackup(migrated)).schemaVersion, 2);
+  assert.equal(JSON.parse(serializeBackup(migrated)).schemaVersion, 3);
 });
 
 test('storage migration is read-only until save and uses the same key and original raw conflict token', () => {
@@ -251,7 +255,7 @@ test('storage migration is read-only until save and uses the same key and origin
   const updated = add(loaded.workspace, 'A fictional changed instruction.');
   const saved = storage.save(updated, loaded.raw);
   assert.equal(saved.ok, true);
-  assert.equal(JSON.parse(adapter.raw).schemaVersion, 2);
+  assert.equal(JSON.parse(adapter.raw).schemaVersion, 3);
   const reloaded = createStorage(() => adapter).load();
   assert.equal(reloaded.migrated, false);
   assert.deepEqual(reloaded.workspace, updated);

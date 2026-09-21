@@ -1,6 +1,6 @@
-# StepTrace — Session 3
+# StepTrace — Session 4
 
-A local application-preparation workspace with immutable instructions, exact source links, human review, completion history, and JSON backups. Use fictional information in this development version. StepTrace remains a provisional name with known conflicts.
+A local application-preparation workspace with immutable instructions, exact source links, confirmed task dependencies, human review, completion history, and JSON backups. Use fictional information in this development version. StepTrace remains a provisional name with documented conflicts.
 
 ## Run
 
@@ -11,57 +11,63 @@ Repository: `/Users/nileshnandakumar/Documents/Codex/2026-09-14/before-session-o
 ./run.sh check
 ```
 
-Open [the workspace](http://127.0.0.1:4173). Stop the server with Ctrl+C. No install or build step; the launcher uses Node on PATH or this Mac's bundled runtime. Other machines need Node 22+. There are no package dependencies. `dist/` contains authored source.
+Open [the workspace](http://127.0.0.1:4173). No install or build step; the launcher uses Node on PATH or this Mac's bundled runtime. Other machines need Node 22+. There are no package dependencies. `dist/` contains authored source. Stop a server started in your terminal with Ctrl+C.
 
-Use the same browser/profile, host, and port to reopen saved work, and one editing tab. A different port, `localhost` instead of `127.0.0.1`, or another browser has separate storage. Browser storage is not a backup or encryption.
+Use the same browser/profile, host, and port to reopen saved work, and one editing tab. A different port, hostname, or browser has separate storage. Browser storage is not a backup or encryption.
 
-## Try a real before/after flow
+## Try the working before/after example
 
-1. Create an application with **Fill fictional example**, or paste instructions/load a UTF-8 `.txt` file.
-2. Select the essay instruction in the source snapshot, choose **Use selected excerpt**, and create a task. Mark it completed.
-3. Prepare a JSON backup. Open **Add updated instructions** and paste the complete instructions with the essay maximum changed from 500 to 400 words. Add a new budget instruction.
-4. Choose **Preview changes**, inspect the old/new passages, then **Save new source version**. The completed essay now needs source review. New and unlinked text stays visible in **Compare saved source versions**.
-5. Expand the task's source review. Select the correct passage from the target version, choose **Use selected passage**, confirm applicability, and record the resolution. You can instead explicitly retain the task without a mapping and explain why.
-6. To check version isolation, add another update before resolving the older one. Resolving the older review leaves the newer review open. The original source link and completion history remain.
-7. Export, reload, and follow both original and latest mapped source links. Preview a restore in an empty workspace on another test port; applying restores all versions and decisions. Importing the same IDs into the original workspace is rejected.
+1. Open **Try a fictional dependency example** and choose **Create and confirm fictional plan**. This creates a separate sample application and explicitly confirms that proofreading depends on the essay. Three tasks start completed; the fictional draft is described as 380 words.
+2. Inspect **This step depends on…** in the proofreading task. Prepare a JSON backup before changing the instructions.
+3. Choose **Fill fictional 400-word update**, then **Preview changes** and **Save new source version**. Inspect the old/new essay instruction and added conditional study-plan text.
+4. The essay has a direct source review; proofreading has its own causal review. All original completion records survive. The unchanged recommendation remains complete without an open review. The app does not declare the 380-word draft invalid.
+5. The new conditional text is visible as unreviewed material. **Add undecided conditional task** creates an exact source link with applicability **Not decided**. A person decides whether it applies.
+6. Use the essay's source review to confirm a new excerpt and applicability. Review proofreading separately and record what you checked. Acknowledging one task or event does not clear the others.
+7. Under the essay, open **I changed this work**, describe a fictional revision and record it. Proofreading receives another reason even without new instructions. Repeat to create a second independent reason; review only one and inspect the other.
+8. Export, reload, and preview the export on a separate test origin to restore it. Dependencies, exact sources, work reports, review decisions, and completion history survive.
 
-Manual tasks retain **No source linked**. Task wording and applicability can be edited independently. These features do not determine eligibility, submit applications, or establish checklist completeness. Dependency propagation has not been implemented: an unlinked proofreading task is not automatically flagged when the essay changes.
+The example uses the same model and save operations as other applications. Its data is fictional. The separate `/preview.html` page remains the original scripted Session 1 preview.
 
-## Matching and decisions
+## Dependencies and review
 
-Automatic source matching requires a unique identical containing paragraph, a unique selected phrase in both documents, and unchanged immediate neighboring paragraphs or document boundaries. Formatting changes, duplicate text, changed context, uncertain matches, and selections across paragraphs need confirmation. The matcher uses text structure; it cannot interpret distant conditions or meaning.
+Choose predecessors using **This step depends on…**, then **Confirm dependencies**. Circular, missing, and cross-application references are rejected. Source changes that require human review flag downstream tasks through the confirmed links. Each reason retains its originating event and a linear causal chain. A diamond-shaped dependency produces one reason per task for that event, rather than duplicate copies.
 
-Paragraph differences retain every nonblank passage. “Changed” pairs are positional reading aids, not proven requirement equivalence. Original whitespace remains in the complete snapshots; blank-line separators are not separate rows. Unlinked spans stay marked unreviewed even if another sentence in their paragraph has a task link.
+Removing links does not erase previous reasons. New links account for still-open related changes. A source acknowledgment, a downstream acknowledgment, and a completion event are distinct decisions. Two work reports under the same source version remain separate events. The app knows about external work changes only when a person reports them.
 
-A review resolution belongs to one review ID and one source version. It never clears a later update or removes completion events. A historical applicability resolution records the old-version decision without rewriting the current choice. See [the comparison and data design](docs/COMPARISON.md) for details and an interview explanation.
+Unknown applicability, open review reasons, and incomplete applicable predecessors remain visible as blockers. **No recorded blockers for this step** refers only to the recorded plan; it never means eligible, complete, or ready to submit. When instructions conflict, leave the review open until you decide or obtain clarification. **Does not apply** decisions remain in history and receive review when their linked source changes.
+
+See [dependency design](docs/DEPENDENCIES.md) for the algorithm, migration rules, limits, and an interview explanation.
+
+## Source matching
+
+Automatic source mapping requires a unique identical paragraph and selected phrase plus unchanged immediate neighbors or document boundaries. Formatting, duplicate text, changed context, uncertain matches, and multi-paragraph selections need human confirmation. Matching uses text structure, not meaning or distant conditions.
+
+Every nonblank passage stays visible. Positional changed pairs are reading aids, not proven equivalents. Exact snapshots preserve whitespace and offsets. Unlinked spans remain unreviewed even inside partly linked paragraphs. Historical source decisions cannot clear newer reviews or overwrite current applicability. See [comparison design](docs/COMPARISON.md).
 
 ## Storage and recovery
 
-The schema-2 workspace remains under the existing `steptrace.workspace.v1` storage key. Schema-1 saved work and backups are strictly validated and migrated in memory. Opening older work does not write storage. The original bytes remain until the next successful save and can be downloaded for recovery while that page is open. Prepare a regular backup before editing.
+Schema-3 data uses the existing `steptrace.workspace.v1` key. Schema-1 and schema-2 workspaces and backups are strictly validated and migrated in memory. Opening old work does not write storage; original bytes remain available until the next successful save. Prepare a separate JSON backup before editing.
 
-Saved status appears only after the write succeeds. On failure, work remains in the current tab with **Not saved** and can still be exported. Quota errors offer retry. Invalid/unreadable stored data, including a stored JSON `null`, is preserved and blocks writes. Another tab's completed write is detected before saving; simultaneous edits are not atomic.
+A failed save displays **Not saved** and leaves current work exportable in the tab. Quota failures offer retry. Invalid data is preserved and blocks writes. A completed write from another tab is detected before saving; simultaneous edits are not atomically locked.
 
-Backups validate versions, IDs, exact quotes/ranges, histories, and review decisions. Restore previews before adding noncolliding applications; replacement, deduplication, and deletion are not implemented. Chrome file download was verified in Session 2. The in-app browser offers visible backup JSON to copy when its download does not complete. Confirm the backup file arrived.
+Restore validates exact quotes, IDs, versions, histories, dependency graphs, event causes and causal paths. It previews before adding disjoint applications. Replacement restore, deletion, and deduplication are not implemented. The visible JSON field provides a copy fallback if downloading does not complete. Confirm that a backup file arrived; a prepared field alone is not a separate backup.
 
-Limits: 100 applications, 2,000 tasks, 100,000 UTF-16 code units per source, 50 versions per application, 2,000 events per history, 1,000 characters per review note, and 2 MiB JSON. New version input is pasted text; initial application creation also accepts `.txt` files. Unsubmitted forms are not saved or backed up, and other task changes can discard those drafts.
+Limits include 100 applications, 2,000 tasks, 100,000 characters per source, 50 source versions per application, 1,000 characters per review note, and 2 MiB JSON. Unsubmitted forms are not saved/exported and other task changes can discard drafts. Source versions accept pasted text; initial applications also accept UTF-8 `.txt` files.
 
 ## Code to understand
 
 | File | Responsibility |
 | --- | --- |
-| `dist/src/comparison.js` | Pure paragraph comparison and conservative exact-anchor matching |
-| `dist/src/model.js` | Validated frozen records, immutable source versions, independent completion/applicability histories, version-specific resolutions |
-| `dist/src/schema-v1.js` | Strict legacy reader retained for migration |
-| `dist/src/storage.js` | Migration boundary, local saves, versioned backups, validation and additive restore |
-| `dist/src/source-selection.js` | Map textarea positions to original UTF-16 text, including CRLF |
-| `dist/src/review-ui.js` | Before/after passages, uncovered source text, and explicit review forms |
-| `dist/src/app.js` | Interface state, source navigation, accurate save feedback |
-| `scripts/serve.mjs` | Local Node server with explicit public-asset allowlist |
+| `dist/src/comparison.js` | Deterministic paragraph comparison and conservative exact matching |
+| `dist/src/dependencies.js` | Cycle checks, graph traversal and causal propagation |
+| `dist/src/model.js` | Validated immutable records and explicit human actions |
+| `dist/src/schema-v1.js`, `schema-v2.js` | Preserved legacy readers |
+| `dist/src/storage.js` | Local saves, migration, backups and additive restore |
+| `dist/src/source-selection.js` | Textarea positions mapped to preserved source offsets |
+| `dist/src/review-ui.js`, `dependency-ui.js` | Source decisions, dependency controls, causal lists and separate reviews |
+| `dist/src/dependency-demo.js` | Opt-in fictional scenario through the real domain API |
+| `dist/src/app.js` | Interface orchestration and honest save feedback |
 
-## Verified scope
+Actual automated and browser results are recorded in [CHECKS](docs/CHECKS.md) and [STATE](docs/STATE.md). No usability improvement, complete accessibility conformance, market demand, or semantic eligibility accuracy is claimed.
 
-`./run.sh check` passes **66 automated tests** plus syntax/asset/fixture checks. Browser checks verified migration, two successive updates, historical and current resolutions, exact links, reload/export equality, additive restore equality, malformed/duplicate rejection, and quota export/retry. See [CHECKS](docs/CHECKS.md) for evidence and limits.
-
-Session 3 stops here. The [earlier Session 1 preview](http://127.0.0.1:4173/preview.html) remains scripted and includes future dependency behavior. The working workspace uses actual comparison. No OCR, scraping, LLM, remote repository, deployment, billing, or third-party text upload was added.
-
-Later sessions must read AGENTS, BRIEF, ROADMAP, and STATE, preserve user changes and saved data, implement only their requested milestone, run relevant checks, update STATE, and make a logical local commit. The five interview questions remain in `docs/INTERVIEWS.md`; no one has been contacted.
+Session 4 stops after dependency review. No OCR, scraping, LLM, remote repository, deployment, billing, spending or outreach. Later sessions must read AGENTS, BRIEF, ROADMAP, and STATE, preserve user changes and data, implement only the requested milestone, run relevant checks, update STATE, and make a logical local commit.

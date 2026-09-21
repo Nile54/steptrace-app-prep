@@ -1,10 +1,9 @@
+// Frozen schema-2 reader and historical domain rules. Do not change comparison semantics.
 // Immutable source versions, exact anchors, and independent task/review histories.
 import { matchAnchor } from './comparison.js';
-import { migrateWorkspace as migrateVersionTwo, validateWorkspace as validateVersionTwo } from './schema-v2.js';
-import { dependencyMap, validateDependencyChange, expectedDependencyReviews, reviewCauses } from './dependencies.js';
-export { getTaskDependencies, getDependencyReviews, getTaskBlockers, describeDependencyReview } from './dependencies.js';
+import { validateWorkspace as validateVersionOne } from './schema-v1.js';
 
-export const SCHEMA_VERSION = 3;
+export const SCHEMA_VERSION = 2;
 export const LIMITS = Object.freeze({
   sourceChars: 100_000,
   sourceVersions: 50,
@@ -122,9 +121,8 @@ export function getTaskAnchor(task, sourceVersionId) {
 
 export function getTaskReviewState(task) {
   if (task.reviewState === 'needs-review'
-    || task.sourceReviews.some(review => review.kind !== 'exact' && !review.resolution)
-    || task.dependencyReviews.some(review => !review.resolution)) return 'needs-review';
-  return task.sourceReviews.length || task.dependencyReviews.length ? 'reviewed' : 'not-reviewed';
+    || task.sourceReviews.some(review => review.kind !== 'exact' && !review.resolution)) return 'needs-review';
+  return task.sourceReviews.length ? 'reviewed' : 'not-reviewed';
 }
 
 function reviewDescriptor(sources, task, sourceIndex) {
@@ -150,137 +148,137 @@ function reviewDescriptor(sources, task, sourceIndex) {
   };
 }
 
-// Validate unchanged source/history fields with the frozen schema-2 reader,
-// then validate and replay Session 4 events. Never rewrite historical mappings.
+// Validation builds a fresh tree before freezing it: the caller's object is untouched.
 export function validateWorkspace(value) {
   record(value, ['schemaVersion', 'applications'], 'Workspace');
-  requireThat(value.schemaVersion === SCHEMA_VERSION, 'Unsupported workspace schema version. This app supports version 3.');
+  requireThat(value.schemaVersion === SCHEMA_VERSION, 'Unsupported workspace schema version. This app supports version 2.');
   boundedArray(value.applications, LIMITS.applications, 'Applications');
-  const legacyInput = { schemaVersion: 2, applications: value.applications.map((application, index) => {
-    const path = `Application ${index + 1}`;
-    record(application, ['id', 'title', 'createdAt', 'sources', 'tasks', 'dependencyHistory', 'workChanges'], path);
-    boundedArray(application.tasks, LIMITS.tasks, `${path} tasks`);
-    const { dependencyHistory, workChanges, ...legacyApplication } = application;
-    legacyApplication.tasks = application.tasks.map(task => {
-      record(task, ['id', 'title', 'createdAt', 'anchor', 'applicability', 'applicabilityHistory',
-        'completionHistory', 'reviewState', 'sourceReviews', 'dependencyReviews'], `${path} task`);
-      const { dependencyReviews, ...legacyTask } = task;
-      return legacyTask;
-    });
-    return legacyApplication;
-  }) };
-  let legacy;
-  try { legacy = validateVersionTwo(legacyInput); }
-  catch (error) { throw new ValidationError(error.message); }
-  const result = structuredClone(legacy);
-  result.schemaVersion = SCHEMA_VERSION;
   const ids = new Set();
-  // The historical validator has already checked all these IDs for uniqueness.
-  const scan = [legacy];
-  for (let cursor = 0; cursor < scan.length; cursor++) {
-    const item = scan[cursor];
-    if (item && typeof item === 'object') {
-      if (Object.hasOwn(item, 'id')) ids.add(item.id);
-      for (const child of Object.values(item)) if (child && typeof child === 'object') scan.push(child);
-    }
-  }
+  let taskCount = 0;
   function id(value, path) {
     requireThat(typeof value === 'string' && /^[A-Za-z0-9_-]{1,100}$/.test(value), `${path} is not a valid ID.`);
-    requireThat(!ids.has(value), `Duplicate ID "${value}". Every record needs a unique ID.`);
+    requireThat(!ids.has(value), `Duplicate ID "${value}". Every application, source, task, and history event needs a unique ID.`);
     ids.add(value);
     return value;
   }
-  for (let index = 0; index < result.applications.length; index++) {
-    const application = result.applications[index];
-    const original = value.applications[index];
-    const tasks = new Map(application.tasks.map(task => [task.id, task]));
-    const graph = new Map(application.tasks.map(task => [task.id, []]));
-    const actionTimes = new Set([application.createdAt, ...application.sources.map(source => source.createdAt)]);
-    for (const task of application.tasks) {
-      actionTimes.add(task.createdAt);
-      for (const event of [...task.completionHistory, ...task.applicabilityHistory]) actionTimes.add(event.at);
-      for (const review of task.sourceReviews) if (review.resolution) actionTimes.add(review.resolution.at);
-    }
-    function actionTime(value, path) {
-      const at = timestamp(value, path);
-      requireThat(at > application.createdAt, `${path} must follow application creation.`);
-      requireThat(!actionTimes.has(at), `${path} must identify a separate action.`);
-      actionTimes.add(at);
-      return at;
-    }
-    boundedArray(original.dependencyHistory, LIMITS.historyEvents, 'Dependency history');
-    let previousAt = application.createdAt;
-    application.dependencyHistory = original.dependencyHistory.map(event => {
-      record(event, ['id', 'at', 'taskId', 'dependencyIds'], 'Dependency decision');
-      const eventId = id(event.id, 'Dependency decision ID');
-      const at = actionTime(event.at, 'Dependency decision time');
-      requireThat(at > previousAt, 'Dependency decisions must be in strictly increasing time order.');
-      previousAt = at;
-      boundedArray(event.dependencyIds, LIMITS.tasks - 1, 'Dependencies');
-      try { validateDependencyChange(graph, event.taskId, event.dependencyIds); }
-      catch (error) { throw new ValidationError(error.message); }
-      const previous = graph.get(event.taskId);
-      requireThat(previous.length !== event.dependencyIds.length || previous.some(taskId => !event.dependencyIds.includes(taskId)),
-        'Dependency history contains an unchanged decision.');
-      requireThat([event.taskId, ...event.dependencyIds].every(taskId => tasks.get(taskId).createdAt < at),
-        'A dependency decision must follow the creation of every referenced task.');
-      const dependencyIds = [...event.dependencyIds];
-      graph.set(event.taskId, dependencyIds);
-      return { id: eventId, at, taskId: event.taskId, dependencyIds };
+  const applications = value.applications.map((application, applicationIndex) => {
+    const path = `Application ${applicationIndex + 1}`;
+    record(application, ['id', 'title', 'createdAt', 'sources', 'tasks'], path);
+    const applicationId = id(application.id, `${path} ID`);
+    const title = text(application.title, LIMITS.titleChars, `${path} title`);
+    const createdAt = timestamp(application.createdAt, `${path} creation time`);
+    boundedArray(application.sources, LIMITS.sourceVersions, `${path} sources`, 1);
+    let previousSourceAt = null;
+    const sources = application.sources.map(source => {
+      record(source, ['id', 'text', 'label', 'createdAt'], `${path} source`);
+      const sourceAt = timestamp(source.createdAt, `${path} source creation time`);
+      requireThat(sourceAt >= createdAt, `${path} source predates its application.`);
+      requireThat(previousSourceAt === null || sourceAt > previousSourceAt, `${path} source versions must be in strictly increasing time order.`);
+      previousSourceAt = sourceAt;
+      return {
+        id: id(source.id, `${path} source ID`),
+        text: text(source.text, LIMITS.sourceChars, `${path} source text`),
+        label: text(source.label, LIMITS.titleChars, `${path} source label`),
+        createdAt: sourceAt,
+      };
     });
-    boundedArray(original.workChanges, LIMITS.historyEvents, 'Reported work changes');
-    previousAt = application.createdAt;
-    application.workChanges = original.workChanges.map(event => {
-      record(event, ['id', 'at', 'taskId', 'sourceVersionId', 'note'], 'Reported work change');
-      const eventId = id(event.id, 'Work change ID');
-      const at = actionTime(event.at, 'Work change time');
-      requireThat(at > previousAt, 'Work changes must be in strictly increasing time order.');
-      previousAt = at;
-      requireThat(tasks.has(event.taskId) && tasks.get(event.taskId).createdAt < at,
-        'A work change must reference an existing task in this application and follow its creation.');
-      const currentSource = application.sources.filter(source => source.createdAt < at).at(-1);
-      requireThat(currentSource?.id === event.sourceVersionId, 'A work change must retain the source version current at its time.');
-      return { id: eventId, at, taskId: event.taskId, sourceVersionId: event.sourceVersionId,
-        note: text(event.note, LIMITS.reviewNoteChars, 'Work change note') };
-    });
-    const causes = reviewCauses(application);
-    for (let taskIndex = 0; taskIndex < application.tasks.length; taskIndex++) {
-      const task = application.tasks[taskIndex];
-      const reviews = original.tasks[taskIndex].dependencyReviews;
-      boundedArray(reviews, LIMITS.historyEvents, 'Dependency reviews');
-      const taskCauses = new Set();
-      task.dependencyReviews = reviews.map(review => {
-        record(review, ['id', 'causeId', 'at', 'path', 'resolution'], 'Dependency review');
-        const reviewId = id(review.id, 'Dependency review ID');
-        const cause = causes.get(review.causeId);
-        requireThat(cause && cause.taskId !== task.id, 'A dependency review references an invalid change cause.');
-        requireThat(!taskCauses.has(review.causeId), 'A task must retain one dependency review per change event.');
-        taskCauses.add(review.causeId);
-        const at = timestamp(review.at, 'Dependency review time');
-        requireThat(at >= cause.at && at > task.createdAt, 'A dependency review predates its cause or task.');
-        boundedArray(review.path, LIMITS.tasks, 'Dependency causal path', 2);
-        requireThat(review.path[0] === cause.taskId && review.path.at(-1) === task.id
-          && review.path.every(taskId => tasks.has(taskId)) && new Set(review.path).size === review.path.length,
-          'A dependency review must retain a valid causal path from the changed task to this task.');
+    boundedArray(application.tasks, LIMITS.tasks, `${path} tasks`);
+    taskCount += application.tasks.length;
+    requireThat(taskCount <= LIMITS.tasks, `A workspace can hold at most ${LIMITS.tasks} tasks.`);
+    const tasks = application.tasks.map((task, taskIndex) => {
+      const taskPath = `${path}, task ${taskIndex + 1}`;
+      record(task, ['id', 'title', 'createdAt', 'anchor', 'applicability', 'applicabilityHistory', 'completionHistory', 'reviewState', 'sourceReviews'], taskPath);
+      const taskId = id(task.id, `${taskPath} ID`);
+      const taskTitle = text(task.title, LIMITS.titleChars, `${taskPath} wording`);
+      const taskAt = timestamp(task.createdAt, `${taskPath} creation time`);
+      requireThat(taskAt >= createdAt, `${taskPath} predates its application.`);
+      const anchor = task.anchor === null ? null : validateAnchor(task.anchor, sources, taskPath);
+      const anchorIndex = anchor === null ? -1 : sources.findIndex(source => source.id === anchor.sourceVersionId);
+      // Legacy schema 1 did not require the task to follow its initial snapshot's
+      // timestamp. Preserve those valid records; newer anchors have strict order.
+      requireThat(anchorIndex <= 0 || taskAt >= sources[anchorIndex].createdAt, `${taskPath} predates its linked source version.`);
+      requireThat(anchorIndex < 0 || !sources[anchorIndex + 1] || taskAt < sources[anchorIndex + 1].createdAt,
+        `${taskPath} must be created against the source version current at creation.`);
+      const applicability = choice(task.applicability, APPLICABILITY, `${taskPath} applicability`);
+      function history(values, field, minimum) {
+        boundedArray(values, LIMITS.historyEvents, `${taskPath} ${field} history`, minimum);
+        let previousAt = taskAt;
+        let previousValue = field === 'completed' ? false : undefined;
+        return values.map((event, eventIndex) => {
+          record(event, ['id', 'at', field], `${taskPath} history event`);
+          const eventId = id(event.id, `${taskPath} history event ID`);
+          const at = timestamp(event.at, `${taskPath} history time`);
+          requireThat(at >= previousAt, `${taskPath} history timestamps are out of order.`);
+          const eventValue = field === 'completed'
+            ? (requireThat(typeof event.completed === 'boolean', `${taskPath} completion must be true or false.`), event.completed)
+            : choice(event.value, APPLICABILITY, `${taskPath} applicability history`);
+          requireThat(eventValue !== previousValue, `${taskPath} history contains an unchanged ${field} event.`);
+          if (field === 'value' && eventIndex === 0) {
+            requireThat(at === taskAt, `${taskPath} initial applicability must be recorded at task creation.`);
+          }
+          previousAt = at;
+          previousValue = eventValue;
+          return { id: eventId, at, [field]: eventValue };
+        });
+      }
+      const applicabilityHistory = history(task.applicabilityHistory, 'value', 1);
+      requireThat(applicabilityHistory.at(-1).value === applicability,
+        `${taskPath} applicability must agree with its latest history event.`);
+      const completionHistory = history(task.completionHistory, 'completed', 0);
+      const reviewState = choice(task.reviewState, REVIEW_STATES, `${taskPath} review state`);
+      boundedArray(task.sourceReviews, LIMITS.sourceVersions - 1, `${taskPath} source reviews`);
+      const expectedCount = anchor === null ? 0 : sources.length - anchorIndex - 1;
+      requireThat(task.sourceReviews.length === expectedCount,
+        `${taskPath} must retain exactly one review for every version after its original link, and none for a manual task.`);
+      const validatedTask = { id: taskId, title: taskTitle, createdAt: taskAt, anchor,
+        applicability, applicabilityHistory, completionHistory, reviewState, sourceReviews: [] };
+      const decisionTimes = new Set();
+      task.sourceReviews.forEach((review, reviewIndex) => {
+        const reviewPath = `${taskPath}, source review ${reviewIndex + 1}`;
+        record(review, ['id', 'sourceVersionId', 'basisAnchor', 'kind', 'suggestedAnchor', 'reason', 'resolution'], reviewPath);
+        const reviewId = id(review.id, `${reviewPath} ID`);
+        const sourceIndex = anchorIndex + reviewIndex + 1;
+        const target = sources[sourceIndex];
+        requireThat(review.sourceVersionId === target.id, `${reviewPath} references a missing, repeated, or out-of-order version.`);
+        const basisAnchor = validateAnchor(review.basisAnchor, sources, `${reviewPath} old excerpt`);
+        const suggestedAnchor = review.suggestedAnchor === null ? null
+          : validateAnchor(review.suggestedAnchor, sources, `${reviewPath} suggested excerpt`, target.id);
+        choice(review.kind, ['exact', 'formatting', 'ambiguous', 'unmatched', 'unresolved'], `${reviewPath} kind`);
+        text(review.reason, LIMITS.reviewNoteChars, `${reviewPath} reason`);
+        const expected = reviewDescriptor(sources, validatedTask, sourceIndex);
+        requireThat(sameAnchor(basisAnchor, expected.basisAnchor) && review.kind === expected.kind
+          && sameAnchor(suggestedAnchor, expected.suggestedAnchor) && review.reason === expected.reason,
+          `${reviewPath} does not match the deterministic comparison at that version.`);
         let resolution = null;
         if (review.resolution !== null) {
-          record(review.resolution, ['id', 'at', 'note'], 'Dependency review acknowledgment');
-          const resolutionId = id(review.resolution.id, 'Dependency acknowledgment ID');
-          const resolutionAt = actionTime(review.resolution.at, 'Dependency acknowledgment time');
-          requireThat(resolutionAt > at, 'A dependency acknowledgment must follow its specific review event.');
-          resolution = { id: resolutionId, at: resolutionAt,
-            note: text(review.resolution.note, LIMITS.reviewNoteChars, 'Dependency acknowledgment note') };
+          requireThat(review.kind !== 'exact', `${reviewPath} has an unnecessary resolution for an exact match.`);
+          record(review.resolution, ['id', 'at', 'anchor', 'applicability', 'note'], `${reviewPath} resolution`);
+          const decisionId = id(review.resolution.id, `${reviewPath} resolution ID`);
+          const at = timestamp(review.resolution.at, `${reviewPath} resolution time`);
+          requireThat(at > target.createdAt && at > taskAt, `${reviewPath} resolution must follow its source version and task.`);
+          requireThat(!decisionTimes.has(at), `${taskPath} resolution times must identify separate decisions.`);
+          decisionTimes.add(at);
+          const resolvedAnchor = review.resolution.anchor === null ? null
+            : validateAnchor(review.resolution.anchor, sources, `${reviewPath} confirmed excerpt`, target.id);
+          const decisionApplicability = choice(review.resolution.applicability, APPLICABILITY, `${reviewPath} resolution applicability`);
+          const note = text(review.resolution.note, LIMITS.reviewNoteChars, `${reviewPath} resolution note`, resolvedAnchor === null);
+          // A decision for the current version changes applicability. A historical
+          // decision records its choice only; it cannot rewrite a later choice.
+          if (!sources[sourceIndex + 1] || at < sources[sourceIndex + 1].createdAt) {
+            const choiceAtDecision = applicabilityHistory.filter(event => event.at <= at).at(-1)?.value;
+            requireThat(choiceAtDecision === decisionApplicability,
+              `${reviewPath} current-version decision must agree with applicability history at its time.`);
+          }
+          resolution = { id: decisionId, at, anchor: resolvedAnchor, applicability: decisionApplicability, note };
         }
-        return { id: reviewId, causeId: review.causeId, at, path: [...review.path], resolution };
+        validatedTask.sourceReviews.push({ id: reviewId, sourceVersionId: target.id, basisAnchor,
+          kind: review.kind, suggestedAnchor, reason: review.reason, resolution });
       });
-    }
-    const expected = expectedDependencyReviews(application);
-    for (const task of application.tasks) {
-      const actual = task.dependencyReviews.map(({ causeId, at, path }) => ({ causeId, at, path }));
-      requireThat(JSON.stringify(actual) === JSON.stringify(expected.get(task.id)),
-        `Dependency reviews for "${task.title}" do not match the recorded changes and dependency decisions. Missing or invented reasons cannot be restored.`);
-    }
-  }
+      return validatedTask;
+    });
+    return { id: applicationId, title, createdAt, sources, tasks };
+  });
+  const result = { schemaVersion: SCHEMA_VERSION, applications };
   requireThat(jsonByteLength(result) <= LIMITS.workspaceBytes, 'Workspace exceeds the 2 MiB data limit. Export and use a smaller workspace.');
   return freezeDeep(result);
 }
@@ -303,10 +301,6 @@ function nextApplicationTime(application) {
       ...task.completionHistory.map(event => event.at),
       ...task.sourceReviews.flatMap(review => review.resolution ? [review.resolution.at] : []));
   }
-  times.push(...application.dependencyHistory.map(event => event.at), ...application.workChanges.map(event => event.at));
-  for (const task of application.tasks) {
-    times.push(...task.dependencyReviews.flatMap(review => [review.at, ...(review.resolution ? [review.resolution.at] : [])]));
-  }
   const last = times.reduce((maximum, at) => Math.max(maximum, Date.parse(at)), 0);
   return new Date(Math.max(Date.now(), last + 1)).toISOString();
 }
@@ -326,19 +320,24 @@ export function createWorkspace() {
 }
 
 export function migrateWorkspace(workspace) {
-  if (![1, 2].includes(workspace?.schemaVersion)) return validateWorkspace(workspace);
-  const version = workspace.schemaVersion;
+  if (workspace?.schemaVersion !== 1) return validateWorkspace(workspace);
+  // Validate with the historical schema before transforming: unknown or damaged
+  // schema-1 records are never reinterpreted as newer data.
+  let legacy;
   try {
-    const migrated = structuredClone(migrateVersionTwo(workspace));
-    migrated.schemaVersion = SCHEMA_VERSION;
-    for (const application of migrated.applications) {
-      application.dependencyHistory = [];
-      application.workChanges = [];
-      for (const task of application.tasks) task.dependencyReviews = [];
-    }
+    legacy = validateVersionOne(workspace);
+  } catch (error) {
+    throw new ValidationError(`Schema-1 migration failed: ${error.message}`);
+  }
+  const migrated = structuredClone(legacy);
+  migrated.schemaVersion = SCHEMA_VERSION;
+  for (const application of migrated.applications) {
+    for (const task of application.tasks) task.sourceReviews = [];
+  }
+  try {
     return validateWorkspace(migrated);
   } catch (error) {
-    throw new ValidationError(`Schema-${version} migration failed: ${error.message} Original data must be kept for recovery.`);
+    throw new ValidationError(`Schema-1 migration failed: ${error.message} Original data must be kept for recovery.`);
   }
 }
 
@@ -348,7 +347,7 @@ export function createApplication(workspace, { title, text: sourceText, label = 
   next.applications.push({
     id: newId(), title: typeof title === 'string' ? title.trim() : title, createdAt: at,
     sources: [{ id: newId(), text: sourceText, label: typeof label === 'string' ? label.trim() : label, createdAt: at }],
-    tasks: [], dependencyHistory: [], workChanges: [],
+    tasks: [],
   });
   return validateWorkspace(next);
 }
@@ -365,7 +364,7 @@ export function createTask(workspace, applicationId, { title, anchor = null, app
     applicabilityHistory: [{ id: newId(), at, value: applicability }],
     completionHistory: [],
     reviewState: 'not-reviewed',
-    sourceReviews: [], dependencyReviews: [],
+    sourceReviews: [],
   });
   return validateWorkspace(next);
 }
@@ -416,7 +415,6 @@ export function addSourceVersion(workspace, applicationId, { text: sourceText, l
     task.sourceReviews.push({ id: newId(), sourceVersionId: application.sources[sourceIndex].id,
       ...reviewDescriptor(application.sources, task, sourceIndex), resolution: null });
   }
-  appendExpectedReviews(application);
   return validateWorkspace(next);
 }
 
@@ -445,60 +443,5 @@ export function resolveSourceReview(workspace, applicationId, taskId, reviewId, 
     task.applicability = decision.applicability;
     task.applicabilityHistory.push({ id: newId(), at, value: decision.applicability });
   }
-  return validateWorkspace(next);
-}
-
-function appendExpectedReviews(application) {
-  const expected = expectedDependencyReviews(application);
-  for (const task of application.tasks) {
-    const existing = new Set(task.dependencyReviews.map(review => review.causeId));
-    for (const review of expected.get(task.id)) {
-      if (!existing.has(review.causeId)) task.dependencyReviews.push({ id: newId(), ...review, resolution: null });
-    }
-  }
-}
-
-export function setTaskDependencies(workspace, applicationId, taskId, dependencyIds) {
-  const next = editable(workspace);
-  const application = applicationIn(next, applicationId);
-  const graph = dependencyMap(application);
-  try { validateDependencyChange(graph, taskId, dependencyIds); }
-  catch (error) { throw new ValidationError(error.message); }
-  const previous = graph.get(taskId);
-  if (previous.length === dependencyIds.length && previous.every(id => dependencyIds.includes(id))) return validateWorkspace(next);
-  requireThat(application.dependencyHistory.length < LIMITS.historyEvents, 'This application has reached its dependency history limit.');
-  // Stable application order makes equivalent user selections deterministic.
-  const orderedIds = application.tasks.filter(task => dependencyIds.includes(task.id)).map(task => task.id);
-  application.dependencyHistory.push({ id: newId(), at: nextApplicationTime(application), taskId, dependencyIds: orderedIds });
-  appendExpectedReviews(application);
-  return validateWorkspace(next);
-}
-
-export function recordWorkChange(workspace, applicationId, taskId, decision) {
-  record(decision, ['note'], 'Reported work change');
-  const next = editable(workspace);
-  const application = applicationIn(next, applicationId);
-  requireThat(application.tasks.some(task => task.id === taskId), 'The selected task no longer exists.');
-  const note = typeof decision.note === 'string' ? decision.note.trim() : decision.note;
-  text(note, LIMITS.reviewNoteChars, 'Work change note');
-  requireThat(application.workChanges.length < LIMITS.historyEvents, 'This application has reached its work change history limit.');
-  application.workChanges.push({ id: newId(), at: nextApplicationTime(application), taskId,
-    sourceVersionId: application.sources.at(-1).id, note });
-  appendExpectedReviews(application);
-  return validateWorkspace(next);
-}
-
-export function acknowledgeDependencyReview(workspace, applicationId, taskId, reviewId, decision) {
-  record(decision, ['note'], 'Dependency review acknowledgment');
-  const next = editable(workspace);
-  const application = applicationIn(next, applicationId);
-  const task = application.tasks.find(item => item.id === taskId);
-  requireThat(task, 'The selected task no longer exists.');
-  const review = task.dependencyReviews.find(item => item.id === reviewId);
-  requireThat(review, 'The selected dependency review no longer exists.');
-  requireThat(!review.resolution, 'This specific change already has a recorded acknowledgment.');
-  const note = typeof decision.note === 'string' ? decision.note.trim() : decision.note;
-  text(note, LIMITS.reviewNoteChars, 'Dependency acknowledgment note');
-  review.resolution = { id: newId(), at: nextApplicationTime(application), note };
   return validateWorkspace(next);
 }

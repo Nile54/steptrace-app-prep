@@ -146,3 +146,26 @@ input[type="checkbox"] { width: 1.25rem; height: 1.25rem; accent-color: var(--na
 .saved-task > button { margin: .25rem .25rem .25rem 0; }
 #version-preview { margin-top: 1.5rem; }
 @media (max-width: 800px) { .diff-row .comparison, .version-review .comparison { grid-template-columns: 1fr; } }
+
+/* Confirmed task links and independent reviews use linear, textual lists. */
+.task-dependencies { margin-top: 1rem; padding-top: .5rem; border-top: 1px solid var(--line); }
+.task-dependencies h4 { margin: 0; font-size: .9375rem; line-height: 1.5; }
+.task-dependencies summary, .task-dependencies li { overflow-wrap: anywhere; }
+.task-dependencies ul, .task-dependencies ol { padding-left: 1.4rem; }
+.dependency-blockers { padding: .7rem .85rem; background: #f3f6fa; border-left: 3px solid #8b9cb0; font-size: .875rem; }
+.dependency-blockers ul { margin: .45rem 0; }
+.dependency-blockers .helper { margin-bottom: 0; }
+.dependency-editor, .dependency-reviews, .work-change-editor { margin-top: .65rem; font-size: .9375rem; }
+.dependency-editor form, .work-change-editor form { padding: .75rem 1rem 1rem; background: #f3f6fa; border-radius: .35rem; }
+.dependency-editor fieldset { min-width: 0; margin: 0; padding: .3rem .75rem .75rem; border: 1px solid var(--line); border-radius: .35rem; }
+.dependency-editor legend { padding: 0 .3rem; font-weight: 600; }
+.dependency-choice { margin: .3rem 0 0; align-items: flex-start; padding: .45rem 0; }
+.dependency-choice input { flex-shrink: 0; margin-top: .25rem; }
+.dependency-choice span { min-width: 0; overflow-wrap: anywhere; }
+.dependency-review { margin: .7rem 0; padding: .65rem .9rem; background: #fafbfd; border: 1px solid var(--line); border-radius: .45rem; }
+.dependency-review[open] { border-left: 3px solid #a56808; }
+.dependency-review form { border-top: 1px solid var(--line); padding-top: .25rem; }
+.causal-chain li { margin: .35rem 0; }
+.dependency-history, .work-change-history { margin-top: .6rem; font-size: .875rem; }
+.work-change-history li { margin-bottom: .75rem; }
+.work-change-history li .helper { margin: .3rem 0; }

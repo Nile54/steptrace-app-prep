@@ -36,7 +36,7 @@ export function createStorage(getStorage = () => globalThis.localStorage) {
         raw = storage.getItem(STORAGE_KEY);
         const stored = raw === null ? null : parseJson(raw, 'Stored workspace');
         const workspace = raw === null ? createWorkspace() : migrateWorkspace(stored);
-        const migrated = stored?.schemaVersion === 1;
+        const migrated = stored !== null && [1, 2].includes(stored?.schemaVersion);
         blockedReason = null;
         // Migration is read-only until an explicit user action saves. expectedRaw
         // continues to be the exact old bytes, protecting recoverability/conflicts.
@@ -104,8 +104,8 @@ export function parseBackup(text) {
     || Object.keys(backup).length !== keys.length || !keys.every(key => Object.hasOwn(backup, key))) {
     throw new ValidationError('Backup has missing or unsupported fields.');
   }
-  if (backup.format !== BACKUP_FORMAT || ![1, SCHEMA_VERSION].includes(backup.schemaVersion)) {
-    throw new ValidationError('Unsupported backup format or schema version. This app supports StepTrace backup versions 1 and 2.');
+  if (backup.format !== BACKUP_FORMAT || ![1, 2, SCHEMA_VERSION].includes(backup.schemaVersion)) {
+    throw new ValidationError('Unsupported backup format or schema version. This app supports StepTrace backup versions 1, 2, and 3.');
   }
   if (backup.workspace?.schemaVersion !== backup.schemaVersion) {
     throw new ValidationError('Backup envelope and workspace schema versions must agree.');

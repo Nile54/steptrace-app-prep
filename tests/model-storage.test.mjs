@@ -170,7 +170,7 @@ test('reload and versioned export/import preserve source IDs, exact anchors, and
   assert.deepEqual(reloaded.workspace, workspace);
   const json = serializeBackup(reloaded.workspace);
   assert.equal(JSON.parse(json).format, 'steptrace-backup');
-  assert.equal(JSON.parse(json).schemaVersion, 2);
+  assert.equal(JSON.parse(json).schemaVersion, 3);
   const restored = parseBackup(json);
   assert.deepEqual(restored, workspace);
   assert.equal(Object.isFrozen(restored.applications[0].tasks[0].anchor), true);
@@ -284,7 +284,7 @@ test('input and import size limits reject blank or oversized material before it 
   assert.throws(() => application('x'.repeat(LIMITS.sourceChars + 1)), /at most/);
   assert.throws(() => createApplication(createWorkspace(), { title: 'x'.repeat(LIMITS.titleChars + 1), text: SOURCE }), /at most/);
   assert.throws(() => parseBackup(' '.repeat(LIMITS.payloadBytes + 1)), /2 MiB/);
-  const tooMany = { schemaVersion: 2, applications: Array.from({ length: LIMITS.applications + 1 }, () => ({})) };
+  const tooMany = { schemaVersion: 3, applications: Array.from({ length: LIMITS.applications + 1 }, () => ({})) };
   assert.throws(() => validateWorkspace(tooMany), /0–100/);
 });
 
