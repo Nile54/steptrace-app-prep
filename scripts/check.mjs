@@ -3,7 +3,7 @@ import { readFile, readdir } from 'node:fs/promises';
 import { spawnSync } from 'node:child_process';
 import { passages, tasks, changePreview } from '../dist/src/demo.js';
 
-for (const file of [...(await readdir(new URL('../dist/src/', import.meta.url))).filter(file => file.endsWith('.js')).map(file => `dist/src/${file}`), 'scripts/serve.mjs', 'scripts/check.mjs', 'tests/browser-server.mjs']) {
+for (const file of [...(await readdir(new URL('../dist/src/', import.meta.url))).filter(file => file.endsWith('.js')).map(file => `dist/src/${file}`), 'dist/sw.js', 'scripts/serve.mjs', 'scripts/check.mjs', 'tests/browser-server.mjs', 'tests/accessibility-server.mjs', 'tests/accessibility-diagnostics.js', 'tests/service-worker-diagnostics.js']) {
   const result = spawnSync(process.execPath, ['--check', file], { cwd: new URL('../', import.meta.url), encoding: 'utf8' });
   assert.equal(result.status, 0, result.stderr);
 }

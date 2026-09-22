@@ -77,15 +77,16 @@ export function renderTaskReviews(task, application, { onResolve, report, report
       if (!review.resolution.anchor) record.append(node('p', 'Kept the task without a source mapping for this version. Its original source and completion history remain.', 'no-source-label'));
       if (review.resolution.note) record.append(node('p', review.resolution.note, 'resolution-note'));
     } else if (review.kind !== 'exact') {
-      const form = node('form'); form.setAttribute('aria-label', `Resolve version ${number} for ${task.title}`);
+      const form = node('form'); form.id = `source-review-form-${review.id}`; form.setAttribute('aria-label', `Resolve version ${number} for ${task.title}`);
       const textareaId = `review-source-${review.id}`;
       const sourceLabel = node('label', `Version ${number} instructions — select the matching passage`); sourceLabel.htmlFor = textareaId;
       const sourceInput = node('textarea'); sourceInput.id = textareaId; sourceInput.value = source.text; sourceInput.readOnly = true; sourceInput.rows = 6; sourceInput.className = 'review-snapshot';
       form.append(sourceLabel, sourceInput, node('p', 'Inspect the full context. Select a passage with a pointer or Shift + arrow keys, then use the selection. A candidate is not confirmed until you record your resolution.', 'helper'));
       let chosen; // undefined: no decision yet; null: explicit no-mapping choice.
-      const choiceText = node('blockquote', 'No mapping chosen yet.', 'chosen-mapping'); choiceText.setAttribute('aria-live', 'polite');
+      const choiceInput = node('input'); choiceInput.type = 'hidden'; choiceInput.id = `mapping-${review.id}`; form.append(choiceInput);
+      const choiceText = node('blockquote', 'No mapping chosen yet.', 'chosen-mapping');
       const buttons = node('div', undefined, 'button-row');
-      function choose(anchor) { chosen = anchor; choiceText.textContent = anchor ? anchor.quote : 'No source mapping for this version. Explain your decision below.'; noteInput.required = anchor === null; }
+      function choose(anchor) { chosen = anchor; choiceInput.value = JSON.stringify(anchor); choiceInput.dispatchEvent(new Event('input', { bubbles: true })); choiceText.textContent = anchor ? anchor.quote : 'No source mapping for this version. Explain your decision below.'; noteInput.required = anchor === null; }
       const useSelection = node('button', 'Use selected passage', 'secondary'); useSelection.type = 'button';
       useSelection.addEventListener('click', () => { try { choose(anchorFromSelection(source.text, sourceInput.selectionStart, sourceInput.selectionEnd)); report(`Mapping selected for version ${number}. Confirm applicability and record the resolution.`); } catch (error) { reportError(error); } });
       buttons.append(useSelection);
@@ -106,6 +107,9 @@ export function renderTaskReviews(task, application, { onResolve, report, report
       const noteInput = node('textarea'); noteInput.id = noteLabel.htmlFor; noteInput.maxLength = 1000; noteInput.rows = 2;
       const submit = node('button', `Record resolution for version ${number}`); submit.type = 'submit';
       form.append(applyLabel, select, noteLabel, noteInput, node('p', 'This records your decision for this version only. Completion history and other open reviews stay intact. Resolving an older version does not change the latest applicability decision.', 'helper'), submit);
+      form.addEventListener('draft-restored', () => {
+        if (choiceInput.value) { try { chosen = JSON.parse(choiceInput.value); choiceText.textContent = chosen?.quote || 'No source mapping for this version. Explain your decision below.'; noteInput.required = chosen === null; } catch { chosen = undefined; } }
+      });
       form.addEventListener('submit', event => {
         event.preventDefault();
         if (chosen === undefined) { reportError(new Error('Select a source mapping, or explicitly keep this task without one.')); return; }

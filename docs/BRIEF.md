@@ -7,7 +7,7 @@
 - User-supplied GitHub: [Nile54](https://github.com/Nile54), whose public profile displays Nilesh Nandakumar. Public profile viewed September 14, 2026; repository code was not audited.
 - Target: tech/AI jobs and internships, supplied by the user September 14, 2026. Emphasize explainable software design and tested behavior; do not invent AI capabilities.
 - Verified profile skills carried from the supplied research: JavaScript, HTML, CSS (and Java, unused here). The research verified the skills from LinkedIn, not GitHub code. No framework or backend skill is presumed.
-- Budget: zero. Sessions 1–4 are local only.
+- Budget: zero. Sessions 1–5 are local only.
 
 ## Problem and hypothesis
 
@@ -21,17 +21,17 @@ The person resolves applicability and uncertainty. The app does not decide eligi
 
 Session 1 established a runnable fictional preview, retained at `/preview.html`. Its 500-to-400-word essay change and two review reasons are scripted and do not affect the working workspace.
 
-Session 2 established source-linked tasks, manual tasks, applicability choices, completion history, local storage, and previewed JSON restore. Session 3 adds immutable source versions, deterministic before/after paragraphs, conservative task mappings, and resolutions tied to individual source versions. Original sources, exact anchors, and completion records remain intact. Session 4 adds human-confirmed dependencies, separate downstream review reasons, explicit work-change reports, and recorded blockers. The working interface is `/`; use fictional information while evaluating it.
+Session 2 established source-linked tasks, manual tasks, applicability choices, completion history, local storage, and previewed JSON restore. Session 3 adds immutable source versions, deterministic before/after paragraphs, conservative task mappings, and resolutions tied to individual source versions. Original sources, exact anchors, and completion records remain intact. Session 4 adds human-confirmed dependencies, separate downstream review reasons, explicit work-change reports, and recorded blockers. Session 5 improves keyboard/focus behavior, offers one-step and full checklist views, preserves same-tab drafts, and caches app files for offline loading after setup. The working interface is `/`; use fictional information during development. Actual checks and limitations are recorded in CHECKS, ACCESSIBILITY and PRIVACY.
 
 Automatic mapping requires a unique unchanged paragraph and selected phrase, with unchanged immediate neighboring paragraphs or document boundaries. Other mappings require a person. New unlinked text remains visible even inside partially linked paragraphs. Older acknowledgments cannot clear newer reviews. Details, limitations, and migration rules are in [COMPARISON](COMPARISON.md).
 
 Planned core: one person/device, pasted text or plain-text files, immutable source versions, exact anchors, user-authored tasks and applicability, conservative comparison, explained dependency review, completion/work history, reliable local storage, and versioned JSON backup/restore.
 
-Outside the core: eligibility decisions, application submission, completeness guarantees, OCR/scanned PDF ingestion, automatic web monitoring, email ingestion, real recommendation-letter handling, multi-user editing, AI-generated completeness claims, or an unjustified backend. AI, public release, career-profile changes, commercialization, and Session 5 accessibility/offline expansion are outside Session 4.
+Outside the core: eligibility decisions, application submission, completeness guarantees, OCR/scanned PDF ingestion, automatic web monitoring, email ingestion, real recommendation-letter handling, multi-user editing, AI-generated completeness claims, or an unjustified backend. Human evaluation, AI, public release, career-profile changes, and commercialization are outside Session 5.
 
 ## Architecture boundaries
 
-| Module | Session 4 state | Responsibility |
+| Module | Session 5 state | Responsibility |
 | --- | --- | --- |
 | `dist/src/demo.js` | Fictional fixtures only | Keep public demo data synthetic |
 | `dist/src/app.js` | Working creation/edit/restore UI | Interface orchestration and accurate saved/unsaved feedback |
@@ -46,6 +46,8 @@ Outside the core: eligibility decisions, application submission, completeness gu
 | `dist/src/dependency-ui.js` | Implemented | Confirmed linear dependencies, independent review forms, and reported work edits |
 | `dist/src/dependency-demo.js` | Opt-in working example | Fictional 500→400 change through the real model |
 | `dist/src/schema-v2.js` | Retained legacy reader | Preserve source and review semantics through schema-3 migration |
+| `dist/src/drafts.js` | Same-tab recovery | Form drafts, view preferences and journal before workspace writes |
+| `dist/src/offline.js`, `dist/sw.js` | App-file caching | Offline status, complete revisioned shell, explicit guarded updates |
 
 Comparison stays separate from UI and storage. Source snapshots, completion events, and review records are distinct data. Dependency and work-edit reasons remain separate from completion, with two work reports under one source version separately reviewable. Confirmed edges and recorded work changes have histories. Each downstream reason identifies its cause and one linear causal path; removing a link does not erase history. See DEPENDENCIES.md.
 
@@ -54,6 +56,10 @@ Storage uses schema-3 JSON under the retained `steptrace.workspace.v1` key. Sche
 Future comparison algorithm or reason-string changes require schema compatibility work: preserve an old reader/engine or explicitly migrate existing records without erasing their histories. The preserved schema-2 reader and current validation recompute the original deterministic descriptors using source versions and the decisions known at the update time.
 
 The app writes one validated workspace per localStorage operation and only reports success after that succeeds. Quota/unavailable/conflict errors leave current work exportable in memory. Unreadable preexisting storage is preserved for recovery. Read-before-write conflict detection is not atomic cross-tab locking: use one editing tab. Prepared backups are invalidated after edits. Browser storage is not a backup or encryption. Bounds: 100 applications, 2,000 tasks, 100,000 characters per source, 50 source versions per application, and 2 MiB JSON with envelope space reserved. No deletion, replacement restore, or correction of a recorded source resolution is provided in this milestone.
+
+Form drafts, view preferences, and an interrupted-save copy use sessionStorage separately from the saved workspace. Drafts survive redraw and ordinary reload when that storage succeeds; closing the tab, clearing storage, or a browser failure can remove them. They are not included in workspace exports. Pending workspace recovery validates the backup and checks the previous stored bytes before reopening it; conflicting saved work remains untouched. App updates wait for an explicit action and successful save/draft checks. This is best-effort recovery, not durable transactional storage. See [privacy and recovery limits](PRIVACY.md).
+
+Offline loading requires a successful initial online setup in a supported secure context, including the local server address. The service worker caches only the complete, versioned static app shell. It does not store workspace content in its cache. Browser eviction can remove that shell. Application text is processed locally, but app files and update checks use network requests; zero network traffic is not claimed.
 
 File downloads were verified in Chrome. The Codex in-app browser did not expose a completed download in this test; its read-only backup JSON can be copied and saved manually. Files and paste-based restoration were verified without sending text to a third-party service. Browser extensions and browser-sync behavior are outside the app's control.
 

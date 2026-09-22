@@ -1,47 +1,44 @@
 # StepTrace state
 
-Updated September 20, 2026. **Session 4 — complete. Stop before Session 5.**
+Updated September 22, 2026. **Session 5 complete. Stop before evaluation or deployment.**
 
 ## Repository and scope
 
-- Actual repository: `/Users/nileshnandakumar/Documents/Codex/2026-09-14/before-session-one-supplying-your-github/outputs/steptrace-local`.
-- Branch: `codex/session-4`, started from `4b1d27d` (Session 3). Initial working tree was clean. Earlier files, exact source data and saved fictional browser work were preserved.
-- Prior STATE and CHECKS are archived in `docs/history/SESSION-3-STATE.md` and `SESSION-3-CHECKS.md`. Original research/session prompts remain in `docs/references/`.
-- User: GitHub [Nile54](https://github.com/Nile54), targeting tech/AI jobs and internships. Stack remains JavaScript, HTML and CSS with no package dependencies added.
-- StepTrace is still a provisional name with documented conflicts. No public slug was selected. Competitors/prior art and demand assumptions remain in BRIEF.
-- Only Session 4 was implemented: confirmed dependencies, explained review propagation, reported work edits and compatible persistence. No Session 5 offline/accessibility expansion, OCR, scraping, LLM, real application documents, outreach, remote repository, push, deployment, billing or spending.
+- Repository: `/Users/nileshnandakumar/Documents/Codex/2026-09-14/before-session-one-supplying-your-github/outputs/steptrace-local`.
+- Branch: `codex/session-5`, from Session 4 commit `33a6d7c`. Initial working tree was clean. User data and earlier source/completion histories were preserved; tests used fictional data on isolated origins.
+- Session 4 STATE/CHECKS are archived in `docs/history/SESSION-4-STATE.md` and `SESSION-4-CHECKS.md`. Original prompts/research remain in `docs/references/`.
+- User: GitHub Nile54, targeting tech/AI jobs and internships. JavaScript, HTML and CSS; package version 0.5.0. No production package dependency added. The optional local audit harness uses pinned axe-core 4.10.3 from ignored `work/`.
+- Only the existing workflow was improved. No new product area, participant evaluation, outreach, OCR, scraping, AI service, real application documents, remote repository, push, deployment, billing or profile update.
+- StepTrace remains a provisional name with known conflicts. No public slug or demand claim was established.
 
 ## Implemented
 
-- Plain **This step depends on…** checklist interaction with explicit confirmation. Empty confirmation removes current links; all decisions retain history. Self, duplicate, missing, cross-application and cyclic references are rejected.
-- Direct and transitive dependency reviews from each nonexact source review. Each affected task receives one reason per unique cause with its own ID, arrival time, historical causal path and optional acknowledgment. Diamond paths do not duplicate the same cause.
-- **I changed this work** requires a person's note and creates a unique work event. Two edits under one source version remain separately reviewable. No external-file observation is claimed.
-- Source reviews, downstream reviews, applicability and completion remain distinct. Acknowledging one event on one task leaves other events, other tasks and newer source versions open. Completion history is never reset by a change/review.
-- Removing links preserves already-recorded reasons. New links account for unresolved source and inherited dependency reasons. Historical paths remain understandable if current edges differ.
-- Recorded blockers show unknown applicability, open reviews and incomplete applicable predecessors. Does not apply skips a branch's completion requirement while its own changed-condition review still blocks. Conflicts remain for the person to resolve; the app does not infer precedence from notes.
-- Schema 3 retains schema-1/2 compatibility. Opening older data migrates in memory, preserving old stored bytes until a successful save. Imports validate historical graph decisions and replay expected cause/path records, rejecting missing/invented reasons and invalid acknowledgments.
-- Opt-in working Cedar fixture: completed fictional 380-word essay, proofreading and recommendation; confirmed essay dependency; real preview/save of 500→400 words and added condition; explicit creation of that condition as Not decided. Existing work is not declared invalid.
+- Semantic keyboard controls, section navigation, stable visible focus, source-to-task return, readable focused errors with a return control, labeled backup JSON, and restrained action/offline status announcements. Completion, applicability and review remain separate and use text alongside color.
+- Full checklist and one-step views. Previous/Next and the step chooser retain user control; completion does not advance automatically. Dependencies use named controls and ordered text paths. No diagram, forced motion, countdown or streak.
+- Readable responsive layout and a 125% text option; wrapping controls and narrower review panels support zoom/narrow windows.
+- Same-tab draft recovery keyed by application/form. Drafts survive redraws and normal reloads when sessionStorage works. Rebinding restores the right application's draft, successful submissions clear hidden values, malformed drafts/preferences cannot silently overwrite existing recovery data or crash startup, and errors remain visible. Drafts are not automatically submitted or included in workspace exports.
+- Pending workspace writes are journaled before the primary write when possible. Reload validates and recovers a matching interrupted copy; conflicts keep current saved data unchanged and expose a separate recovery download. Failed writes remain exportable. Original unreadable storage and conflicting recovery copies are preserved.
+- Linked task drafts survive new source versions. Submitting an old draft excerpt requires current selection or deliberate removal of its link; it cannot silently become a manual task.
+- A revisioned service worker caches only public static app files. Complete installation precedes activation, updates wait for an explicit choice and save/draft checks, and cache repair avoids mixing versions. Early response-body consumption fixes an installation connection stall found in Chrome. Worker code never writes workspace/draft storage.
+- Concise actual-behavior notes in `docs/ACCESSIBILITY.md` and `docs/PRIVACY.md`, with the full evidence and omissions in `docs/CHECKS.md`.
 
-## Architecture and decisions
+The workspace remains schema 3, retaining schema-1/2 compatibility. Comparison rules, source snapshots, exact anchors and domain semantics are unchanged. No migration was needed. Keep comparison, dependencies, storage, drafts and offline modules separate.
 
-- `dist/src/dependencies.js`: iterative cycle detection, reversed-graph traversal, historical event replay, causal descriptions and recorded blockers.
-- `dist/src/model.js`: validated immutable records and explicit dependency/work/review actions. `schema-v2.js` preserves the old validator alongside `schema-v1.js`.
-- `dist/src/storage.js`: schema-3 export, schema-1/2/3 import, read-only migration and honest local-save recovery.
-- `dist/src/dependency-ui.js`: linear controls, individual review forms and histories; `app.js` orchestrates saves and focus.
-- `dist/src/dependency-demo.js`: fictional example through the real domain API, with a model test.
-- `dist/src/comparison.js` is unchanged. Original text, exact anchors and comparison reason semantics remain intact. See COMPARISON before modifying them.
-- Read `docs/DEPENDENCIES.md` for the algorithm, schema, edge-history behavior, tradeoffs and interview explanation.
+## Verification
 
-## Actual checks
+- Final `./run.sh check`: **114 passed, 0 failed**, including syntax/assets/fictional fixtures. `git diff --check` clean.
+- Four axe-core scans of selected creation/restore, checklist/review/comparison, narrow one-step and final Chrome states: **0 reported violations**. Each had 47 passed and 43 inapplicable rules. Textarea contrast remained incomplete in the engine; visual and authored-color checks are recorded separately. This is not complete WCAG conformance.
+- Keyboard-activated creation, exact-source selection/return, completion, one-step/full views, source comparison, source resolution, downstream review, error return, backup preparation and pasted restore checked. The latest linked-draft/source-version guard was verified in Chrome after final review fixes.
+- 320-pixel view with Larger text inspected; no horizontal overflow. Native Chrome 200% and 400% zoom inspected; at 400%, page and layout widths both 374 CSS pixels. Export remained reachable. Zoom/viewport overrides were restored.
+- Malformed pasted JSON left existing exported workspace objects exactly equal. Automated malformed/conflicting batch tests preserve existing data. Native file-picker testing did not complete; see limitations below.
+- Real-browser interrupted-write fault at 4194: Not saved shown, pending export available, same-tab reload recovered exactly equal work, retry saved, next reload retained it. Denied sessionStorage showed accurate draft warnings while primary saving/export still worked. Unit tests cover quota and unreadable/conflicting recovery.
+- Real Chrome offline check at 4193: after online setup, stopped the app server and confirmed no listener. Reload preserved exact saved data and an unsubmitted draft. Created/completed a task, compared versions, exported and reloaded again with the server unavailable; resulting workspace equality passed.
+- Real worker update at 4193: a changed shell waited for **Update app and reload**. Explicit activation retained both a pending form draft and exact workspace data. Unsafe update/reload branches have separate automated checks.
+- Static privacy audit and runtime diagnostics found only same-origin static app assets and no core-use fetch/XHR/beacon calls. Runtime creation, comparison, review, progress, export/restore checks and production operation with the server unavailable support local processing. All authored demo/test content is fictional. No encryption or zero-device-traffic claim.
 
-- `./run.sh check`: **82 passed, 0 failed**, plus syntax/assets/scripted-fixture checks. 66 existing tests + 15 dependency tests + 1 working-demo test.
-- Covered direct/transitive effects, unaffected work, cycles/invalid references, multiple ancestors/diamonds, two same-version work edits, version-isolated acknowledgments, edge changes, historical path loops, blockers, strict restore validation, migration and quota failures.
-- Main real-browser demonstration: one direct essay review, one proofreading reason, all three completion histories retained, recommendation unchanged/no open review, added condition Not decided. Existing Session 3 application's exported record and original Cedar source/completion histories compared exactly equal.
-- Full workspace equality verified after reload and UI export/import to isolated origin `4185`. In that restored copy, a cycle was rejected; two work reports produced distinct reasons; acknowledging the first left the second and source review open. Completion remained unchanged. The resulting workspace survived another reload exactly.
-- The event-rich export restored in the quota-once harness at `4186`: failed save showed Not saved, unsaved export equaled the input workspace, retry reported success only when the write succeeded.
-- Linear causal-review layout visually inspected. No warning/error console entries appeared in the three checked tabs. Detailed procedure and limits: `docs/CHECKS.md`. No new full cross-browser, screen-reader, accessibility-conformance or offline audit. No participants, interviews, measured user benefit or market validation.
+See CHECKS for exact environments, procedures, failures found, tool limitations and repeat commands. Node test output from this run is in ignored `work/session5-final-checks.txt`.
 
-## Run and handoff
+## Run and local commit
 
 ```sh
 cd /Users/nileshnandakumar/Documents/Codex/2026-09-14/before-session-one-supplying-your-github/outputs/steptrace-local
@@ -49,26 +46,21 @@ cd /Users/nileshnandakumar/Documents/Codex/2026-09-14/before-session-one-supplyi
 ./run.sh check
 ```
 
-Open `http://127.0.0.1:4173`. Choose **Cedar Scholarship — dependency example (fictional)** in the saved demo browser, or create your own fictional example using **Try a fictional dependency example**. README has the full before/after sequence. The app uses actual saved data; only `/preview.html` remains the earlier scripted preview.
-
-The main server is left running for the demonstration; use `./run.sh` if it later stops. Ctrl+C stops a server started in your terminal. Test servers are stopped at handoff. Different browser/profile, host or port means different saved data. Use one editing tab; the user's separate Chrome workspace was not edited.
+Default app: `http://127.0.0.1:4173`. An existing server may need restarting to serve the new allowlist. Different host, port, browser or profile means different saved data. Use one editing tab and export before moving origins. Do not use port 4190 for offline testing: browsers block Fetch on that port.
 
 - Node: `/Users/nileshnandakumar/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node` (v24.19.0). Other machines need Node 22+.
 - Git: `/Users/nileshnandakumar/.cache/codex-runtimes/codex-primary-runtime/dependencies/bin/fallback/git`.
-- No installation is needed. Avoid triggering an OS developer-tools install just to run system git/python.
-- Milestone commit subject: `Add confirmed dependencies and independent work review`. Use the verified git executable with `log -1 --oneline` for its ID. Command-scoped `Codex <codex@local.invalid>` identity; no global identity changes.
+- Local commit subject: `Improve accessible workflows and offline recovery`. Read its hash with `git log -1 --oneline`; identity is scoped to the command, with no global configuration change.
+- Test servers are stopped at handoff. Run the app again when needed; a browser that completed offline setup can also use its cached shell. No hosted deployment was created.
 
-## Limits and unresolved questions
+## Limits and next boundary
 
-- Propagation follows only confirmed relationships. Missing links, semantic instruction conflicts and remote-file edits are not detected. Conservative matching may request extra review; it cannot prove eligibility or completeness.
-- A work report made before any downstream link exists remains historical, without retroactive flags when links are later added. Existing open downstream reasons can propagate to newly linked work. Confirm dependencies before reporting edits to track their effects.
-- One historical path is retained per cause/task, not every possible route. Names displayed along a path use current task titles. Full event replay favors correctness for small local workspaces; large dense histories are not performance-benchmarked.
-- Resolutions/acknowledgments cannot be corrected or reopened in this milestone. New updates/reports get new reasons. Legacy review flags remain visible without an invented cause or automatic resolution.
-- Applicability/conflict decisions rely on the person. The app cannot determine whether an acknowledgment note actually resolves uncertainty. No-recorded-blockers is limited to the recorded plan, not readiness to submit.
-- Unsubmitted form drafts are not persisted/exported; another action can discard them. Browser storage can be cleared and is not encryption, atomic multi-tab locking or installed offline support. Back up separately.
-- Additive restore only; no replacement/deletion/deduplication. Bounds: 100 applications, 2,000 tasks across the workspace, 50 source versions/application, 100,000 characters/source, 2,000 dependency decisions and work reports each/application, 2,000 dependency reviews/task, 1,000 characters/note and 2 MiB JSON with envelope space reserved.
-- Instruction-change frequency, setup effort, accessibility needs, source-link usefulness, exact target role and replacement public name remain unresolved. Five interview questions are prepared; nobody was contacted.
+- No spoken VoiceOver/NVDA session was verified: tools exposed accessibility trees but did not capture speech. Live-region timing, virtual-cursor order and source selection with a screen reader remain unverified. No participant accessibility evaluation or broad browser/mobile certification.
+- Chrome's automated file picker refused local files because extension file access was disabled. The native fallback did not complete. No permission was changed. Pasted restore/parser checks passed; this session does not claim successful malformed native-file selection or a fresh download-to-disk verification.
+- Offline testing simulated loss of the app origin, not OS-wide network disconnection. Device power loss, browser process crash at every point, private mode, cache/storage eviction and cross-browser worker updates are not fully tested.
+- Browser storage can be denied, full, cleared or evicted. Same-tab drafts/recovery may disappear when the tab closes. They are not separate backups, app encryption or atomic multi-tab locking. Export workspace records and separately save/copy unsubmitted drafts. Read-before-write conflict detection still requires one editing tab.
+- The Chrome test profile had a Grammarly integration. Browser/extension/OS traffic was not disabled or audited. The app's no-content-upload behavior is distinct from software outside its control.
+- Existing domain limits remain: conservative comparison, human applicability decisions, only confirmed dependencies, no proof of eligibility/completeness, additive restore only, no deletion/deduplication or reopening historical review decisions. Unrecorded relationships and remote edits cannot be inferred.
+- No instruction-change frequency, setup-effort benefit, target-user accessibility needs or demand has been validated. BRIEF retains these questions.
 
-Only on a new Session 5 request: read AGENTS, BRIEF, ROADMAP, STATE and the saved prompt; preserve user changes/data; address the authorized accessibility, offline and recovery milestone; run relevant checks, update STATE, commit logically, then stop.
-
-**Session 4 is the stopping point.**
+Next session only on a new user request: read AGENTS, BRIEF, ROADMAP, STATE and the Session 6 prompt; evaluate usefulness with honest evidence. **Do not begin that work, publish, or deploy as part of Session 5.**

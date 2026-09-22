@@ -1,3 +1,5 @@
+import { createTabJournal, createFormDrafts, createSaveRecovery, readTabPreferences } from './drafts.js';
+import { initOffline } from './offline.js';
 import { createApplication, createTask, updateTask, isTaskCompleted, addSourceVersion, resolveSourceReview, getTaskAnchor, getTaskReviewState, LIMITS } from './model.js';
 import { createStorage, serializeBackup, parseBackup, mergeWorkspaces, STORAGE_KEY } from './storage.js';
 import { anchorFromSelection, selectionFromAnchor } from './source-selection.js';
@@ -28,13 +30,51 @@ const dateLabel = value => new Date(value).toLocaleString();
 export function startApp(storage = createStorage()) {
   const $ = selector => document.querySelector(selector);
   const initial = storage.load();
-  let workspace = initial.workspace;
+  const journal = createTabJournal();
+  const drafts = createFormDrafts(journal, { onStatus: text => { $('#draft-status').textContent = text; } });
+  const recovery = createSaveRecovery();
+  const recovered = recovery.read();
+  let recoveryWritable = !recovered.error;
+  let recoveredUnsaved = false;
+  let recoveredWorkspace = null;
+  let recoveryMessage = recovered.error || '';
+  if (recovered.pending) {
+    try {
+      const candidate = parseBackup(recovered.pending.backup);
+      if (JSON.stringify(candidate) === JSON.stringify(initial.workspace) && !initial.blocked) {
+        if (!recovery.clear()) recoveryMessage = 'Saved work is intact, but its same-tab recovery copy could not be removed. It may appear again after reload.';
+      }
+      else {
+        $('#download-recovery').hidden = false;
+        $('#download-recovery').addEventListener('click', () => download(recovered.pending.backup, 'steptrace-interrupted-work.json'));
+        if (!initial.blocked && initial.raw === recovered.pending.expectedRaw) {
+          recoveredWorkspace = candidate; recoveredUnsaved = true;
+          recoveryMessage = 'Recovered interrupted changes in this tab. They are not saved to the workspace yet. Retry saving or export a backup.';
+        } else {
+          recoveryWritable = false;
+          recoveryMessage = 'An interrupted-work copy differs from current storage. Current saved work was opened unchanged. Download the interrupted-work backup to keep both copies; no automatic merge was performed.';
+        }
+      }
+    } catch { recoveryWritable = false; recoveryMessage = 'An interrupted-work copy could not be validated. It was left untouched. Current saved work is unchanged.'; }
+  }
+  $('#recovery-status').textContent = recoveryMessage;
+  const preferences = readTabPreferences(journal);
+  let viewMode = preferences.viewMode === 'one' ? 'one' : 'full';
+  let stepId = typeof preferences.stepId === 'string' ? preferences.stepId : null;
+  let returningTaskId = null;
+  let submittingForm = null;
+  let storageConflict = false;
+  let errorControl = null;
+  document.addEventListener('submit', event => { submittingForm = event.target; queueMicrotask(() => { submittingForm = null; }); }, true);
+
+  let workspace = recoveredWorkspace || initial.workspace;
   let expectedRaw = initial.raw;
   let storageBlocked = initial.blocked;
-  let activeId = workspace.applications[0]?.id ?? null;
+  let activeId = workspace.applications.some(app => app.id === preferences.activeId) ? preferences.activeId : workspace.applications[0]?.id ?? null;
+  let renderedApplicationId = null;
   let selectedAnchor = null;
   let restoreCandidate = null;
-  let unsaved = false;
+  let unsaved = recoveredUnsaved;
   let originalFileText = null;
   let sourceReadSequence = 0;
   let restoreReadSequence = 0;
@@ -42,8 +82,9 @@ export function startApp(storage = createStorage()) {
   let comparedSourceId = null;
   let versionCandidate = null;
   const activeApplication = () => workspace.applications.find(app => app.id === activeId);
-  function report(message) { $('#action-error').hidden = true; $('#action-status').textContent = message; }
+  function report(message) { $('#action-error').hidden = true; $('#return-to-control').hidden = true; $('#action-status').textContent = message; }
   function reportError(error) {
+    errorControl = document.activeElement; $('#return-to-control').hidden = !errorControl || errorControl === document.body;
     $('#action-status').textContent = '';
     $('#action-error').textContent = error.message ?? String(error);
     $('#action-error').hidden = false;
@@ -55,6 +96,12 @@ export function startApp(storage = createStorage()) {
   }
   function persist() {
     unsaved = true;
+    let journaled = false;
+    if (recoveryWritable) {
+      try { journaled = recovery.write(serializeBackup(workspace), expectedRaw); } catch { /* export/save will show validation errors */ }
+    }
+    $('#recovery-status').textContent = journaled ? 'A same-tab recovery copy protects this pending write. Keep separate backups.'
+      : `${!recoveryWritable && recoveryMessage ? `${recoveryMessage} ` : ''}A reload recovery copy of the latest changes is unavailable. Keep this tab open if saving fails and export your current work.`;
     if (storageBlocked) {
       showSaveStatus('Not saved. Storage could not be safely read. Keep this tab open and export a JSON backup. Existing stored data has not been replaced.', true);
       return;
@@ -62,6 +109,10 @@ export function startApp(storage = createStorage()) {
     const result = storage.save(workspace, expectedRaw);
     if (result.ok) {
       expectedRaw = result.raw; unsaved = false;
+      if (recoveryWritable) {
+        const cleared = recovery.clear(); $('#download-recovery').hidden = true;
+        $('#recovery-status').textContent = cleared ? '' : 'Workspace saved. A same-tab recovery copy could not be removed; an older copy may appear again after reload.';
+      } else $('#recovery-status').textContent = recoveryMessage;
       $('#retry-save').hidden = true;
       showSaveStatus(`Saved on this device at ${new Date().toLocaleTimeString()}. Download a backup for a separate copy.`);
     } else {
@@ -70,7 +121,8 @@ export function startApp(storage = createStorage()) {
       $('#retry-save').hidden = Boolean(storageBlocked);
     }
   }
-  function accept(next, message) {
+  function accept(next, message, completedForm = submittingForm) {
+    if (completedForm) drafts.clear(completedForm);
     workspace = next;
     $('#backup-preview').hidden = true;
     persist(); renderWorkspace();
@@ -81,7 +133,7 @@ export function startApp(storage = createStorage()) {
     selectedAnchor = null;
     $('#selected-excerpt').hidden = true;
     $('#no-source-notice').hidden = false;
-    $('#selected-quote').textContent = '';
+    $('#selected-quote').textContent = ''; $('#task-anchor').value = '';
   }
   function makeSelect(id, value) {
     const select = element('select'); select.id = id;
@@ -100,7 +152,8 @@ export function startApp(storage = createStorage()) {
     $('#use-selection').disabled = source.id !== app.sources.at(-1).id;
     $('#source-location').textContent = ''; $('#located-quote').hidden = true;
   }
-  function showAnchor(anchor, title) {
+  function showAnchor(anchor, title, taskId) {
+    returningTaskId = taskId; $('#return-to-task').hidden = false; $('#return-to-task').textContent = `Return to task: ${title}`;
     viewedSourceId = anchor.sourceVersionId; renderSource();
     const source = activeApplication().sources.find(source => source.id === viewedSourceId);
     const range = selectionFromAnchor(source.text, anchor);
@@ -129,14 +182,14 @@ export function startApp(storage = createStorage()) {
       const sourceButton = element('button', 'View exact source', 'secondary'); sourceButton.type = 'button';
       sourceButton.setAttribute('aria-label', `View exact source for ${task.title}`);
       sourceButton.addEventListener('click', () => {
-        showAnchor(task.anchor, task.title);
+        showAnchor(task.anchor, task.title, task.id);
       });
       item.append(sourceButton);
       const latestAnchor = getTaskAnchor(task, activeApplication().sources.at(-1).id);
       if (latestAnchor && latestAnchor.sourceVersionId !== task.anchor.sourceVersionId) {
         const latestButton = element('button', 'View latest mapped source', 'secondary'); latestButton.type = 'button';
         latestButton.setAttribute('aria-label', `View latest mapped source for ${task.title}`);
-        latestButton.addEventListener('click', () => showAnchor(latestAnchor, task.title)); item.append(latestButton);
+        latestButton.addEventListener('click', () => showAnchor(latestAnchor, task.title, task.id)); item.append(latestButton);
       } else if (!latestAnchor) item.append(element('p', 'No confirmed mapping to the latest source version. Inspect the source reviews below.', 'helper'));
     } else item.append(element('p', 'No source linked · Manually entered task', 'no-source-label'));
     const checkboxRow = element('label', null, 'checkbox-row');
@@ -150,7 +203,7 @@ export function startApp(storage = createStorage()) {
     });
     checkboxRow.append(checkbox, document.createTextNode('Mark completed')); item.append(checkboxRow);
     const editor = element('details', null, 'task-editor'); editor.append(element('summary', 'Edit wording or applicability'));
-    const form = element('form'); form.setAttribute('aria-labelledby', heading.id);
+    const form = element('form'); form.id = `task-edit-form-${task.id}`; form.setAttribute('aria-labelledby', heading.id);
     const titleLabel = element('label', 'Task wording'); titleLabel.htmlFor = `title-${task.id}`;
     const titleInput = element('input'); titleInput.id = titleLabel.htmlFor; titleInput.value = task.title; titleInput.required = true; titleInput.maxLength = LIMITS.titleChars;
     const applyLabel = element('label', 'Applicability — your decision'); applyLabel.htmlFor = `applicability-${task.id}`;
@@ -161,7 +214,7 @@ export function startApp(storage = createStorage()) {
       event.preventDefault();
       try {
         accept(updateTask(workspace, activeId, task.id, { title: titleInput.value, applicability: applySelect.value }), 'Task wording and applicability recorded. Source and completion history are unchanged.');
-        document.getElementById(`task-heading-${task.id}`).focus();
+        focusTask(task.id);
       } catch (error) { reportError(error); }
     });
     editor.append(form); item.append(editor);
@@ -176,31 +229,77 @@ export function startApp(storage = createStorage()) {
       report, reportError,
       onResolve(taskId, reviewId, resolution) {
         accept(resolveSourceReview(workspace, activeId, taskId, reviewId, resolution), 'Resolution recorded for the selected version. Other reviews and completion history are unchanged.');
-        document.getElementById(`task-heading-${taskId}`).focus();
+        focusTask(taskId);
       },
     }));
     item.append(renderDependencies(task, activeApplication(), {
       reportError,
       onDependencies(taskId, dependencyIds) {
         accept(setTaskDependencies(workspace, activeId, taskId, dependencyIds), 'Dependencies confirmed. Existing review reasons and completion history are retained.');
-        document.getElementById(`task-heading-${taskId}`).focus();
+        focusTask(taskId);
       },
       onWorkChange(taskId, change) {
         accept(recordWorkChange(workspace, activeId, taskId, change), 'Your work change was recorded as a new event. Dependent tasks have separate review reasons; completion is retained.');
-        document.getElementById(`task-heading-${taskId}`).focus();
+        focusTask(taskId);
       },
       onAcknowledge(taskId, reviewId, resolution) {
         accept(acknowledgeDependencyReview(workspace, activeId, taskId, reviewId, resolution), 'Reviewed this one change for this task. Other reasons and completion history are retained.');
-        document.getElementById(`task-heading-${taskId}`).focus();
+        focusTask(taskId);
       },
     }));
     return item;
   }
+  function savePreferences() {
+    journal.set('ui', JSON.stringify({ activeId, viewMode, stepId, textSize: $('#text-size').value }));
+    drafts.refreshStatus();
+  }
+  function applyTaskView() {
+    const app = activeApplication(); if (!app) return;
+    if (!app.tasks.some(task => task.id === stepId)) stepId = app.tasks[0]?.id ?? null;
+    const index = app.tasks.findIndex(task => task.id === stepId);
+    for (const task of app.tasks) document.getElementById(`task-${task.id}`).hidden = viewMode === 'one' && task.id !== stepId;
+    $('#step-navigation').hidden = viewMode !== 'one' || !app.tasks.length;
+    $('#step-select').replaceChildren(...app.tasks.map((task, i) => { const option = element('option', `${i + 1}. ${task.title}`); option.value = task.id; return option; }));
+    $('#step-select').value = stepId;
+    $('#step-position').textContent = `Step ${index + 1} of ${app.tasks.length}. Choose when to move; completing a step never moves you automatically.`;
+    $('#previous-step').disabled = index <= 0; $('#next-step').disabled = index >= app.tasks.length - 1;
+    document.querySelector(`input[name="task-view"][value="${viewMode}"]`).checked = true;
+  }
+  function focusTask(id) { stepId = id; applyTaskView(); savePreferences(); document.getElementById(`task-heading-${id}`)?.focus(); }
+  function bindDrafts() {
+    for (const control of document.querySelectorAll('input, textarea, form')) { control.setAttribute('autocomplete', 'off'); control.setAttribute('spellcheck', 'false'); }
+    drafts.bind(document, activeId);
+  }
+  function syncTaskAnchor() {
+    selectedAnchor = null;
+    try { if ($('#task-anchor').value) selectedAnchor = JSON.parse($('#task-anchor').value); } catch { $('#task-anchor').value = ''; }
+    $('#selected-quote').textContent = selectedAnchor?.quote || '';
+    $('#selected-excerpt').hidden = !selectedAnchor; $('#no-source-notice').hidden = Boolean(selectedAnchor);
+  }
+  $('#application-form').addEventListener('draft-restored', () => { originalFileText = $('#original-source-text').value || null; });
+  $('#task-form').addEventListener('draft-restored', syncTaskAnchor);
+  $('#return-to-control').addEventListener('click', () => { if (errorControl?.isConnected) errorControl.focus(); else $('#current-application-title').focus(); });
+  $('#return-to-task').addEventListener('click', () => { if (returningTaskId) focusTask(returningTaskId); });
+  for (const radio of document.querySelectorAll('input[name="task-view"]')) radio.addEventListener('change', () => { viewMode = radio.value; applyTaskView(); savePreferences(); report(viewMode === 'one' ? 'Showing one step at a time. Other tasks and their drafts are retained.' : 'Showing the full checklist.'); });
+  $('#step-select').addEventListener('change', () => focusTask($('#step-select').value));
+  for (const [id, delta] of [['previous-step', -1], ['next-step', 1]]) $( `#${id}`).addEventListener('click', () => { const app = activeApplication(); const index = app.tasks.findIndex(task => task.id === stepId); if (app.tasks[index + delta]) focusTask(app.tasks[index + delta].id); });
+  $('#text-size').value = preferences.textSize === 'large' ? 'large' : 'standard';
+  document.documentElement.classList.toggle('large-text', $('#text-size').value === 'large');
+  $('#text-size').addEventListener('change', () => { document.documentElement.classList.toggle('large-text', $('#text-size').value === 'large'); savePreferences(); });
+  for (const link of document.querySelectorAll('.workspace-nav a')) link.addEventListener('click', () => {
+    const target = document.querySelector(link.getAttribute('href'));
+    if (target.tagName === 'DETAILS') { target.open = true; target.querySelector('summary').focus(); }
+    else { target.tabIndex = -1; target.focus(); }
+  });
   function renderWorkspace() {
+    if (renderedApplicationId !== activeId) {
+      returningTaskId = null; $('#return-to-task').hidden = true; renderedApplicationId = activeId;
+    }
     const app = activeApplication(); $('#application-workspace').hidden = !app;
     $('#application-select').replaceChildren();
     for (const application of workspace.applications) { const option = element('option', application.title); option.value = application.id; $('#application-select').append(option); }
-    if (!app) return;
+    for (const link of document.querySelectorAll('.workspace-nav a')) if (['#source-heading', '#checklist-heading', '#source-changes'].includes(link.getAttribute('href'))) link.hidden = !app;
+    if (!app) { bindDrafts(); return; }
     $('#application-select').value = app.id; $('#current-application-title').textContent = app.title;
     $('#source-version-select').replaceChildren(...app.sources.map((source, index) => { const option = element('option', `Version ${index + 1} · ${source.label}${index === app.sources.length - 1 ? ' · Latest' : ''}`); option.value = source.id; return option; }));
     renderSource();
@@ -218,6 +317,7 @@ export function startApp(storage = createStorage()) {
     if (versionCandidate && (versionCandidate.applicationId !== app.id || versionCandidate.sourceId !== app.sources.at(-1).id)) clearVersionPreview();
     $('#task-count').textContent = `${app.tasks.length} task${app.tasks.length === 1 ? '' : 's'}`;
     $('#task-list').replaceChildren(...app.tasks.map(renderTask)); $('#empty-tasks').hidden = app.tasks.length > 0;
+    applyTaskView(); bindDrafts(); savePreferences();
   }
   $('#application-form').addEventListener('submit', event => {
     event.preventDefault();
@@ -232,6 +332,7 @@ export function startApp(storage = createStorage()) {
     sourceReadSequence += 1; originalFileText = null; $('#source-file').value = ''; $('#application-form button[type="submit"]').disabled = false;
     $('#application-title').value = 'Maple Grove Scholarship (fictional)'; $('#source-label').value = 'Fictional scholarship instructions';
     $('#source-input').value = `${passages.map(p => p.text).join('\n\n')}\n\nIf you are applying as a part-time student, include a study plan.`;
+    $('#original-source-text').value = ''; drafts.remember($('#application-form'));
     report('Fictional draft filled. Review it and choose Create application.');
   });
   $('#create-dependency-demo').addEventListener('click', () => {
@@ -246,16 +347,16 @@ export function startApp(storage = createStorage()) {
   $('#fill-dependency-update').addEventListener('click', () => {
     if (activeApplication()?.sources.at(-1).text !== demoBefore) return;
     clearVersionPreview(); $('#version-label').value = 'Fictional update: 400-word maximum'; $('#version-input').value = demoAfter;
-    $('#new-version').open = true; $('#version-input').focus();
+    drafts.remember($('#version-form')); $('#new-version').open = true; $('#version-input').focus();
     report('Fictional update filled. Preview and save it using the normal source-version controls. A 380-word essay is not automatically invalid under a 400-word maximum.');
   });
   $('#add-demo-condition').addEventListener('click', () => {
     try {
       accept(addDemoCondition(workspace, activeId), 'Conditional sample task linked with applicability Not decided. You decide whether it applies.');
-      document.getElementById(`task-heading-${activeApplication().tasks.at(-1).id}`).focus();
+      focusTask(activeApplication().tasks.at(-1).id);
     } catch (error) { reportError(error); }
   });
-  $('#source-input').addEventListener('input', () => { originalFileText = null; sourceReadSequence += 1; $('#application-form button[type="submit"]').disabled = false; });
+  $('#source-input').addEventListener('input', () => { originalFileText = null; $('#original-source-text').value = ''; sourceReadSequence += 1; $('#application-form button[type="submit"]').disabled = false; });
   $('#source-file').addEventListener('change', async () => {
     const sequence = ++sourceReadSequence; const file = $('#source-file').files[0];
     $('#application-form button[type="submit"]').disabled = Boolean(file); if (!file) return;
@@ -266,27 +367,29 @@ export function startApp(storage = createStorage()) {
       const text = new TextDecoder('utf-8', { fatal: true }).decode(await file.arrayBuffer());
       if (sequence !== sourceReadSequence) return;
       if (text.length > LIMITS.sourceChars) throw new Error('Source instructions must be at most 100,000 characters.');
-      $('#source-input').value = text; originalFileText = text; $('#source-label').value = file.name.slice(0, LIMITS.titleChars);
-      report('Plain-text file loaded into the draft. Review it before creating the application.');
+      $('#source-input').value = text; originalFileText = text; $('#original-source-text').value = text; $('#source-label').value = file.name.slice(0, LIMITS.titleChars);
+      drafts.remember($('#application-form')); report('Plain-text file loaded into the draft. Review it before creating the application.');
     } catch (error) { if (sequence === sourceReadSequence) reportError(error); }
     finally { if (sequence === sourceReadSequence) $('#application-form button[type="submit"]').disabled = false; }
   });
-  $('#application-select').addEventListener('change', () => { activeId = $('#application-select').value; viewedSourceId = null; comparedSourceId = null; clearVersionPreview(); $('#version-form').reset(); clearSelection(); $('#task-form').reset(); renderWorkspace(); });
-  $('#source-version-select').addEventListener('change', () => { viewedSourceId = $('#source-version-select').value; clearSelection(); renderSource(); });
+  $('#application-select').addEventListener('change', () => { activeId = $('#application-select').value; viewedSourceId = null; comparedSourceId = null; clearVersionPreview(); $('#version-form').reset(); clearSelection(); $('#task-form').reset(); renderWorkspace(); $('#current-application-title').focus(); });
+  $('#source-version-select').addEventListener('change', () => { returningTaskId = null; $('#return-to-task').hidden = true; viewedSourceId = $('#source-version-select').value; renderSource(); });
   $('#comparison-version').addEventListener('change', () => { comparedSourceId = $('#comparison-version').value; renderSavedComparison(); });
   $('#use-selection').addEventListener('click', () => {
     try {
       if (viewedSourceId !== activeApplication().sources.at(-1).id) throw new Error('Choose the latest source version before linking a new task.');
-      const input = $('#source-snapshot'); selectedAnchor = anchorFromSelection(activeApplication().sources.at(-1).text, input.selectionStart, input.selectionEnd);
+      const input = $('#source-snapshot'); selectedAnchor = { ...anchorFromSelection(activeApplication().sources.at(-1).text, input.selectionStart, input.selectionEnd), sourceVersionId: viewedSourceId };
+      $('#task-anchor').value = JSON.stringify(selectedAnchor); drafts.remember($('#task-form'));
       $('#selected-quote').textContent = selectedAnchor.quote; $('#selected-excerpt').hidden = false; $('#no-source-notice').hidden = true;
       report('Exact source excerpt selected. Add your task wording below.'); $('#task-title').focus();
     } catch (error) { reportError(error); }
   });
-  $('#clear-selection').addEventListener('click', () => { clearSelection(); report('New task will have no source link.'); });
+  $('#clear-selection').addEventListener('click', () => { clearSelection(); drafts.remember($('#task-form')); report('New task will have no source link.'); $('#task-title').focus(); });
   $('#task-form').addEventListener('submit', event => {
     event.preventDefault();
     try {
-      const next = createTask(workspace, activeId, { title: $('#task-title').value, anchor: selectedAnchor, applicability: $('#task-applicability').value });
+      if (selectedAnchor && selectedAnchor.sourceVersionId !== activeApplication().sources.at(-1).id) throw new Error('This draft excerpt belongs to an earlier source version. Select its current passage or choose no source before adding the task.');
+      const next = createTask(workspace, activeId, { title: $('#task-title').value, anchor: selectedAnchor ? { start: selectedAnchor.start, end: selectedAnchor.end, quote: selectedAnchor.quote } : null, applicability: $('#task-applicability').value });
       clearSelection(); accept(next, 'Task added. Review is separate from completion.'); $('#task-form').reset(); $('#task-title').focus();
     } catch (error) { reportError(error); }
   });
@@ -307,7 +410,9 @@ export function startApp(storage = createStorage()) {
       if (!versionCandidate || versionCandidate.applicationId !== activeId || versionCandidate.sourceId !== activeApplication().sources.at(-1).id) throw new Error('Preview these instructions again before saving the version.');
       const next = addSourceVersion(workspace, activeId, { text: versionCandidate.text, label: versionCandidate.label });
       viewedSourceId = next.applications.find(app => app.id === activeId).sources.at(-1).id; comparedSourceId = viewedSourceId;
-      clearVersionPreview(); clearSelection(); accept(next, 'New immutable source version added. Inspect the comparison and task reviews. Completion history is unchanged.');
+      // Keep an unsubmitted task's selected excerpt. The task submit guard asks
+      // the person to reselect or choose no source if that version is now older.
+      clearVersionPreview(); accept(next, 'New immutable source version added. Inspect the comparison and task reviews. Completion history is unchanged.', $('#version-form'));
       $('#version-form').reset(); $('#new-version').open = false; $('#source-changes').open = true; $('#review-overview').focus();
     } catch (error) { reportError(error); }
   });
@@ -316,7 +421,7 @@ export function startApp(storage = createStorage()) {
     try {
       $('#backup-json').value = serializeBackup(workspace);
       $('#backup-summary').textContent = `Prepared at ${new Date().toLocaleTimeString()}: ${workspace.applications.length} application(s), including any changes not saved locally. Download this file to keep a separate copy.`;
-      $('#backup-preview').hidden = false; report('Backup prepared. Download it to keep a separate copy.');
+      $('#backup-preview').hidden = false; $('#backup-json').focus(); report('Backup prepared. Download it to keep a separate copy. Unsubmitted form drafts are not included.');
     } catch (error) { reportError(error); }
   });
   $('#download-backup').addEventListener('click', () => { try { download($('#backup-json').value, 'steptrace-backup.json'); report('Backup download requested. Check that the file arrived in your downloads.'); } catch (error) { reportError(error); } });
@@ -339,7 +444,7 @@ export function startApp(storage = createStorage()) {
       if (file.size > LIMITS.payloadBytes) throw new Error('Backup files must be at most 2 MB.');
       const text = new TextDecoder('utf-8', { fatal: true }).decode(await file.arrayBuffer()); if (sequence !== restoreReadSequence) return;
       clearRestore();
-      $('#restore-json').value = text; report('Backup file loaded. Choose Preview restore to validate and inspect it.');
+      $('#restore-json').value = text; drafts.remember($('#restore-form')); report('Backup file loaded. Choose Preview restore to validate and inspect it.');
     } catch (error) { if (sequence === restoreReadSequence) reportError(error); }
     finally { if (sequence === restoreReadSequence) $('#restore-form button[type="submit"]').disabled = false; }
   });
@@ -350,13 +455,13 @@ export function startApp(storage = createStorage()) {
   $('#apply-restore').addEventListener('click', () => {
     try {
       const next = mergeWorkspaces(workspace, restoreCandidate); if (!activeId) activeId = restoreCandidate.applications[0]?.id ?? null;
-      clearRestore(); accept(next, 'Restored applications added. Previous applications were preserved.'); $('#restore-form').reset(); restoreReadSequence += 1;
+      clearRestore(); accept(next, 'Restored applications added. Previous applications were preserved.', $('#restore-form')); $('#restore-form').reset(); restoreReadSequence += 1;
       $('#new-application').open = false; $('#current-application-title').focus();
     } catch (error) { reportError(error); }
   });
-  $('#cancel-restore').addEventListener('click', () => { clearRestore(); report('Restore canceled. Existing work is unchanged.'); });
-  window.addEventListener('beforeunload', event => { if (unsaved) { event.preventDefault(); event.returnValue = ''; } });
-  window.addEventListener('storage', event => { if ((event.key === STORAGE_KEY || event.key === null) && event.newValue !== expectedRaw) showSaveStatus('Storage changed in another tab. Export this tab’s work before reloading. Further saves are checked for conflicts.', true); });
+  $('#cancel-restore').addEventListener('click', () => { clearRestore(); report('Restore canceled. Existing work is unchanged.'); $('#restore-form button[type="submit"]').focus(); });
+  window.addEventListener('beforeunload', event => { if (unsaved || (drafts.hasDrafts() && drafts.error)) { event.preventDefault(); event.returnValue = ''; } });
+  window.addEventListener('storage', event => { if ((event.key === STORAGE_KEY || event.key === null) && event.newValue !== expectedRaw) { storageConflict = true; showSaveStatus('Storage changed in another tab. Export this tab’s work before reloading. Further saves are checked for conflicts.', true); } });
   if (initial.error) {
     showSaveStatus(`Local storage could not be loaded. ${initial.error} New work will stay only in this tab; export a backup before leaving.`, true);
     $('#download-original').hidden = typeof initial.raw !== 'string';
@@ -365,4 +470,8 @@ export function startApp(storage = createStorage()) {
     $('#download-original').hidden = false; $('#download-original').textContent = 'Download original stored data';
   } else showSaveStatus(initial.raw === null ? 'No work saved yet. Backup & restore is available below.' : 'Loaded saved work from this device. Download backups regularly.');
   $('#new-application').open = !workspace.applications.length; renderWorkspace();
+  if (recoveredUnsaved) { showSaveStatus('Not saved. Interrupted work was recovered in this tab. Retry saving or prepare a backup before leaving.', true); $('#retry-save').hidden = false; }
+  initOffline({ canReload: () => !unsaved && !storageConflict
+    && !$('#application-form button[type="submit"]').disabled && !$('#restore-form button[type="submit"]').disabled
+    && drafts.canReload() });
 }

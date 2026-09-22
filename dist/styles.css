@@ -84,7 +84,7 @@ footer span { white-space: nowrap; }
   button { width: 100%; }
 }
 
-/* Session 2 controls; the earlier scripted preview keeps its existing styles. */
+/* Shared workspace controls; the earlier scripted preview uses these styles too. */
 .panel { background: #fff; border: 1px solid var(--line); border-radius: .75rem; padding: 1.5rem; margin: 1.5rem 0; }
 .panel > p { margin: .75rem 0 1rem; }
 summary { cursor: pointer; font-weight: 650; padding: .5rem 0; }
@@ -169,3 +169,31 @@ input[type="checkbox"] { width: 1.25rem; height: 1.25rem; accent-color: var(--na
 .dependency-history, .work-change-history { margin-top: .6rem; font-size: .875rem; }
 .work-change-history li { margin-bottom: .75rem; }
 .work-change-history li .helper { margin: .3rem 0; }
+
+/* Session 5: readable at narrow widths/zoom; stable focus without motion. */
+html.large-text { font-size: 125%; }
+:focus { outline: 3px solid #096bbe; outline-offset: 3px; }
+main:focus { outline: none; }
+section, form, details, .workspace > *, .comparison > *, .button-row > * { min-width: 0; }
+input, textarea, select, button { max-width: 100%; }
+button { white-space: normal; overflow-wrap: anywhere; flex-shrink: 1; }
+select { text-overflow: ellipsis; }
+label, summary, p, legend, h2, h3, h4 { overflow-wrap: anywhere; }
+summary { min-height: 44px; }
+fieldset.view-options { border: 1px solid var(--line); margin: 1rem 0; padding: .5rem 1rem; }
+.view-options legend { font-weight: 600; }
+.view-options .checkbox-row { margin: .2rem 0; }
+input[type="radio"] { width: 1.2rem; min-height: auto; height: 1.2rem; flex-shrink: 0; }
+input[type="checkbox"] { flex-shrink: 0; }
+.reading-options { max-width: 16rem; margin: 1rem 0; }
+.workspace-nav { display: flex; flex-wrap: wrap; gap: .25rem 1rem; margin: 1rem 0; }
+.workspace-nav a { padding: .5rem .2rem; }
+.recovery-panel { margin-top: .75rem; }
+.recovery-panel p + p { margin-top: .5rem; }
+#step-navigation { padding: .5rem 0 1rem; }
+#privacy-notes p { margin: .75rem 0; }
+@media (max-width: 480px) {
+  .diff-row, .version-review, .dependency-review { padding: .6rem; }
+  .task-editor form, .dependency-editor form, .work-change-editor form { padding: .5rem; }
+  .view-options input { width: 1.2rem; }
+}

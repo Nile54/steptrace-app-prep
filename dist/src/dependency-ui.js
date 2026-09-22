@@ -67,7 +67,7 @@ function renderDependencyChoices(task, application, { onDependencies, reportErro
     details.append(node('p', 'No dependencies have been confirmed for this step.', 'helper'));
   }
 
-  const form = node('form');
+  const form = node('form'); form.id = `dependencies-form-${task.id}`;
   form.setAttribute('aria-label', `Choose dependencies for ${task.title}`);
   const fieldset = node('fieldset');
   fieldset.append(node('legend', 'This step depends on…'));
@@ -139,7 +139,7 @@ function renderEffectReviews(task, application, { onAcknowledge, reportError }) 
     if (review.resolution) {
       record.append(node('p', `Reviewed ${dateLabel(review.resolution.at)}.`, 'helper'), node('p', review.resolution.note, 'resolution-note'));
     } else {
-      const form = node('form');
+      const form = node('form'); form.id = `dependency-review-form-${review.id}`;
       form.setAttribute('aria-label', `Review related change for ${task.title}`);
       const { label: noteLabel, input } = noteField(`dependency-review-note-${review.id}`, 'What did you check or decide? (required)');
       const help = node('p', 'Read the effect on this step before recording a decision. If instructions conflict or applicability is unknown, leave the review open while you decide or obtain clarification. A review record does not complete work or resolve an ancestor’s review.', 'helper');
@@ -163,7 +163,7 @@ function renderEffectReviews(task, application, { onAcknowledge, reportError }) 
 function renderWorkChanges(task, application, { onWorkChange, reportError }) {
   const details = node('details', undefined, 'work-change-editor');
   details.append(node('summary', 'I changed this work'));
-  const form = node('form');
+  const form = node('form'); form.id = `work-change-form-${task.id}`;
   form.setAttribute('aria-label', `Report changed work for ${task.title}`);
   const { label, input } = noteField(`work-change-note-${task.id}`, 'What did you change? (required)');
   const help = node('p', 'This records your report and flags dependent work for review. StepTrace does not observe edits to external files. Each report creates a separate change record, even when the instructions stay the same. Completion records are retained.', 'helper');
