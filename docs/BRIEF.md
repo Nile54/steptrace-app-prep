@@ -7,7 +7,7 @@
 - User-supplied GitHub: [Nile54](https://github.com/Nile54), whose public profile displays Nilesh Nandakumar. Public profile viewed September 14, 2026; repository code was not audited.
 - Target: tech/AI jobs and internships, supplied by the user September 14, 2026. Emphasize explainable software design and tested behavior; do not invent AI capabilities.
 - Verified profile skills carried from the supplied research: JavaScript, HTML, CSS (and Java, unused here). The research verified the skills from LinkedIn, not GitHub code. No framework or backend skill is presumed.
-- Budget: zero. Sessions 1–5 are local only.
+- Budget: zero. Sessions 1–6 are local only.
 
 ## Problem and hypothesis
 
@@ -23,15 +23,19 @@ Session 1 established a runnable fictional preview, retained at `/preview.html`.
 
 Session 2 established source-linked tasks, manual tasks, applicability choices, completion history, local storage, and previewed JSON restore. Session 3 adds immutable source versions, deterministic before/after paragraphs, conservative task mappings, and resolutions tied to individual source versions. Original sources, exact anchors, and completion records remain intact. Session 4 adds human-confirmed dependencies, separate downstream review reasons, explicit work-change reports, and recorded blockers. Session 5 improves keyboard/focus behavior, offers one-step and full checklist views, preserves same-tab drafts, and caches app files for offline loading after setup. The working interface is `/`; use fictional information during development. Actual checks and limitations are recorded in CHECKS, ACCESSIBILITY and PRIVACY.
 
+Session 6 adds a separate local evaluation kit: matched fictional briefs, a simple manual checklist, an independent affected-task answer key, synthetic integration checks and a counterbalanced adult-volunteer protocol. Human sample size is zero; no consented participant feedback was supplied. Each matched brief produces the expected three review flags with no misses or extra flags, while adjacent-context and duplicate-phrase stress cases each produce one extra recommendation review. Those unfavorable cases expose a cost of conservative matching. They do not establish whether people perform better with StepTrace. See [EVALUATION](EVALUATION.md) for the tested version, reproducible commands and actual observations.
+
+The scope remains source-linked preparation with optional confirmed dependencies and explained change review. Session 6 clarifies “Source-link review” and that completed work may still satisfy the instructions; it also corrects a validation mismatch in the evaluation checklist. Comparison semantics and source history are unchanged. No participant evidence justifies expansion or a market claim. A single consenting adult completing both assigned blocks is the smallest next feedback action; four complete assignment sequences are needed for balanced interface/brief order.
+
 Automatic mapping requires a unique unchanged paragraph and selected phrase, with unchanged immediate neighboring paragraphs or document boundaries. Other mappings require a person. New unlinked text remains visible even inside partially linked paragraphs. Older acknowledgments cannot clear newer reviews. Details, limitations, and migration rules are in [COMPARISON](COMPARISON.md).
 
 Planned core: one person/device, pasted text or plain-text files, immutable source versions, exact anchors, user-authored tasks and applicability, conservative comparison, explained dependency review, completion/work history, reliable local storage, and versioned JSON backup/restore.
 
-Outside the core: eligibility decisions, application submission, completeness guarantees, OCR/scanned PDF ingestion, automatic web monitoring, email ingestion, real recommendation-letter handling, multi-user editing, AI-generated completeness claims, or an unjustified backend. Human evaluation, AI, public release, career-profile changes, and commercialization are outside Session 5.
+Outside the core: eligibility decisions, application submission, completeness guarantees, OCR/scanned PDF ingestion, automatic web monitoring, email ingestion, real recommendation-letter handling, multi-user editing, AI-generated completeness claims, or an unjustified backend. AI, public release, career-profile changes and commercialization are outside Session 6. Prepared volunteer materials do not authorize outreach or substitute for consent.
 
 ## Architecture boundaries
 
-| Module | Session 5 state | Responsibility |
+| Module | Session 6 state | Responsibility |
 | --- | --- | --- |
 | `dist/src/demo.js` | Fictional fixtures only | Keep public demo data synthetic |
 | `dist/src/app.js` | Working creation/edit/restore UI | Interface orchestration and accurate saved/unsaved feedback |
@@ -48,6 +52,7 @@ Outside the core: eligibility decisions, application submission, completeness gu
 | `dist/src/schema-v2.js` | Retained legacy reader | Preserve source and review semantics through schema-3 migration |
 | `dist/src/drafts.js` | Same-tab recovery | Form drafts, view preferences and journal before workspace writes |
 | `dist/src/offline.js`, `dist/sw.js` | App-file caching | Offline status, complete revisioned shell, explicit guarded updates |
+| `evaluation/`, `scripts/evaluate.mjs` | Separate development evaluation kit | Matched fictional briefs, ordinary manual checklist, independent scoring and synthetic reports; no participant telemetry |
 
 Comparison stays separate from UI and storage. Source snapshots, completion events, and review records are distinct data. Dependency and work-edit reasons remain separate from completion, with two work reports under one source version separately reviewable. Confirmed edges and recorded work changes have histories. Each downstream reason identifies its cause and one linear causal path; removing a link does not erase history. See DEPENDENCIES.md.
 
@@ -92,3 +97,5 @@ An obvious-conflict web search found [StepTrace crypto AI agents](https://steptr
 7. What working name should replace StepTrace before a public slug is chosen?
 
 No interviews, participant results, market validation, or revenue exist. The prepared questions are in `INTERVIEWS.md`.
+
+Human usefulness and accessibility benefit remain pending. The [evaluation protocol](EVALUATION-PROTOCOL.md) separates static source lookup, setup effort and return/change review, preserves missing measurements as missing, and requires honest reporting if the checklist performs better. Passing fictional checks supports only the tested engineering behavior, not the product hypothesis.

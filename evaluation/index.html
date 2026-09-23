@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>StepTrace evaluation · Fictional briefs and checklist</title><link rel="stylesheet" href="/evaluation/styles.css"><script type="module" src="/evaluation/checklist.js"></script></head>
+<body><a class="skip" href="#main">Skip to evaluation</a><main id="main">
+<p class="notice">Evaluation materials · Fictional information only · Human evaluation pending</p>
+<h1>Application preparation exercise</h1>
+<p>Use only the brief assigned by your facilitator. Do not enter your name or real application information. You may pause, skip a question or stop. There is no timer on this page.</p>
+<nav aria-label="Evaluation sections"><a href="#brief">Assigned brief</a> · <a href="#checklist">Simple checklist</a> · <a href="/" target="_blank" rel="noopener">Open StepTrace (new tab)</a></nav>
+<label for="brief-select">Assigned brief</label><select id="brief-select"><option value="A">Brief A</option><option value="B">Brief B</option></select>
+<section id="brief" aria-labelledby="brief-title"><h2 id="brief-title"></h2>
+<p id="context"></p>
+<p>Read the instructions and set up your plan in the assigned tool. Include preparation work that uses other work. Record any decisions you cannot yet make. Use your own wording.</p>
+<label for="original-source">Original instructions — read-only, selectable and copyable</label><textarea id="original-source" rows="16" readonly spellcheck="false"></textarea>
+<p id="progress-context"></p>
+<p>Keep this page available as your source sheet in either interface. If you are assigned StepTrace, copy the original instructions into a new fictional application. If you are assigned the checklist, add your rows below. Your facilitator will tell you when to read the update.</p>
+<button type="button" id="show-update">Reveal updated instructions when prompted</button>
+<section id="update" hidden><h3>Updated instructions</h3><label for="updated-source">Complete updated instructions — read-only, selectable and copyable</label><textarea id="updated-source" rows="18" readonly spellcheck="false"></textarea><p>Review your recorded plan in the assigned tool. Record which existing work, if any, needs another look, and deal with new information as you think appropriate. Explain your choices to the facilitator.</p></section>
+</section>
+<section id="checklist" aria-labelledby="checklist-title"><h2 id="checklist-title">Simple checklist</h2>
+<p>This ordinary checklist has manual completion, review, applicability and notes. You choose every status. Sources remain on the sheet above. Rows stay in this tab's memory while you switch briefs; reload or closing the tab loses them. Copy the record below before leaving if the facilitator needs it. No automatic logging or content upload.</p>
+<p id="message" role="status"></p><p id="error" tabindex="-1" hidden></p>
+<form id="add-task"><label for="row-title">Task wording</label><input id="row-title" maxlength="200" required autocomplete="off"><label for="row-applicability">Applicability</label><select id="row-applicability"><option value="not-decided">Not decided</option><option value="applies">Applies</option><option value="does-not-apply">Does not apply</option></select><button type="submit">Add checklist task</button></form>
+<ol id="rows"></ol>
+<button type="button" id="export-checklist">Prepare checklist record</button><section id="export-panel" hidden><label for="checklist-json">Checklist record — copy this JSON if needed</label><textarea id="checklist-json" rows="7" readonly spellcheck="false"></textarea><p>This is an evaluation worksheet, not a StepTrace restore file or a participant result. Timing and observations are recorded separately by the facilitator with permission.</p></section>
+</section></main></body></html>

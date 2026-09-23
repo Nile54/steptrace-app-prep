@@ -1,0 +1,257 @@
+{
+  "evidenceType": "synthetic engineering correctness only",
+  "protocolVersion": 1,
+  "testedVersion": {
+    "gitRevision": "862291e+session6-working-tree",
+    "engineeringFilesSha256": "944131bfc824be4f9763c78d433678581a8bba666297a5f8a26ce63d9adf9fd1",
+    "files": [
+      "dist/index.html",
+      "dist/preview.html",
+      "dist/src/app.js",
+      "dist/src/bootstrap.js",
+      "dist/src/comparison.js",
+      "dist/src/demo.js",
+      "dist/src/dependencies.js",
+      "dist/src/dependency-demo.js",
+      "dist/src/dependency-ui.js",
+      "dist/src/drafts.js",
+      "dist/src/model.js",
+      "dist/src/offline.js",
+      "dist/src/preview.js",
+      "dist/src/review-ui.js",
+      "dist/src/schema-v1.js",
+      "dist/src/schema-v2.js",
+      "dist/src/source-selection.js",
+      "dist/src/storage.js",
+      "dist/styles.css",
+      "dist/sw.js",
+      "evaluation/checklist-model.js",
+      "evaluation/checklist.js",
+      "evaluation/fixtures.js",
+      "evaluation/index.html",
+      "evaluation/scoring.js",
+      "evaluation/styles.css",
+      "package.json",
+      "run.sh",
+      "scripts/check.mjs",
+      "scripts/evaluate.mjs",
+      "scripts/evaluation-server.mjs",
+      "scripts/serve.mjs",
+      "tests/accessibility-diagnostics.js",
+      "tests/accessibility-server.mjs",
+      "tests/browser-server.mjs",
+      "tests/checklist-evaluation.test.mjs",
+      "tests/comparison.test.mjs",
+      "tests/dependencies.test.mjs",
+      "tests/dependency-demo.test.mjs",
+      "tests/drafts.test.mjs",
+      "tests/evaluation.test.mjs",
+      "tests/fixtures/fictional-instructions.txt",
+      "tests/model-storage.test.mjs",
+      "tests/offline.test.mjs",
+      "tests/service-worker-diagnostics.js",
+      "tests/session5-storage.test.mjs",
+      "tests/source-coverage.test.mjs",
+      "tests/source-selection.test.mjs",
+      "tests/versions.test.mjs"
+    ]
+  },
+  "humanEvaluation": {
+    "status": "pending",
+    "consentedParticipantCount": 0,
+    "sourceLookupSeconds": null,
+    "setupSeconds": null,
+    "setupErrors": null,
+    "comprehensionScore": null
+  },
+  "matchedBriefs": [
+    {
+      "briefId": "A",
+      "stepTraceAutomaticReview": {
+        "expectedAffectedCount": 3,
+        "selectedCount": 3,
+        "correctlySelectedKeys": [
+          "draft",
+          "proofread",
+          "package"
+        ],
+        "missedAffectedKeys": [],
+        "missedAffectedCount": 0,
+        "unnecessaryReviewKeys": [],
+        "unnecessaryReviewCount": 0
+      },
+      "checklistAutomaticReview": {
+        "automaticReviewSupported": false,
+        "automaticFlagCount": 0,
+        "interpretation": "The simple checklist requires a person to choose review tasks. Zero automatic flags are not a measured human miss rate."
+      },
+      "setupDomainActions": {
+        "createApplication": 1,
+        "createTask": 6,
+        "recordCompletion": 4,
+        "confirmDependencySelection": 2
+      },
+      "baselineSetupDomainActions": {
+        "createChecklist": 1,
+        "addChecklistTask": 6,
+        "recordCompletion": 4
+      },
+      "checks": {
+        "completionHistoryPreserved": true,
+        "originalExactSourceLookup": true,
+        "unknownDecisionsRetained": true,
+        "exportImport": true,
+        "storageReload": true,
+        "failedSaveNotSuccessful": true
+      }
+    },
+    {
+      "briefId": "B",
+      "stepTraceAutomaticReview": {
+        "expectedAffectedCount": 3,
+        "selectedCount": 3,
+        "correctlySelectedKeys": [
+          "draft",
+          "proofread",
+          "package"
+        ],
+        "missedAffectedKeys": [],
+        "missedAffectedCount": 0,
+        "unnecessaryReviewKeys": [],
+        "unnecessaryReviewCount": 0
+      },
+      "checklistAutomaticReview": {
+        "automaticReviewSupported": false,
+        "automaticFlagCount": 0,
+        "interpretation": "The simple checklist requires a person to choose review tasks. Zero automatic flags are not a measured human miss rate."
+      },
+      "setupDomainActions": {
+        "createApplication": 1,
+        "createTask": 6,
+        "recordCompletion": 4,
+        "confirmDependencySelection": 2
+      },
+      "baselineSetupDomainActions": {
+        "createChecklist": 1,
+        "addChecklistTask": 6,
+        "recordCompletion": 4
+      },
+      "checks": {
+        "completionHistoryPreserved": true,
+        "originalExactSourceLookup": true,
+        "unknownDecisionsRetained": true,
+        "exportImport": true,
+        "storageReload": true,
+        "failedSaveNotSuccessful": true
+      }
+    }
+  ],
+  "conservativeMatchingStress": [
+    {
+      "briefId": "adjacent-context",
+      "stepTraceAutomaticReview": {
+        "expectedAffectedCount": 3,
+        "selectedCount": 4,
+        "correctlySelectedKeys": [
+          "draft",
+          "proofread",
+          "package"
+        ],
+        "missedAffectedKeys": [],
+        "missedAffectedCount": 0,
+        "unnecessaryReviewKeys": [
+          "recommendation"
+        ],
+        "unnecessaryReviewCount": 1
+      },
+      "checklistAutomaticReview": {
+        "automaticReviewSupported": false,
+        "automaticFlagCount": 0,
+        "interpretation": "The simple checklist requires a person to choose review tasks. Zero automatic flags are not a measured human miss rate."
+      },
+      "setupDomainActions": {
+        "createApplication": 1,
+        "createTask": 4,
+        "recordCompletion": 4,
+        "confirmDependencySelection": 2
+      },
+      "baselineSetupDomainActions": {
+        "createChecklist": 1,
+        "addChecklistTask": 4,
+        "recordCompletion": 4
+      },
+      "checks": {
+        "completionHistoryPreserved": true,
+        "originalExactSourceLookup": true,
+        "unknownDecisionsRetained": true,
+        "exportImport": true,
+        "storageReload": true,
+        "failedSaveNotSuccessful": true
+      }
+    },
+    {
+      "briefId": "duplicate-phrase",
+      "stepTraceAutomaticReview": {
+        "expectedAffectedCount": 3,
+        "selectedCount": 4,
+        "correctlySelectedKeys": [
+          "draft",
+          "proofread",
+          "package"
+        ],
+        "missedAffectedKeys": [],
+        "missedAffectedCount": 0,
+        "unnecessaryReviewKeys": [
+          "recommendation"
+        ],
+        "unnecessaryReviewCount": 1
+      },
+      "checklistAutomaticReview": {
+        "automaticReviewSupported": false,
+        "automaticFlagCount": 0,
+        "interpretation": "The simple checklist requires a person to choose review tasks. Zero automatic flags are not a measured human miss rate."
+      },
+      "setupDomainActions": {
+        "createApplication": 1,
+        "createTask": 4,
+        "recordCompletion": 4,
+        "confirmDependencySelection": 2
+      },
+      "baselineSetupDomainActions": {
+        "createChecklist": 1,
+        "addChecklistTask": 4,
+        "recordCompletion": 4
+      },
+      "checks": {
+        "completionHistoryPreserved": true,
+        "originalExactSourceLookup": true,
+        "unknownDecisionsRetained": true,
+        "exportImport": true,
+        "storageReload": true,
+        "failedSaveNotSuccessful": true
+      }
+    }
+  ],
+  "unresolvedConditionsAndConflicts": [
+    {
+      "id": "negated-condition",
+      "humanDecision": "not-decided",
+      "sourceReview": "open",
+      "guessedPrecedence": false,
+      "exportImport": true
+    },
+    {
+      "id": "labeled-conflict-update",
+      "humanDecision": "not-decided",
+      "sourceReview": "open",
+      "guessedPrecedence": false,
+      "exportImport": true
+    }
+  ],
+  "limits": [
+    "Domain action counts are scripted API operations, not clicks, timing or participant effort.",
+    "Automatic flags are not participant outcomes or evidence of accessibility benefit, usefulness or market demand.",
+    "The fixture oracle is authored for these fictional exercises; the app does not infer semantic affectedness.",
+    "No human performance comparison is available. A checklist may require less setup and may perform better."
+  ]
+}

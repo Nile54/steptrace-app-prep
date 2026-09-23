@@ -1,6 +1,6 @@
-# StepTrace — Session 5
+# StepTrace — Session 6
 
-A local application-preparation workspace with immutable instructions, exact source links, confirmed task dependencies, human review, completion history, and JSON backups. Session 5 adds keyboard/focus improvements, a one-step view, draft recovery, and offline app loading after setup. Use fictional information in this development version. StepTrace remains a provisional name with documented conflicts.
+A local application-preparation workspace with immutable instructions, exact source links, confirmed task dependencies, human review, completion history, and JSON backups. Session 5 added keyboard/focus improvements, a one-step view, draft recovery, and offline app loading after setup. Session 6 adds a reproducible comparison kit and synthetic correctness results; human evaluation is pending with **0 participants**. Use fictional information in this development version. StepTrace remains a provisional name with documented conflicts.
 
 ## Run
 
@@ -14,6 +14,21 @@ Repository: `/Users/nileshnandakumar/Documents/Codex/2026-09-14/before-session-o
 Open [the workspace](http://127.0.0.1:4173). No install or build step; the launcher uses Node on PATH or this Mac's bundled runtime. Other machines need Node 22+. There are no package dependencies. `dist/` contains authored source. Stop a server started in your terminal with Ctrl+C.
 
 Use the same browser/profile, host, and port to reopen saved work, and one editing tab. A different port, hostname, or browser has separate storage. Browser storage is not a backup or encryption.
+
+## Reproduce the evaluation
+
+```sh
+./run.sh evaluate
+./run.sh evaluate-ui
+```
+
+The first command prints a labeled synthetic JSON report. The second serves [matched fictional briefs and a simple manual checklist](http://127.0.0.1:4196/evaluation/) with a link to the real StepTrace interface. This is a separate local development kit, not part of the normal app or its offline cache. Checklist rows stay only in that tab's memory and disappear on reload or closure; prepare and copy its record when needed. No participant telemetry or text upload is added.
+
+Both matched briefs produced **3 expected review flags, 0 misses and 0 extra flags**. Two harder matching fixtures each produced **1 extra recommendation review** from conservative matching. These are engineering outputs, not human performance. The simple checklist has no automatic flags; that does not establish a human miss rate or show that StepTrace is better. Source lookup time, setup effort, comprehension, accessibility benefit and demand remain unmeasured. See [actual results and limitations](docs/EVALUATION.md).
+
+The [volunteer protocol](docs/EVALUATION-PROTOCOL.md) includes consent, fixed practice, four counterbalanced sequences, timing rules and a blank observation template. The smallest next feedback action is one consenting adult trying both assigned blocks. A complete set of four sequences balances interface and brief order; one session does not.
+
+For synthetic recovery demonstrations only, `./run.sh evaluate --backups work/new-directory` creates four fictional before/after backups. It refuses to overwrite existing files. Do not preload these backups in timed participant setup, because doing so would hide setup effort.
 
 ## Keyboard and reading options
 
@@ -47,6 +62,8 @@ See [dependency design](docs/DEPENDENCIES.md) for the algorithm, migration rules
 ## Source matching
 
 Automatic source mapping requires a unique identical paragraph and selected phrase plus unchanged immediate neighbors or document boundaries. Formatting, duplicate text, changed context, uncertain matches, and multi-paragraph selections need human confirmation. Matching uses text structure, not meaning or distant conditions.
+
+**Source-link review** asks a person to check a mapping; it is not proof that the linked work is wrong. Completed work may still satisfy the updated instructions. Conservative matching can produce extra review even for unchanged wording, as the evaluation stress cases demonstrate.
 
 Every nonblank passage stays visible. Positional changed pairs are reading aids, not proven equivalents. Exact snapshots preserve whitespace and offsets. Unlinked spans remain unreviewed even inside partly linked paragraphs. Historical source decisions cannot clear newer reviews or overwrite current applicability. See [comparison design](docs/COMPARISON.md).
 
@@ -85,7 +102,8 @@ Core application text and chosen local files are processed in the browser. Stati
 | `dist/src/drafts.js` | Same-tab form drafts and interrupted-save journal |
 | `dist/src/offline.js`, `dist/sw.js` | Revisioned app-shell cache and explicit guarded updates |
 | `dist/src/app.js` | Interface orchestration, focus, task views, and honest save feedback |
+| `evaluation/`, `scripts/evaluate.mjs` | Separate fictional checklist comparison, independent scoring and reproducible synthetic report |
 
-Actual automated and browser results are recorded in [CHECKS](docs/CHECKS.md) and [STATE](docs/STATE.md). No usability improvement, complete accessibility conformance, market demand, or semantic eligibility accuracy is claimed.
+Actual automated and browser results are recorded in [EVALUATION](docs/EVALUATION.md), [CHECKS](docs/CHECKS.md) and [STATE](docs/STATE.md). No usability improvement, complete accessibility conformance, market demand, or semantic eligibility accuracy is claimed.
 
-Session 5 stops after accessibility, offline, and recovery work. No evaluation study, OCR, scraping, LLM, remote repository, deployment, billing, spending or outreach. Later sessions must read AGENTS, BRIEF, ROADMAP, and STATE, preserve user changes and data, implement only the requested milestone, run relevant checks, update STATE, and make a logical local commit.
+Session 6 stops after evaluation preparation, synthetic checks and observed fixes. No participants have been tested or contacted; no OCR, scraping, LLM, remote repository, deployment, billing or spending was added. Public release and monetization require their later sessions. Later sessions must read AGENTS, BRIEF, ROADMAP, and STATE, preserve user changes and data, implement only the requested milestone, run relevant checks, update STATE, and make a logical local commit.

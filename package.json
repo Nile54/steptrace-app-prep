@@ -1,12 +1,14 @@
 {
   "name": "steptrace-local",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "private": true,
   "type": "module",
-  "description": "Local source traceability with keyboard workflows, one-step views, offline loading, and recoverable JSON backups. Session 5.",
+  "description": "Local source traceability with reproducible fictional evaluation and a manual-checklist baseline. Session 6.",
   "scripts": {
     "start": "node scripts/serve.mjs",
-    "check": "node scripts/check.mjs"
+    "check": "node scripts/check.mjs",
+    "evaluate": "node scripts/evaluate.mjs",
+    "evaluate-ui": "node scripts/evaluation-server.mjs"
   },
   "engines": { "node": ">=22" }
 }

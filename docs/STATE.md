@@ -1,66 +1,71 @@
 # StepTrace state
 
-Updated September 22, 2026. **Session 5 complete. Stop before evaluation or deployment.**
+Updated September 22, 2026. **Session 6 complete. Human evaluation pending (N=0). Stop before public release or monetization.**
 
 ## Repository and scope
 
 - Repository: `/Users/nileshnandakumar/Documents/Codex/2026-09-14/before-session-one-supplying-your-github/outputs/steptrace-local`.
-- Branch: `codex/session-5`, from Session 4 commit `33a6d7c`. Initial working tree was clean. User data and earlier source/completion histories were preserved; tests used fictional data on isolated origins.
-- Session 4 STATE/CHECKS are archived in `docs/history/SESSION-4-STATE.md` and `SESSION-4-CHECKS.md`. Original prompts/research remain in `docs/references/`.
-- User: GitHub Nile54, targeting tech/AI jobs and internships. JavaScript, HTML and CSS; package version 0.5.0. No production package dependency added. The optional local audit harness uses pinned axe-core 4.10.3 from ignored `work/`.
-- Only the existing workflow was improved. No new product area, participant evaluation, outreach, OCR, scraping, AI service, real application documents, remote repository, push, deployment, billing or profile update.
-- StepTrace remains a provisional name with known conflicts. No public slug or demand claim was established.
+- Branch: `codex/session-6`, based on Session 5 commit `862291e`. Initial tree was clean; user files/data were preserved.
+- Prior STATE/CHECKS archived in `docs/history/SESSION-5-STATE.md` and `SESSION-5-CHECKS.md`. Original prompts/research retained under `docs/references/`.
+- User: GitHub Nile54, targeting tech/AI jobs and internships; JavaScript, HTML and CSS. Package 0.6.0; no added production dependency, installation or spending.
+- Session 6 only: evaluation kit, protocol, fictional integrations and bounded presentation fixes. No participants, recruitment, real documents, analytics, third-party text uploads, remote/push/deployment, profile edits, OCR, scraping, AI, billing or revenue.
+- StepTrace remains a provisional name with known conflicts; no public slug or demand claim.
+- Later sessions must read AGENTS, BRIEF, ROADMAP and STATE (plus EVALUATION for release decisions), inspect git/user changes, implement only the requested milestone, preserve work, run relevant checks, update STATE and commit logically. Later user choices take precedence.
 
-## Implemented
+## Delivered
 
-- Semantic keyboard controls, section navigation, stable visible focus, source-to-task return, readable focused errors with a return control, labeled backup JSON, and restrained action/offline status announcements. Completion, applicability and review remain separate and use text alongside color.
-- Full checklist and one-step views. Previous/Next and the step chooser retain user control; completion does not advance automatically. Dependencies use named controls and ordered text paths. No diagram, forced motion, countdown or streak.
-- Readable responsive layout and a 125% text option; wrapping controls and narrower review panels support zoom/narrow windows.
-- Same-tab draft recovery keyed by application/form. Drafts survive redraws and normal reloads when sessionStorage works. Rebinding restores the right application's draft, successful submissions clear hidden values, malformed drafts/preferences cannot silently overwrite existing recovery data or crash startup, and errors remain visible. Drafts are not automatically submitted or included in workspace exports.
-- Pending workspace writes are journaled before the primary write when possible. Reload validates and recovers a matching interrupted copy; conflicts keep current saved data unchanged and expose a separate recovery download. Failed writes remain exportable. Original unreadable storage and conflicting recovery copies are preserved.
-- Linked task drafts survive new source versions. Submitting an old draft excerpt requires current selection or deliberate removal of its link; it cannot silently become a manual task.
-- A revisioned service worker caches only public static app files. Complete installation precedes activation, updates wait for an explicit choice and save/draft checks, and cache repair avoids mixing versions. Early response-body consumption fixes an installation connection stall found in Chrome. Worker code never writes workspace/draft storage.
-- Concise actual-behavior notes in `docs/ACCESSIBILITY.md` and `docs/PRIVACY.md`, with the full evidence and omissions in `docs/CHECKS.md`.
+- `evaluation/`: matched fictional A/B briefs and an editable manual checklist with independent completion/review/applicability/notes. Worksheet rows live only in that tab's memory; copyable JSON is distinct from a StepTrace backup or participant result.
+- `scripts/evaluate.mjs`: actual model/storage integration with an independent authored answer key, honest conservative-matching stress cases, unresolved conditions/conflicts, input fingerprint and optional before/after backups.
+- `scripts/evaluation-server.mjs`: separate loopback kit serving real app modules; allowlisted assets, no upload endpoint/telemetry or worker. Normal app server excludes the kit.
+- `docs/EVALUATION-PROTOCOL.md`: adult consent/script, fixed practice, four counterbalanced sequences, 30-second pause, scoring/time/assistance/censoring definitions and honest simplification criteria.
+- `docs/evaluation/blank-observation.json`: empty template. `synthetic-results.json`: actual engineering results.
+- `docs/EVALUATION.md`: tested version, actual sample size, results, browser observations, limitations and usefulness conclusions.
+- Bounded fixes: **Source-link review** label and explanation that completed work may still satisfy instructions; invalid baseline wording reverts to retained text; notes avoid per-keystroke status announcements.
+- AGENTS, BRIEF, ROADMAP and README updated. Scope unchanged; existing fictional demo remains accurate and saved future prompts need no scope rewrite.
 
-The workspace remains schema 3, retaining schema-1/2 compatibility. Comparison rules, source snapshots, exact anchors and domain semantics are unchanged. No migration was needed. Keep comparison, dependencies, storage, drafts and offline modules separate.
+Schema 3 and schema-1/2 compatibility remain. Original source text, exact anchors, matching rules/reason descriptors, review and completion/dependency histories are unchanged. Keep comparison, dependency, storage, drafts and offline modules separate; comparison changes require compatibility work.
 
-## Verification
+## Actual checks and evidence
 
-- Final `./run.sh check`: **114 passed, 0 failed**, including syntax/assets/fictional fixtures. `git diff --check` clean.
-- Four axe-core scans of selected creation/restore, checklist/review/comparison, narrow one-step and final Chrome states: **0 reported violations**. Each had 47 passed and 43 inapplicable rules. Textarea contrast remained incomplete in the engine; visual and authored-color checks are recorded separately. This is not complete WCAG conformance.
-- Keyboard-activated creation, exact-source selection/return, completion, one-step/full views, source comparison, source resolution, downstream review, error return, backup preparation and pasted restore checked. The latest linked-draft/source-version guard was verified in Chrome after final review fixes.
-- 320-pixel view with Larger text inspected; no horizontal overflow. Native Chrome 200% and 400% zoom inspected; at 400%, page and layout widths both 374 CSS pixels. Export remained reachable. Zoom/viewport overrides were restored.
-- Malformed pasted JSON left existing exported workspace objects exactly equal. Automated malformed/conflicting batch tests preserve existing data. Native file-picker testing did not complete; see limitations below.
-- Real-browser interrupted-write fault at 4194: Not saved shown, pending export available, same-tab reload recovered exactly equal work, retry saved, next reload retained it. Denied sessionStorage showed accurate draft warnings while primary saving/export still worked. Unit tests cover quota and unreadable/conflicting recovery.
-- Real Chrome offline check at 4193: after online setup, stopped the app server and confirmed no listener. Reload preserved exact saved data and an unsubmitted draft. Created/completed a task, compared versions, exported and reloaded again with the server unavailable; resulting workspace equality passed.
-- Real worker update at 4193: a changed shell waited for **Update app and reload**. Explicit activation retained both a pending form draft and exact workspace data. Unsafe update/reload branches have separate automated checks.
-- Static privacy audit and runtime diagnostics found only same-origin static app assets and no core-use fetch/XHR/beacon calls. Runtime creation, comparison, review, progress, export/restore checks and production operation with the server unavailable support local processing. All authored demo/test content is fictional. No encryption or zero-device-traffic claim.
+- Final `./run.sh check`: **126 passed, 0 failed, 0 skipped**, plus syntax/assets/fixture checks. `git diff --check` clean.
+- Matched A/B: each has 3 expected affected roles, all flagged, 0 misses, 0 extra reviews.
+- Adjacent-context and duplicate stress cases: each adds 1 unchanged recommendation review. This is counted as extra burden, not hidden by changing the oracle.
+- Negated condition and revised labeled conflict remain Not decided and open through export/import. A source mapping acknowledgment with Not decided leaves its applicability blocker.
+- Browser A: file/preview restore, exact source lookup, 500→400 update, 1 direct/2 dependent reviews, four completions retained, unchanged recommendation, original/added conditions and conflict undecided.
+- Malformed import and reload preserve exactly equal workspace objects; duplicate IDs rejected. A third conflict-label version remains unresolved. Export/restore on a separate empty origin compares exactly equal; original source remains reachable.
+- Baseline browser: update reveal leaves rows unchanged; manual review retains completion; invalid wording/error/export agree. Desktop kit layout inspected.
+- Actual human sample **0**; no consented feedback found. Human timing, effort, misses/extra reviews, comprehension and preference unmeasured. Scripted 13-versus-11 calls are not measured user effort.
+- Engineering fingerprint: `944131bfc824be4f9763c78d433678581a8bba666297a5f8a26ce63d9adf9fd1`. Report records `862291e+session6-working-tree`; the fingerprint identifies exact engineering inputs. Final milestone commit includes it.
 
-See CHECKS for exact environments, procedures, failures found, tool limitations and repeat commands. Node test output from this run is in ignored `work/session5-final-checks.txt`.
+See EVALUATION and CHECKS for detail. Final local test output: ignored `work/session6-final-checks.txt`; synthetic browser fixtures: ignored `work/session6-browser/`. Future raw participant records must stay outside git/served directories.
 
-## Run and local commit
+## Commands and local commit
 
 ```sh
 cd /Users/nileshnandakumar/Documents/Codex/2026-09-14/before-session-one-supplying-your-github/outputs/steptrace-local
 ./run.sh
 ./run.sh check
+./run.sh evaluate
+./run.sh evaluate-ui
+# Optional; use a new directory to preserve existing files:
+./run.sh evaluate --backups work/new-fictional-evaluation
 ```
 
-Default app: `http://127.0.0.1:4173`. An existing server may need restarting to serve the new allowlist. Different host, port, browser or profile means different saved data. Use one editing tab and export before moving origins. Do not use port 4190 for offline testing: browsers block Fetch on that port.
+Normal app: `http://127.0.0.1:4173`; kit: `http://127.0.0.1:4196/evaluation/`. Other machines need Node 22+.
 
-- Node: `/Users/nileshnandakumar/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node` (v24.19.0). Other machines need Node 22+.
-- Git: `/Users/nileshnandakumar/.cache/codex-runtimes/codex-primary-runtime/dependencies/bin/fallback/git`.
-- Local commit subject: `Improve accessible workflows and offline recovery`. Read its hash with `git log -1 --oneline`; identity is scoped to the command, with no global configuration change.
-- Test servers are stopped at handoff. Run the app again when needed; a browser that completed offline setup can also use its cached shell. No hosted deployment was created.
+Verified Node: `/Users/nileshnandakumar/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node` (v24.19.0).
+Verified git: `/Users/nileshnandakumar/.cache/codex-runtimes/codex-primary-runtime/dependencies/bin/fallback/git`. Avoid system git's developer-tools installation prompt. No global identity/config changes.
+
+Local milestone commit subject: `Evaluate fictional workflows against a manual checklist`; read hash with the verified git and `log -1 --oneline`. Test servers are stopped at handoff. Restart explicitly. Browser/profile/host/port define separate saved data. Use one editing tab and a separate backup; never clear user storage to make a test pass.
 
 ## Limits and next boundary
 
-- No spoken VoiceOver/NVDA session was verified: tools exposed accessibility trees but did not capture speech. Live-region timing, virtual-cursor order and source selection with a screen reader remain unverified. No participant accessibility evaluation or broad browser/mobile certification.
-- Chrome's automated file picker refused local files because extension file access was disabled. The native fallback did not complete. No permission was changed. Pasted restore/parser checks passed; this session does not claim successful malformed native-file selection or a fresh download-to-disk verification.
-- Offline testing simulated loss of the app origin, not OS-wide network disconnection. Device power loss, browser process crash at every point, private mode, cache/storage eviction and cross-browser worker updates are not fully tested.
-- Browser storage can be denied, full, cleared or evicted. Same-tab drafts/recovery may disappear when the tab closes. They are not separate backups, app encryption or atomic multi-tab locking. Export workspace records and separately save/copy unsubmitted drafts. Read-before-write conflict detection still requires one editing tab.
-- The Chrome test profile had a Grammarly integration. Browser/extension/OS traffic was not disabled or audited. The app's no-content-upload behavior is distinct from software outside its control.
-- Existing domain limits remain: conservative comparison, human applicability decisions, only confirmed dependencies, no proof of eligibility/completeness, additive restore only, no deletion/deduplication or reopening historical review decisions. Unrecorded relationships and remote edits cannot be inferred.
-- No instruction-change frequency, setup-effort benefit, target-user accessibility needs or demand has been validated. BRIEF retains these questions.
+Evidence establishes tested mechanics, not usefulness. Stable paragraph context favors automatic matching in matched briefs; stress cases show extra burden. People must author links/dependencies and resolve applicability/conflicts. Unrecorded relationships, distant conditions and external edits cannot be inferred. There is no semantic contradiction/authority detector or completeness guarantee.
 
-Next session only on a new user request: read AGENTS, BRIEF, ROADMAP, STATE and the Session 6 prompt; evaluate usefulness with honest evidence. **Do not begin that work, publish, or deploy as part of Session 5.**
+No human accessibility study, screen-reader speech, mobile certification, actual change frequency, retention/demand or payment evidence. Earlier accessibility/offline evidence remains separately dated and does not establish conformance. This session checked ordinary reload/restore in the browser; quota failures were automated, and prior actual interrupted-write/offline checks were not rerun.
+
+Browser storage/drafts/cache can fail, be cleared or evicted. Drafts are not backups; storage is not encryption; conflict detection is not atomic multi-tab locking. Restore is additive only; deletion, deduplication and reopening decisions are absent. Baseline worksheet storage is deliberately temporary and must not be treated as a measured product advantage.
+
+Smallest remaining feedback action: one consenting adult completes both assigned fictional blocks, with paired observations locally recorded under the protocol. This checks the script and finds friction; four completed sessions form one balanced order batch. Report a checklist advantage honestly and simplify if observed costs outweigh value. No outreach or feedback session is scheduled automatically.
+
+Only on a later user request: begin the next authorized session after reading saved notes and unresolved evidence. **Do not begin Session 7 publication, public branding, deployment or monetization now.**

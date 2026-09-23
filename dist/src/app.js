@@ -175,7 +175,7 @@ export function startApp(storage = createStorage()) {
     const heading = element('h3', task.title); heading.id = `task-heading-${task.id}`; heading.tabIndex = -1;
     const completed = isTaskCompleted(task);
     const state = getTaskReviewState(task);
-    item.append(heading, element('p', completed ? 'Completed' : 'Not completed', 'completion-state'), element('p', `Applicability: ${labels[task.applicability]}`, 'helper'), element('p', state === 'needs-review' ? 'Review: Needs review — completion is retained.' : state === 'reviewed' ? 'Review: No open recorded reviews. This does not establish checklist completeness.' : 'Review: No change reviews recorded.', 'review-state'));
+    item.append(heading, element('p', completed ? 'Completed' : 'Not completed', 'completion-state'), element('p', `Applicability: ${labels[task.applicability]}`, 'helper'), element('p', state === 'needs-review' ? 'Review: Needs review — completion is retained. Check the effect on this work; previously completed work may still satisfy the instructions.' : state === 'reviewed' ? 'Review: No open recorded reviews. This does not establish checklist completeness.' : 'Review: No change reviews recorded.', 'review-state'));
     if (task.reviewState === 'needs-review') item.append(element('p', 'An earlier backup retained a review flag without a version-specific reason. It remains separate from the source reviews below.', 'helper'));
     if (task.anchor) {
       item.append(element('blockquote', task.anchor.quote, 'task-quote'));

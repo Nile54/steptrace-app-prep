@@ -10,12 +10,16 @@ The original full prompts are in `references/session-prompts.md`. They are refer
 | 2 — complete | Source-linked tasks and reliable storage | Paste/text-file input, immutable snapshots, exact excerpts, task edits/manual no-source tasks, human applicability, local save and versioned export/import with safe validation/recovery |
 | 3 — complete | Compare instructions without false certainty | New immutable versions, deterministic differences, direct review flags, visible added/removed/ambiguous material, version-specific resolutions; preserve history |
 | 4 — complete | Explain which dependent work needs review | Cycle-safe links, direct/transitive reason chains, multiple unique change/work events, explicit work-edited action, independent acknowledgments and readiness gating |
-| 5 — current, complete | Accessibility, offline use, and recovery | Keyboard, one-step/full views, focus, narrow/zoom/screen-reader checks where available, failure recovery, accurate privacy/accessibility notes, cached app files; actual evidence and completion status in STATE and CHECKS |
-| 6 | Evaluate usefulness and fix observed problems | Reproducible comparison against a simple checklist; matched fictional briefs, counterbalancing, actual engineering results and human evaluation status; no invented evidence |
+| 5 — complete | Accessibility, offline use, and recovery | Keyboard, one-step/full views, focus, narrow/zoom/screen-reader checks where available, failure recovery, accurate privacy/accessibility notes, cached app files; actual evidence and completion status in STATE and CHECKS |
+| 6 — current, complete | Prepare evaluation and fix observed problems | Reproducible simple-checklist comparison, matched briefs, four counterbalanced sequences, synthetic checks and presentation/validation fixes; human evaluation pending, actual sample 0; results and limits in EVALUATION |
 | 7 | Publish a credible repository and live demo | Later explicit session authorization, reconsidered public name/owner, release-ready docs/license/demo, no-cost hosting checks, verified remote/CI and deployed commit |
 | 8 | GitHub presentation, resume, and LinkedIn | Verified claims tailored to tech/AI, accurate project explanations; profile actions only within that session's authorization |
 | 9 — optional | Test a paid offer | Evidence-based go/no-go, bounded offer mockup; free core retained, no invented demand or premature billing |
 | 10 — optional | Implement only the justified paid capability | One validated capability, test-mode payments only if justified; separate explicit live-payment authorization |
+
+Session 6 completion means the reproducible kit, engineering checks and honest evidence record are complete; it does not mean usefulness is established. Matched fictional briefs each produce three expected reviews and no extra flags. Two conservative-matching stress cases each add one unnecessary recommendation review. Static source-linked preparation, change-review value, setup cost and accessibility benefit still require human evidence. Product scope remains unchanged; public release and monetization have not begun.
+
+The smallest next feedback action is one consenting adult completing the two blocks assigned by [EVALUATION-PROTOCOL](EVALUATION-PROTOCOL.md). The four-sequence rotation balances interface order and brief order only across a complete batch of four. Preserve negative findings, assistance, missing measurements and version differences. No recruitment messages are authorized by the roadmap. Start Session 7 only when the user requests it; do not present engineering fixtures as user validation in release or career materials.
 
 ## Invariants for later milestones
 
@@ -28,5 +32,6 @@ The original full prompts are in `references/session-prompts.md`. They are refer
 - Save errors must never look like successful saves. Browser-local storage is not a backup or encryption; add backup/restore before depending on it.
 - Keep comparison, dependencies, and storage in separate modules. Test relevant invariants as each module arrives, not as pretend implementations in the preview.
 - Use fictional committed data, no external text uploads, no eligibility decisions, no submission, and no completeness guarantees.
+- Separate synthetic correctness results from consented human observations. Retain unnecessary reviews and checklist advantages in the evidence record; do not invent participants, outcomes or revenue.
 
 If evidence changes the product scope, update BRIEF, ROADMAP, demo, README, remaining milestone guidance, and STATE together. A future session may stop at a coherent smaller boundary if its work is not finished; do not mark incomplete work complete.

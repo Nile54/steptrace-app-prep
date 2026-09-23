@@ -1,0 +1,108 @@
+{
+  "templateOnly": true,
+  "protocolVersion": 1,
+  "actualHumanSampleSizeAtPreparation": 0,
+  "sessionCode": null,
+  "consent": {
+    "adultConfirmed": null,
+    "localObservationUse": null,
+    "verbatimQuotes": false,
+    "readersExplained": null,
+    "rawNotesDeleteBy": null,
+    "withdrawalCodeProvided": null
+  },
+  "testedCommit": null,
+  "fixtureRevision": null,
+  "date": null,
+  "sequence": null,
+  "environment": {
+    "browserVersion": null,
+    "operatingSystem": null,
+    "viewportAndZoom": null,
+    "inputMethod": null,
+    "optionalAccessPreferences": null
+  },
+  "instructions": "Copy blockTemplate once per attempted block into blocks. Keep unobserved values null. Do not put names, contact information, diagnoses or application documents in this record. Status: completed, timed_out, stopped, not_started. Consent is required before observations are recorded or analyzed.",
+  "blocks": [],
+  "blockTemplate": {
+    "position": null,
+    "interface": null,
+    "brief": null,
+    "practiceElapsedSeconds": null,
+    "practiceAssistance": [],
+    "setup": {
+      "status": null,
+      "elapsedSeconds": null,
+      "excludedFacilitatorInterruptionSeconds": null,
+      "limitSeconds": 600,
+      "extensionReasonWithoutSensitiveDetails": null,
+      "taskRolesRepresented": null,
+      "completedRoles": null,
+      "dependenciesRecorded": null,
+      "staticConditionDecision": null,
+      "conflictDecision": null,
+      "effort1to7": null,
+      "effortReasonParaphrase": null
+    },
+    "sourceLookup": {
+      "status": null,
+      "elapsedSeconds": null,
+      "limitSeconds": 180,
+      "displayedPassage": null,
+      "passageCorrect": null
+    },
+    "update": {
+      "status": null,
+      "elapsedSeconds": null,
+      "excludedFacilitatorInterruptionSeconds": null,
+      "limitSeconds": 480,
+      "finalRolesNeedingRecheckBecauseOfUpdate": null,
+      "missedAffectedRoles": null,
+      "missedAffectedCount": null,
+      "expectedAffectedDenominator": 3,
+      "unnecessaryReviewRoles": null,
+      "unnecessaryReviewCount": null,
+      "unaffectedDenominator": 3,
+      "recommendationUnnecessarilyReopened": null,
+      "completionRetainedRoles": null,
+      "staticConditionDecision": null,
+      "addedConditionNoticed": null,
+      "addedConditionDecision": null,
+      "conflictDecision": null,
+      "unsupportedPrecedenceChosen": null,
+      "toolMessageAffectingConflictDecision": null,
+      "exploratoryMissesAmongRepresentedSetupTasks": null,
+      "exploratoryRepresentedAffectedDenominator": null
+    },
+    "understanding": {
+      "allowedRubricValues": ["demonstrated", "contradicted", "not_demonstrated"],
+      "completionRetained": null,
+      "causalDependency": null,
+      "reviewDoesNotProveInvalid": null,
+      "responseParaphrases": null
+    },
+    "assistanceEpisodes": [],
+    "assistanceEpisodeTemplate": {
+      "phase": null,
+      "promptingEvent": null,
+      "helpGiven": null,
+      "proceduralOrSubstantive": null,
+      "elapsedSeconds": null
+    },
+    "observedErrorsAndRecovery": null,
+    "ambiguousRoleMappings": null,
+    "facilitatorDeviations": null,
+    "scoringNotes": null,
+    "fictionalArtifactReference": null
+  },
+  "afterBothBlocks": {
+    "staticInstructionsPreference": null,
+    "changingInstructionsPreference": null,
+    "preferenceReasonsParaphrase": null,
+    "optionalPastExperienceParaphrase": null,
+    "optionalPastInstructionChangeFrequency": null,
+    "consentedNonidentifyingQuote": null
+  },
+  "withdrawn": false,
+  "analysisEligibilityAndMissingnessNotes": null
+}

@@ -129,7 +129,7 @@ function renderEffectReviews(task, application, { onAcknowledge, reportError }) 
     record.dataset.causeId = review.causeId;
     record.open = !review.resolution;
     record.append(node('summary', `${review.resolution ? 'Review recorded' : 'Needs review'} · ${description.reason}`));
-    const label = description.causeKind === 'work' ? 'Reported work change' : 'Source instruction change';
+    const label = description.causeKind === 'work' ? 'Reported work change' : 'Source-link review';
     record.append(node('p', `${label} · ${versionLabel(application, description.sourceVersionId)} · ${dateLabel(review.at)}`, 'helper'));
     if (description.note) record.append(node('p', description.note, 'resolution-note'));
     record.append(node('p', 'One recorded path for this review (current links may differ):', 'comparison-label'));
