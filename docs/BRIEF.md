@@ -2,7 +2,7 @@
 
 ## Project and owner context
 
-- Working name: **StepTrace**. Local folder/package identifiers are internal, not a chosen public brand or slug.
+- Working name: **StepTrace** (provisional). The descriptive release slug is `steptrace-app-prep`; it does not establish trademark availability or affiliation with similarly named projects.
 - Actual repository: `/Users/nileshnandakumar/Documents/Codex/2026-09-14/before-session-one-supplying-your-github/outputs/steptrace-local`.
 - User-supplied GitHub: [Nile54](https://github.com/Nile54), whose public profile displays Nilesh Nandakumar. Public profile viewed September 14, 2026; repository code was not audited.
 - Target: tech/AI jobs and internships, supplied by the user September 14, 2026. Emphasize explainable software design and tested behavior; do not invent AI capabilities.
@@ -97,5 +97,9 @@ An obvious-conflict web search found [StepTrace crypto AI agents](https://steptr
 7. What working name should replace StepTrace before a public slug is chosen?
 
 No interviews, participant results, market validation, or revenue exist. The prepared questions are in `INTERVIEWS.md`.
+
+## Session 7 release
+
+Session 7 prepares an MIT-licensed fictional alpha, version `0.7.0-alpha.1`, with a portable static build, real screenshots, architecture and demo documentation, and public-source CI. GitHub owner Nile54 was verified against the supplied URL and the signed-in browser account. Publication status and exact commits belong in [RELEASE](RELEASE.md) and STATE. The existing product and evaluation scope is unchanged. Sites hosting uses the existing account's included beta allocation; no new paid plan, domain or billing integration is authorized. GitHub source hosting is separate from the choice of any future commercial host. Revisit hosting limits and terms before monetization.
 
 Human usefulness and accessibility benefit remain pending. The [evaluation protocol](EVALUATION-PROTOCOL.md) separates static source lookup, setup effort and return/change review, preserves missing measurements as missing, and requires honest reporting if the checklist performs better. Passing fictional checks supports only the tested engineering behavior, not the product hypothesis.

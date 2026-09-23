@@ -4,7 +4,7 @@ import { spawnSync } from 'node:child_process';
 import { passages, tasks, changePreview } from '../dist/src/demo.js';
 
 const evaluationScripts = (await readdir(new URL('../evaluation/', import.meta.url))).filter(file => file.endsWith('.js')).map(file => `evaluation/${file}`);
-for (const file of [...(await readdir(new URL('../dist/src/', import.meta.url))).filter(file => file.endsWith('.js')).map(file => `dist/src/${file}`), ...evaluationScripts, 'dist/sw.js', 'scripts/serve.mjs', 'scripts/check.mjs', 'scripts/evaluate.mjs', 'scripts/evaluation-server.mjs', 'tests/browser-server.mjs', 'tests/accessibility-server.mjs', 'tests/accessibility-diagnostics.js', 'tests/service-worker-diagnostics.js']) {
+for (const file of [...(await readdir(new URL('../dist/src/', import.meta.url))).filter(file => file.endsWith('.js')).map(file => `dist/src/${file}`), ...evaluationScripts, 'dist/sw.js', 'scripts/serve.mjs', 'scripts/build-release.mjs', 'scripts/check.mjs', 'scripts/evaluate.mjs', 'scripts/evaluation-server.mjs', 'tests/browser-server.mjs', 'tests/accessibility-server.mjs', 'tests/accessibility-diagnostics.js', 'tests/service-worker-diagnostics.js']) {
   const result = spawnSync(process.execPath, ['--check', file], { cwd: new URL('../', import.meta.url), encoding: 'utf8' });
   assert.equal(result.status, 0, result.stderr);
 }

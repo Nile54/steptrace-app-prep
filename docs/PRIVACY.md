@@ -1,6 +1,6 @@
 # Privacy, offline use, and recovery
 
-Session 5, September 22, 2026. This describes the local development app served by `scripts/serve.mjs`. A future hosted version would need its own verified hosting/network disclosures. Use fictional information during development. Actual runtime checks and limitations are in [CHECKS](CHECKS.md).
+Updated for Session 7, September 22, 2026. This describes the authored browser app and local server. Publication status and the deployed version belong in [RELEASE](RELEASE.md). Use fictional information only in this alpha. Actual runtime checks and limitations are in [CHECKS](CHECKS.md).
 
 ## Where content goes
 
@@ -35,3 +35,9 @@ There is no in-app data deletion control. Browser site-data controls can remove 
 `dist/src/demo.js`, `dist/src/dependency-demo.js`, the earlier scripted preview, and test fixtures are authored synthetic examples. Maple Grove and Cedar are fictional scholarships in these scenarios; dates, requirements, completed work, and the described 380-word essay are not real applicant records or verified scholarship rules. The working demo uses normal model operations; `/preview.html` remains explicitly scripted. No actual recommendation letter or essay is bundled.
 
 Static source inspection supports the app-content flow described above. CHECKS records the distinct runtime network observations, selected browser flows, failure simulations, and any untested operating-system/browser behavior. Neither inspection nor a scan establishes security certification or complete privacy against software outside the app.
+
+## Public demo hosting
+
+The public demo is prepared for ChatGPT Sites under the existing account’s included beta limits. Sites and its hosting infrastructure serve the app and may process ordinary network request metadata such as IP addresses and operational logs. StepTrace has no visitor account, text upload, remote application database or analytics integration. The app’s local text processing does not eliminate the host’s handling of page requests. [Sites terms](https://openai.com/policies/chatgpt-sites-terms/) and [hosting documentation](https://help.openai.com/en/articles/20001339) describe provider responsibilities and limits. Hosted behavior and observed response headers must be verified in CHECKS; local-server policy alone is not proof of a hosted policy.
+
+A hosted origin has separate browser storage from localhost and other hosts. Moving between them requires a deliberately exported and previewed backup. The fictional demo is for adults; do not use it for private application records, health information or payment data. No provider-specific confidentiality or residency guarantee is made.

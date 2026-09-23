@@ -1,71 +1,46 @@
 # StepTrace state
 
-Updated September 22, 2026. **Session 6 complete. Human evaluation pending (N=0). Stop before public release or monetization.**
+Updated September 22, 2026. **Session 7 in progress: local alpha release prepared; publication verification pending. Human evaluation pending (N=0).**
 
-## Repository and scope
+## Repository and authorization
 
-- Repository: `/Users/nileshnandakumar/Documents/Codex/2026-09-14/before-session-one-supplying-your-github/outputs/steptrace-local`.
-- Branch: `codex/session-6`, based on Session 5 commit `862291e`. Initial tree was clean; user files/data were preserved.
-- Prior STATE/CHECKS archived in `docs/history/SESSION-5-STATE.md` and `SESSION-5-CHECKS.md`. Original prompts/research retained under `docs/references/`.
-- User: GitHub Nile54, targeting tech/AI jobs and internships; JavaScript, HTML and CSS. Package 0.6.0; no added production dependency, installation or spending.
-- Session 6 only: evaluation kit, protocol, fictional integrations and bounded presentation fixes. No participants, recruitment, real documents, analytics, third-party text uploads, remote/push/deployment, profile edits, OCR, scraping, AI, billing or revenue.
-- StepTrace remains a provisional name with known conflicts; no public slug or demand claim.
-- Later sessions must read AGENTS, BRIEF, ROADMAP and STATE (plus EVALUATION for release decisions), inspect git/user changes, implement only the requested milestone, preserve work, run relevant checks, update STATE and commit logically. Later user choices take precedence.
+- Actual repository: `/Users/nileshnandakumar/Documents/Codex/2026-09-14/before-session-one-supplying-your-github/outputs/steptrace-local`.
+- Branch `codex/session-7`, based on `4a2ebcd` (Session 6). The starting tree was clean. Existing code, data and unrelated files are preserved; history has not been rewritten.
+- User-supplied and browser-verified GitHub owner: [Nile54](https://github.com/Nile54). Intended descriptive slug `steptrace-app-prep`; StepTrace remains provisional with known naming conflicts. Public source and no-cost fictional hosting are authorized for this session only.
+- Later sessions must read AGENTS, BRIEF, ROADMAP, STATE and EVALUATION, inspect actual git changes, preserve user work, implement only the requested milestone, run relevant checks, update STATE and commit logically. User choices supersede saved/tool-specific guidance.
+- Prior STATE/CHECKS archived under `docs/history/SESSION-6-*`. Product/evaluation scope is unchanged. No profile/resume edits, recruitment, real documents, analytics, external text uploads, AI, billing or spending.
 
-## Delivered
+## Prepared release
 
-- `evaluation/`: matched fictional A/B briefs and an editable manual checklist with independent completion/review/applicability/notes. Worksheet rows live only in that tab's memory; copyable JSON is distinct from a StepTrace backup or participant result.
-- `scripts/evaluate.mjs`: actual model/storage integration with an independent authored answer key, honest conservative-matching stress cases, unresolved conditions/conflicts, input fingerprint and optional before/after backups.
-- `scripts/evaluation-server.mjs`: separate loopback kit serving real app modules; allowlisted assets, no upload endpoint/telemetry or worker. Normal app server excludes the kit.
-- `docs/EVALUATION-PROTOCOL.md`: adult consent/script, fixed practice, four counterbalanced sequences, 30-second pause, scoring/time/assistance/censoring definitions and honest simplification criteria.
-- `docs/evaluation/blank-observation.json`: empty template. `synthetic-results.json`: actual engineering results.
-- `docs/EVALUATION.md`: tested version, actual sample size, results, browser observations, limitations and usefulness conclusions.
-- Bounded fixes: **Source-link review** label and explanation that completed work may still satisfy instructions; invalid baseline wording reverts to retained text; notes avoid per-keystroke status announcements.
-- AGENTS, BRIEF, ROADMAP and README updated. Scope unchanged; existing fictional demo remains accurate and saved future prompts need no scope rewrite.
+- Package `0.7.0-alpha.1`, MIT license, concise README, architecture, sources/prior art, detailed usage and a fictional walkthrough with genuine before/after screenshots.
+- Portable static builder with an explicit app allowlist, generated worker revision, integrity manifest and static-host headers. Default output `work/release`; Sites output `build`, both ignored. Authoring remains in `dist/`; comparison/dependency/storage modules and schema 3/legacy readers are unchanged.
+- CI matrix for Node 22/24; actual remote results pending. No package dependencies or paid infrastructure.
+- Current local checks: **131 passing tests**, zero failures/skips; synthetic matched/stress outcomes unchanged. See CHECKS and RELEASE for exact evidence and limits.
+- Local real-interface walkthrough confirms completed essay/proofreading are flagged after 500→400, recommendation stays complete, and completion records survive.
 
-Schema 3 and schema-1/2 compatibility remain. Original source text, exact anchors, matching rules/reason descriptors, review and completion/dependency histories are unchanged. Keep comparison, dependency, storage, drafts and offline modules separate; comparison changes require compatibility work.
+## Hosting and authentication
 
-## Actual checks and evidence
+Sites project: `appgprj_6ab363105d748191a690c53ff5af2e3e`, recorded in `.openai/hosting.json`. This provisioned identity must be reused, never replaced by another creation. It is not yet a verified deployment. The source credential is short-lived and must never be committed or exposed. Use the hosting skill's workflow from this checkout and build `--out build` from a clean commit.
 
-- Final `./run.sh check`: **126 passed, 0 failed, 0 skipped**, plus syntax/assets/fixture checks. `git diff --check` clean.
-- Matched A/B: each has 3 expected affected roles, all flagged, 0 misses, 0 extra reviews.
-- Adjacent-context and duplicate stress cases: each adds 1 unchanged recommendation review. This is counted as extra burden, not hidden by changing the oracle.
-- Negated condition and revised labeled conflict remain Not decided and open through export/import. A source mapping acknowledgment with Not decided leaves its applicability blocker.
-- Browser A: file/preview restore, exact source lookup, 500→400 update, 1 direct/2 dependent reviews, four completions retained, unchanged recommendation, original/added conditions and conflict undecided.
-- Malformed import and reload preserve exactly equal workspace objects; duplicate IDs rejected. A third conflict-label version remains unresolved. Export/restore on a separate empty origin compares exactly equal; original source remains reachable.
-- Baseline browser: update reveal leaves rows unchanged; manual review retains completion; invalid wording/error/export agree. Desktop kit layout inspected.
-- Actual human sample **0**; no consented feedback found. Human timing, effort, misses/extra reviews, comprehension and preference unmeasured. Scripted 13-versus-11 calls are not measured user effort.
-- Engineering fingerprint: `944131bfc824be4f9763c78d433678581a8bba666297a5f8a26ce63d9adf9fd1`. Report records `862291e+session6-working-tree`; the fingerprint identifies exact engineering inputs. Final milestone commit includes it.
+No GitHub remote exists yet. The signed-in browser account is Nile54, but GitHub CLI credentials and SSH agent identities were absent. The official GitHub CLI v2.101.0 was downloaded under ignored `work/release-tools/` and its published SHA-256 checked. Authentication is the remaining prerequisite for GitHub push/CI/release; never extract browser credentials or invent successful remote checks.
 
-See EVALUATION and CHECKS for detail. Final local test output: ignored `work/session6-final-checks.txt`; synthetic browser fixtures: ignored `work/session6-browser/`. Future raw participant records must stay outside git/served directories.
-
-## Commands and local commit
+## Commands
 
 ```sh
-cd /Users/nileshnandakumar/Documents/Codex/2026-09-14/before-session-one-supplying-your-github/outputs/steptrace-local
-./run.sh
+./run.sh                  # http://127.0.0.1:4173
 ./run.sh check
 ./run.sh evaluate
-./run.sh evaluate-ui
-# Optional; use a new directory to preserve existing files:
-./run.sh evaluate --backups work/new-fictional-evaluation
+./run.sh evaluate-ui      # http://127.0.0.1:4196/evaluation/
+./run.sh build            # work/release/
+./run.sh build --out build
 ```
 
-Normal app: `http://127.0.0.1:4173`; kit: `http://127.0.0.1:4196/evaluation/`. Other machines need Node 22+.
+Node 22+ required; no npm install. This Mac uses `/Users/nileshnandakumar/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node` (24.19.0) and git `/Users/nileshnandakumar/.cache/codex-runtimes/codex-primary-runtime/dependencies/bin/fallback/git`. Avoid system git's installer. No global identity changes. The isolated release test server currently runs on 4207; stop it at handoff.
 
-Verified Node: `/Users/nileshnandakumar/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node` (v24.19.0).
-Verified git: `/Users/nileshnandakumar/.cache/codex-runtimes/codex-primary-runtime/dependencies/bin/fallback/git`. Avoid system git's developer-tools installation prompt. No global identity/config changes.
+## Remaining work and boundary
 
-Local milestone commit subject: `Evaluate fictional workflows against a manual checklist`; read hash with the verified git and `log -1 --oneline`. Test servers are stopped at handoff. Restart explicitly. Browser/profile/host/port define separate saved data. Use one editing tab and a separate backup; never clear user storage to make a test pass.
+Finish Session 7: commit reviewed source, rebuild clean, deploy the existing Site publicly, verify a fresh visit/main flow/runtime and exact commit, then record actual URL. Authenticate GitHub and create/push only the verified owner's new repository, inspect remote files/CI and label the alpha release; if authentication blocks, retain the complete release artifact and give the exact action without claiming publication.
 
-## Limits and next boundary
+Human usefulness remains unknown. Synthetic stress cases each add one unnecessary recommendation review. One consenting adult completing both assigned fictional blocks is the smallest feedback action; four sessions balance order. Browser storage is not backup/encryption; use one editing tab and separate JSON backups. Do not infer eligibility, checklist completeness or source authority.
 
-Evidence establishes tested mechanics, not usefulness. Stable paragraph context favors automatic matching in matched briefs; stress cases show extra burden. People must author links/dependencies and resolve applicability/conflicts. Unrecorded relationships, distant conditions and external edits cannot be inferred. There is no semantic contradiction/authority detector or completeness guarantee.
-
-No human accessibility study, screen-reader speech, mobile certification, actual change frequency, retention/demand or payment evidence. Earlier accessibility/offline evidence remains separately dated and does not establish conformance. This session checked ordinary reload/restore in the browser; quota failures were automated, and prior actual interrupted-write/offline checks were not rerun.
-
-Browser storage/drafts/cache can fail, be cleared or evicted. Drafts are not backups; storage is not encryption; conflict detection is not atomic multi-tab locking. Restore is additive only; deletion, deduplication and reopening decisions are absent. Baseline worksheet storage is deliberately temporary and must not be treated as a measured product advantage.
-
-Smallest remaining feedback action: one consenting adult completes both assigned fictional blocks, with paired observations locally recorded under the protocol. This checks the script and finds friction; four completed sessions form one balanced order batch. Report a checklist advantage honestly and simplify if observed costs outweigh value. No outreach or feedback session is scheduled automatically.
-
-Only on a later user request: begin the next authorized session after reading saved notes and unresolved evidence. **Do not begin Session 7 publication, public branding, deployment or monetization now.**
+Stop after Session 7. Do not start profile/resume or monetization work.

@@ -13,7 +13,8 @@ fi
 case "${1:-start}" in
   start) exec "$steptrace_node" scripts/serve.mjs ;;
   check) exec "$steptrace_node" scripts/check.mjs ;;
+  build) shift; exec "$steptrace_node" scripts/build-release.mjs "$@" ;;
   evaluate) shift; exec "$steptrace_node" scripts/evaluate.mjs "$@" ;;
   evaluate-ui) exec "$steptrace_node" scripts/evaluation-server.mjs ;;
-  *) echo 'Usage: ./run.sh [start|check|evaluate|evaluate-ui]' >&2; exit 1 ;;
+  *) echo 'Usage: ./run.sh [start|check|build|evaluate|evaluate-ui]' >&2; exit 1 ;;
 esac

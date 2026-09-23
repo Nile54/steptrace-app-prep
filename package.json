@@ -1,12 +1,14 @@
 {
   "name": "steptrace-local",
-  "version": "0.6.0",
+  "version": "0.7.0-alpha.1",
   "private": true,
   "type": "module",
-  "description": "Local source traceability with reproducible fictional evaluation and a manual-checklist baseline. Session 6.",
+  "description": "Local-first source-linked application preparation. Fictional alpha; human evaluation pending.",
+  "license": "MIT",
   "scripts": {
     "start": "node scripts/serve.mjs",
     "check": "node scripts/check.mjs",
+    "build": "node scripts/build-release.mjs",
     "evaluate": "node scripts/evaluate.mjs",
     "evaluate-ui": "node scripts/evaluation-server.mjs"
   },

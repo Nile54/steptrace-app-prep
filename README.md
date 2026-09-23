@@ -1,109 +1,72 @@
-# StepTrace — Session 6
+# StepTrace — application preparation
 
-A local application-preparation workspace with immutable instructions, exact source links, confirmed task dependencies, human review, completion history, and JSON backups. Session 5 added keyboard/focus improvements, a one-step view, draft recovery, and offline app loading after setup. Session 6 adds a reproducible comparison kit and synthetic correctness results; human evaluation is pending with **0 participants**. Use fictional information in this development version. StepTrace remains a provisional name with documented conflicts.
+Link a task to the exact instruction that prompted it. When instructions change, see which recorded work needs another look without losing completion history.
 
-## Run
+StepTrace is a local-first **alpha** for adults preparing college scholarship applications. It uses JavaScript, HTML and CSS, with no package dependencies, account, text-upload service or AI model. Use fictional information in this release. A person decides applicability and resolves uncertainty; the app does not decide eligibility, guarantee completeness or submit applications.
 
-Repository: `/Users/nileshnandakumar/Documents/Codex/2026-09-14/before-session-one-supplying-your-github/outputs/steptrace-local`.
+**Human evaluation is pending: 0 participants.** The working name is provisional and has [known conflicts](docs/SOURCES.md#working-name-check). Publication and deployment status are recorded in [STATE](docs/STATE.md); this README does not imply that a demo is live.
+
+## Run locally
+
+Install Node.js 22 or later, then run these commands from this repository:
 
 ```sh
 ./run.sh
-./run.sh check
 ```
 
-Open [the workspace](http://127.0.0.1:4173). No install or build step; the launcher uses Node on PATH or this Mac's bundled runtime. Other machines need Node 22+. There are no package dependencies. `dist/` contains authored source. Stop a server started in your terminal with Ctrl+C.
+Open [the workspace](http://127.0.0.1:4173). No dependency installation or build is needed for local development. Stop the server with Ctrl+C. The launcher can also use the existing bundled Codex Node runtime on the original development Mac.
 
-Use the same browser/profile, host, and port to reopen saved work, and one editing tab. A different port, hostname, or browser has separate storage. Browser storage is not a backup or encryption.
-
-## Reproduce the evaluation
+On platforms without a POSIX shell, use `node scripts/serve.mjs`. The equivalent check, evaluation and release commands are `node scripts/check.mjs`, `node scripts/evaluate.mjs` and `node scripts/build-release.mjs`.
 
 ```sh
-./run.sh evaluate
-./run.sh evaluate-ui
+./run.sh check         # Regression tests, syntax and fixture checks
+./run.sh evaluate      # Clearly labeled synthetic correctness report
+./run.sh evaluate-ui   # Local volunteer kit at http://127.0.0.1:4196/evaluation/
+./run.sh build         # Static release files in ignored work/release/
 ```
 
-The first command prints a labeled synthetic JSON report. The second serves [matched fictional briefs and a simple manual checklist](http://127.0.0.1:4196/evaluation/) with a link to the real StepTrace interface. This is a separate local development kit, not part of the normal app or its offline cache. Checklist rows stay only in that tab's memory and disappear on reload or closure; prepare and copy its record when needed. No participant telemetry or text upload is added.
+`dist/` contains authored source. The release builder copies only public app assets, gives the service worker a shell revision and records source/asset hashes in `release.json`. The evaluation kit, test endpoints and local records are excluded. Deployment requires a host serving the built files at its origin root over HTTPS; see [architecture and release boundaries](docs/ARCHITECTURE.md).
 
-Both matched briefs produced **3 expected review flags, 0 misses and 0 extra flags**. Two harder matching fixtures each produced **1 extra recommendation review** from conservative matching. These are engineering outputs, not human performance. The simple checklist has no automatic flags; that does not establish a human miss rate or show that StepTrace is better. Source lookup time, setup effort, comprehension, accessibility benefit and demand remain unmeasured. See [actual results and limitations](docs/EVALUATION.md).
+## Try the before/after flow
 
-The [volunteer protocol](docs/EVALUATION-PROTOCOL.md) includes consent, fixed practice, four counterbalanced sequences, timing rules and a blank observation template. The smallest next feedback action is one consenting adult trying both assigned blocks. A complete set of four sequences balances interface and brief order; one session does not.
+1. Open **Try a fictional dependency example**, then **Create and confirm fictional plan**. The separate sample has a completed 380-word draft, completed proofreading that depends on it, and a completed recommendation task.
+2. Prepare a JSON backup. Choose **Fill fictional 400-word update**, **Preview changes**, then **Save new source version**.
+3. Review the old 500-word and new 400-word excerpts. Drafting and proofreading need review, while all three completion records survive. The unchanged recommendation has no open review. A 380-word draft is not automatically invalid.
+4. Inspect the added unreviewed text, then choose **Add undecided conditional task**. Applicability stays **Not decided** until a person chooses.
 
-For synthetic recovery demonstrations only, `./run.sh evaluate --backups work/new-directory` creates four fictional before/after backups. It refuses to overwrite existing files. Do not preload these backups in timed participant setup, because doing so would hide setup effort.
+The [short walkthrough](docs/DEMO.md) includes genuine interface captures and separate source, downstream and work-change reviews. [Detailed usage](docs/USAGE.md) covers source selection, manual tasks, dependencies, backup/restore, keyboard options and recovery. The main example uses the real model and storage; `/preview.html` is the older, explicitly scripted preview.
 
-## Keyboard and reading options
+![Fictional 400-word source update beside the completed draft, which now has a separate review flag.](docs/images/demo-after.png)
 
-The skip link and **Workspace sections** navigation reach the main flows. Controls have visible labels and focus outlines. Select an exact source passage with Shift+arrow keys, choose **Use selected excerpt**, and enter the task wording. **View exact source** selects that passage again; **Return to task** restores your place.
+## What is implemented
 
-Choose **Full checklist** or **One step at a time**. The one-step view has a task chooser and Previous/Next buttons; completion never advances automatically. Dependencies and review reasons use words and linear lists. **Text size → Larger** increases text size, and browser zoom remains available. See [accessibility notes](docs/ACCESSIBILITY.md) for behavior and limits; [CHECKS](docs/CHECKS.md) identifies what was actually tested.
+- Immutable pasted/plain-text source snapshots and exact, version-specific task excerpts; manual tasks have an explicit no-source label.
+- Deterministic before/after comparison, conservative matching and human-confirmed mappings. Added unlinked material remains visible.
+- User-confirmed dependencies with cycle checks and explained downstream review. Multiple reasons and newer updates stay independent.
+- Separate completion, applicability and review histories. **I changed this work** records a person's report; it does not inspect external files.
+- Validated local saves, previewed additive JSON restore, legacy backup readers, visible save failures and same-tab draft recovery.
+- Keyboard controls, one-step/full views and offline app loading after successful setup in a supported browser.
 
-## Try the working before/after example
+## Evidence and limitations
 
-1. Open **Try a fictional dependency example** and choose **Create and confirm fictional plan**. This creates a separate sample application and explicitly confirms that proofreading depends on the essay. Three tasks start completed; the fictional draft is described as 380 words.
-2. Inspect **This step depends on…** in the proofreading task. Prepare a JSON backup before changing the instructions.
-3. Choose **Fill fictional 400-word update**, then **Preview changes** and **Save new source version**. Inspect the old/new essay instruction and added conditional study-plan text.
-4. The essay has a direct source review; proofreading has its own causal review. All original completion records survive. The unchanged recommendation remains complete without an open review. The app does not declare the 380-word draft invalid.
-5. The new conditional text is visible as unreviewed material. **Add undecided conditional task** creates an exact source link with applicability **Not decided**. A person decides whether it applies.
-6. Use the essay's source review to confirm a new excerpt and applicability. Review proofreading separately and record what you checked. Acknowledging one task or event does not clear the others.
-7. Under the essay, open **I changed this work**, describe a fictional revision and record it. Proofreading receives another reason even without new instructions. Repeat to create a second independent reason; review only one and inspect the other.
-8. Export, reload, and preview the export on a separate test origin to restore it. Dependencies, exact sources, work reports, review decisions, and completion history survive.
+The [Session 6 evaluation](docs/EVALUATION.md) records 126 passing automated tests at that milestone. Each of two matched fictional briefs produced three expected affected-task flags, with no misses or extra flags. Two stress scenarios each produced one extra review of an unchanged recommendation. These are synthetic correctness results, not participant performance or proof of demand. [CHECKS](docs/CHECKS.md) records release checks separately.
 
-The example uses the same model and save operations as other applications. Its data is fictional. The separate `/preview.html` page remains the original scripted Session 1 preview.
+No one has yet completed the human comparison. Lookup time, setup effort, comprehension, accessibility benefit and preference remain unmeasured. The [adult-volunteer protocol](docs/EVALUATION-PROTOCOL.md) compares an ordinary checklist using matched briefs and four counterbalanced orders. One consenting adult trying both assigned blocks is the smallest next feedback action; a complete four-person batch balances order. No recruitment has been performed.
 
-## Dependencies and review
+Automatic matching requires a unique exact paragraph and phrase in stable immediate context. Harmless formatting, repeated phrases and changed neighboring text can require extra confirmation. The app does not understand semantic contradictions, distant conditions, missing user-created relationships or unreported edits. Read the [matching tradeoff](docs/ARCHITECTURE.md#matching-tradeoff).
 
-Choose predecessors using **This step depends on…**, then **Confirm dependencies**. Circular, missing, and cross-application references are rejected. Source changes that require human review flag downstream tasks through the confirmed links. Each reason retains its originating event and a linear causal chain. A diamond-shaped dependency produces one reason per task for that event, rather than duplicate copies.
+Use one editing tab and keep separate JSON backups. Browser storage can fail or disappear; it is not a backup or encryption. Restore only adds applications with disjoint IDs; replacement restore, deletion, deduplication and reopening a recorded resolution are not implemented. There is no OCR, scraping, submission, cloud sync or payment system.
 
-Removing links does not erase previous reasons. New links account for still-open related changes. A source acknowledgment, a downstream acknowledgment, and a completion event are distinct decisions. Two work reports under the same source version remain separate events. The app knows about external work changes only when a person reports them.
+## Privacy, accessibility and prior art
 
-Unknown applicability, open review reasons, and incomplete applicable predecessors remain visible as blockers. **No recorded blockers for this step** refers only to the recorded plan; it never means eligible, complete, or ready to submit. When instructions conflict, leave the review open until you decide or obtain clarification. **Does not apply** decisions remain in history and receive review when their linked source changes.
+Application text is processed in the browser and rendered as text. App loading and update checks still request static files over the network. A public host can receive ordinary request metadata; local processing is not a promise of zero network traffic or privacy from browser extensions. See [privacy and recovery notes](docs/PRIVACY.md).
 
-See [dependency design](docs/DEPENDENCIES.md) for the algorithm, migration rules, limits, and an interview explanation.
+Native controls, visible labels, focus handling and textual review reasons support the accessibility goal. Automated checks and agent-operated walkthroughs do not establish complete WCAG conformance or benefit for users. [Accessibility notes](docs/ACCESSIBILITY.md) distinguish implemented behavior from untested needs.
 
-## Source matching
+Change-impact traceability has established prior art in IBM DOORS and Jama. StepTrace's unproven hypothesis is a smaller consumer preparation workflow, not invention of traceability. [Sources and related work](docs/SOURCES.md) identify the overlap and naming conflicts. [Architecture](docs/ARCHITECTURE.md) explains the modules and invariants.
 
-Automatic source mapping requires a unique identical paragraph and selected phrase plus unchanged immediate neighbors or document boundaries. Formatting, duplicate text, changed context, uncertain matches, and multi-paragraph selections need human confirmation. Matching uses text structure, not meaning or distant conditions.
+## License and development
 
-**Source-link review** asks a person to check a mapping; it is not proof that the linked work is wrong. Completed work may still satisfy the updated instructions. Conservative matching can produce extra review even for unchanged wording, as the evaluation stress cases demonstrate.
+[MIT](LICENSE): reuse, modification and commercial redistribution are permitted with the copyright/license notice retained; the software is provided without warranty. The license does not establish a hosting provider's suitability for a future paid service.
 
-Every nonblank passage stays visible. Positional changed pairs are reading aids, not proven equivalents. Exact snapshots preserve whitespace and offsets. Unlinked spans remain unreviewed even inside partly linked paragraphs. Historical source decisions cannot clear newer reviews or overwrite current applicability. See [comparison design](docs/COMPARISON.md).
-
-## Storage and recovery
-
-Schema-3 data uses the existing `steptrace.workspace.v1` key. Schema-1 and schema-2 workspaces and backups are strictly validated and migrated in memory. Opening old work does not write storage; original bytes remain available until the next successful save. Prepare a separate JSON backup before editing.
-
-A failed save displays **Not saved** and leaves current work exportable in the tab. Quota failures offer retry. Invalid data is preserved and blocks writes. A completed write from another tab is detected before saving; simultaneous edits are not atomically locked.
-
-Restore validates exact quotes, IDs, versions, histories, dependency graphs, event causes and causal paths. It previews before adding disjoint applications. Replacement restore, deletion, and deduplication are not implemented. The visible JSON field provides a copy fallback if downloading does not complete. Confirm that a backup file arrived; a prepared field alone is not a separate backup.
-
-Unsubmitted forms are retained separately in this tab's session storage when available, including across redraws and ordinary reloads. They are not part of workspace exports: submit each form or copy its text separately. Before writing the workspace, the app also attempts a same-tab interrupted-save copy. Reload recovery validates that copy and checks the previous saved bytes; conflicting current data is preserved. Tab closure, browser failure, disabled/full storage, and device failure can defeat recovery. Keep a separate backup.
-
-Limits include 100 applications, 2,000 tasks, 100,000 characters per source, 50 source versions per application, 1,000 characters per review note, and 2 MiB JSON. Source versions accept pasted text; initial applications also accept UTF-8 `.txt` files.
-
-## Offline use and privacy
-
-Load the app online first and wait for **App files are ready for offline use in this browser**. The service worker caches the static shell, so the same address can load offline while that cache remains available. Cache eviction or an unsupported browser can prevent offline loading. Saved work and drafts use separate browser storage; app-file caching is not a workspace backup.
-
-New versions offer **Update app and reload** and check saving/draft recovery before activating and reloading. Failed setup can be retried. Keep one editing tab and export before a browser upgrade or storage change.
-
-Core application text and chosen local files are processed in the browser. Static app-file requests and update checks use the network. There are no accounts, analytics, or text-upload service, and no app-provided encryption. Extensions, browser/OS assistance, and sync behavior are outside the app's control. See [privacy notes](docs/PRIVACY.md) for the audited APIs, storage keys, caching behavior, and limits.
-
-## Code to understand
-
-| File | Responsibility |
-| --- | --- |
-| `dist/src/comparison.js` | Deterministic paragraph comparison and conservative exact matching |
-| `dist/src/dependencies.js` | Cycle checks, graph traversal and causal propagation |
-| `dist/src/model.js` | Validated immutable records and explicit human actions |
-| `dist/src/schema-v1.js`, `schema-v2.js` | Preserved legacy readers |
-| `dist/src/storage.js` | Local saves, migration, backups and additive restore |
-| `dist/src/source-selection.js` | Textarea positions mapped to preserved source offsets |
-| `dist/src/review-ui.js`, `dependency-ui.js` | Source decisions, dependency controls, causal lists and separate reviews |
-| `dist/src/dependency-demo.js` | Opt-in fictional scenario through the real domain API |
-| `dist/src/drafts.js` | Same-tab form drafts and interrupted-save journal |
-| `dist/src/offline.js`, `dist/sw.js` | Revisioned app-shell cache and explicit guarded updates |
-| `dist/src/app.js` | Interface orchestration, focus, task views, and honest save feedback |
-| `evaluation/`, `scripts/evaluate.mjs` | Separate fictional checklist comparison, independent scoring and reproducible synthetic report |
-
-Actual automated and browser results are recorded in [EVALUATION](docs/EVALUATION.md), [CHECKS](docs/CHECKS.md) and [STATE](docs/STATE.md). No usability improvement, complete accessibility conformance, market demand, or semantic eligibility accuracy is claimed.
-
-Session 6 stops after evaluation preparation, synthetic checks and observed fixes. No participants have been tested or contacted; no OCR, scraping, LLM, remote repository, deployment, billing or spending was added. Public release and monetization require their later sessions. Later sessions must read AGENTS, BRIEF, ROADMAP, and STATE, preserve user changes and data, implement only the requested milestone, run relevant checks, update STATE, and make a logical local commit.
+Read [AGENTS](AGENTS.md), [BRIEF](docs/BRIEF.md), [ROADMAP](docs/ROADMAP.md) and [STATE](docs/STATE.md) before continuing a milestone. Preserve user work and historical data, implement only the requested scope, run relevant checks and update the evidence honestly.
