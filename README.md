@@ -4,7 +4,7 @@ Link a task to the exact instruction that prompted it. When instructions change,
 
 StepTrace is a local-first **alpha** for adults preparing college scholarship applications. It uses JavaScript, HTML and CSS, with no package dependencies, account, text-upload service or AI model. Use fictional information in this release. A person decides applicability and resolves uncertainty; the app does not decide eligibility, guarantee completeness or submit applications.
 
-**Human evaluation is pending: 0 participants.** The working name is provisional and has [known conflicts](docs/SOURCES.md#working-name-check). Publication and deployment status are recorded in [STATE](docs/STATE.md); this README does not imply that a demo is live.
+**Human evaluation is pending: 0 participants.** The working name is provisional and has [known conflicts](docs/SOURCES.md#working-name-check). [Open the fictional demo](https://steptrace-app-prep.ninandak.chatgpt.site) · [Public source](https://github.com/Nile54/steptrace-app-prep). Exact deployed commit, verification and limitations are recorded in [RELEASE](docs/RELEASE.md).
 
 ## Run locally
 

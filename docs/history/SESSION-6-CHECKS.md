@@ -1,6 +1,6 @@
 # Checks — Session 6
 
-September 22, 2026. These are engineering checks; **human evaluation is pending (N=0)**. See [EVALUATION](EVALUATION.md) for version, protocol, observations and limits. Previous accessibility/offline checks remain in [history/SESSION-5-CHECKS.md](history/SESSION-5-CHECKS.md).
+September 22, 2026. These are engineering checks; **human evaluation is pending (N=0)**. See [EVALUATION](../EVALUATION.md) for version, protocol, observations and limits. Previous accessibility/offline checks remain in [history/SESSION-5-CHECKS.md](SESSION-5-CHECKS.md).
 
 ## Actual automated results
 

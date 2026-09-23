@@ -8,7 +8,12 @@ const ASSETS = [
     'schema-v1', 'schema-v2', 'comparison', 'review-ui', 'dependencies',
     'dependency-ui', 'dependency-demo', 'drafts', 'offline'].map(name => `/src/${name}.js`),
 ];
-const PATHS = new Set(ASSETS);
+// Static hosts may canonicalize HTML names. Only these exact destinations are
+// equivalent app entry points; login pages, query strings and other redirects
+// must still fail installation. Preserve the original cache keys on all hosts.
+const HTML_REDIRECTS = { '/index.html': '/', '/preview.html': '/preview' };
+const PATHS = new Set([...ASSETS, '/preview']);
+const cachePath = path => path === '/preview' ? '/preview.html' : path;
 let repairPromise;
 
 async function cacheShell() {
@@ -19,7 +24,10 @@ async function cacheShell() {
     }));
     const responses = await Promise.all(requests.map(async request => {
       const response = await fetch(request);
-      if (!response.ok || response.redirected) throw new Error('Incomplete app shell');
+      const canonical = HTML_REDIRECTS[new URL(request.url).pathname];
+      const expectedRedirect = canonical && response.url === new URL(canonical, self.location.origin).href
+        && /^text\/html(?:;|$)/i.test(response.headers.get('Content-Type') ?? '');
+      if (!response.ok || (response.redirected && !expectedRedirect)) throw new Error('Incomplete app shell');
       // Consume each response as soon as its headers arrive. Waiting for every
       // fetch before draining bodies can exhaust a browser's connection pool:
       // the remaining requests wait for connections held by unread bodies.
@@ -61,7 +69,7 @@ self.addEventListener('fetch', event => {
   if (event.request.method !== 'GET' || url.origin !== self.location.origin || url.search || !PATHS.has(url.pathname)) return;
   event.respondWith((async () => {
     const cache = await caches.open(CACHE_NAME);
-    const response = await cache.match(url.pathname);
+    const response = await cache.match(cachePath(url.pathname));
     if (response) return response;
     // Repair an evicted app-file cache only when the server still has the same
     // complete shell revision. Never mix a cached version with newer modules.
@@ -75,7 +83,7 @@ self.addEventListener('fetch', event => {
         return cacheShell();
       })().finally(() => { repairPromise = undefined; });
       const repaired = await repairPromise;
-      const restored = await repaired.match(url.pathname);
+      const restored = await repaired.match(cachePath(url.pathname));
       if (restored) return restored;
     } catch { /* No workspace or draft data is read or changed by repair. */ }
     return new Response('This app file is unavailable offline. Reconnect and reload to repair the app copy. If an update is waiting, save or copy any form drafts in other open StepTrace tabs, then close all StepTrace tabs and reopen. Your saved workspace is stored separately from the app-file cache; keep an exported backup.', {

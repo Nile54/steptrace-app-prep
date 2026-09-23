@@ -1,6 +1,6 @@
 # Privacy, offline use, and recovery
 
-Updated for Session 7, September 22, 2026. This describes the authored browser app and local server. Publication status and the deployed version belong in [RELEASE](RELEASE.md). Use fictional information only in this alpha. Actual runtime checks and limitations are in [CHECKS](CHECKS.md).
+Updated for Session 7, September 23, 2026. This describes the authored browser app and local server. Publication status and the deployed version belong in [RELEASE](RELEASE.md). Use fictional information only in this alpha. Actual runtime checks and limitations are in [CHECKS](CHECKS.md).
 
 ## Where content goes
 
@@ -41,3 +41,5 @@ Static source inspection supports the app-content flow described above. CHECKS r
 The public demo is prepared for ChatGPT Sites under the existing account’s included beta limits. Sites and its hosting infrastructure serve the app and may process ordinary network request metadata such as IP addresses and operational logs. StepTrace has no visitor account, text upload, remote application database or analytics integration. The app’s local text processing does not eliminate the host’s handling of page requests. [Sites terms](https://openai.com/policies/chatgpt-sites-terms/) and [hosting documentation](https://help.openai.com/en/articles/20001339) describe provider responsibilities and limits. Hosted behavior and observed response headers must be verified in CHECKS; local-server policy alone is not proof of a hosted policy.
 
 A hosted origin has separate browser storage from localhost and other hosts. Moving between them requires a deliberately exported and previewed backup. The fictional demo is for adults; do not use it for private application records, health information or payment data. No provider-specific confidentiality or residency guarantee is made.
+
+Observed September 23: the public host adds a Cloudflare security/challenge script to HTML and may make `/cdn-cgi/` requests. Those provider-controlled scripts and operational behavior are additional to the authored StepTrace app. The host did not apply the artifact’s `_headers` file: no Content-Security-Policy header was observed. Therefore the local server’s CSP and a byte-for-byte HTML delivery claim do not apply to this deployment. JavaScript/CSS/worker asset bytes matched the release manifest. Use fictional information only; no claim of privacy from hosting/CDN scripts is made.

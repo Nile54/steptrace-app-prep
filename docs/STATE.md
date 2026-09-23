@@ -1,6 +1,6 @@
 # StepTrace state
 
-Updated September 22, 2026. **Session 7 in progress: local alpha release prepared; publication verification pending. Human evaluation pending (N=0).**
+Updated September 23, 2026. **Session 7 in progress: local alpha release prepared; publication verification pending. Human evaluation pending (N=0).**
 
 ## Repository and authorization
 
@@ -15,14 +15,14 @@ Updated September 22, 2026. **Session 7 in progress: local alpha release prepare
 - Package `0.7.0-alpha.1`, MIT license, concise README, architecture, sources/prior art, detailed usage and a fictional walkthrough with genuine before/after screenshots.
 - Portable static builder with an explicit app allowlist, generated worker revision, integrity manifest and static-host headers. Default output `work/release`; Sites output `build`, both ignored. Authoring remains in `dist/`; comparison/dependency/storage modules and schema 3/legacy readers are unchanged.
 - CI matrix for Node 22/24; actual remote results pending. No package dependencies or paid infrastructure.
-- Current local checks: **131 passing tests**, zero failures/skips; synthetic matched/stress outcomes unchanged. See CHECKS and RELEASE for exact evidence and limits.
+- Current local checks: **133 passing tests**, zero failures/skips; synthetic matched/stress outcomes unchanged. See CHECKS and RELEASE for exact evidence and limits.
 - Local real-interface walkthrough confirms completed essay/proofreading are flagged after 500→400, recommendation stays complete, and completion records survive.
 
 ## Hosting and authentication
 
-Sites project: `appgprj_6ab363105d748191a690c53ff5af2e3e`, recorded in `.openai/hosting.json`. This provisioned identity must be reused, never replaced by another creation. It is not yet a verified deployment. The source credential is short-lived and must never be committed or exposed. Use the hosting skill's workflow from this checkout and build `--out build` from a clean commit.
+Sites project: `appgprj_6ab363105d748191a690c53ff5af2e3e`, recorded in `.openai/hosting.json`. This provisioned identity must be reused, never replaced by another creation. Version 1 from clean `beb27db` is publicly deployed at https://steptrace-app-prep.ninandak.chatgpt.site. Fresh browsing found a canonical HTML redirect incompatibility in offline setup. The bounded repair accepts only the two verified same-origin HTML aliases; other redirects still reject installation. A replacement version and full public flow are pending verification. The source credential is short-lived and must never be committed or exposed. Use the hosting skill's workflow from this checkout and build `--out build` from a clean commit.
 
-No GitHub remote exists yet. The signed-in browser account is Nile54, but GitHub CLI credentials and SSH agent identities were absent. The official GitHub CLI v2.101.0 was downloaded under ignored `work/release-tools/` and its published SHA-256 checked. Authentication is the remaining prerequisite for GitHub push/CI/release; never extract browser credentials or invent successful remote checks.
+GitHub remote `origin` is https://github.com/Nile54/steptrace-app-prep.git. The authenticated account is Nile54. The user approved the additional Workflow scope and completed browser authorization. Initial source commit `beb27db` is pushed to `main`, and its Node 22/24 CI succeeded. The official CLI v2.101.0 is under ignored `work/release-tools/`; its published SHA-256 was checked. No browser credentials were extracted. Final repaired source/CI/release verification remains.
 
 ## Commands
 

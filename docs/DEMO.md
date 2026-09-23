@@ -1,6 +1,6 @@
 # Fictional before/after walkthrough
 
-Run `./run.sh` and open [the local workspace](http://127.0.0.1:4173), or use a verified public URL recorded in [STATE](STATE.md). Use one editing tab. This example uses fictional instructions and normal model/save operations; it contains no actual essay or recommendation letter.
+Run `./run.sh` and open [the local workspace](http://127.0.0.1:4173), or open [the public fictional demo](https://steptrace-app-prep.ninandak.chatgpt.site) (see [RELEASE](RELEASE.md) for the deployed version). Use one editing tab. This example uses fictional instructions and normal model/save operations; it contains no actual essay or recommendation letter.
 
 ## Before the update
 

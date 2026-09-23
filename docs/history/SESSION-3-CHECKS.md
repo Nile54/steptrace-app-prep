@@ -1,6 +1,6 @@
 # Session 3 checks
 
-All inputs and examples were fictional. Session 2 evidence is preserved in [history/SESSION-2-CHECKS.md](history/SESSION-2-CHECKS.md).
+All inputs and examples were fictional. Session 2 evidence is preserved in [history/SESSION-2-CHECKS.md](SESSION-2-CHECKS.md).
 
 ## Automated verification — September 15, 2026
 

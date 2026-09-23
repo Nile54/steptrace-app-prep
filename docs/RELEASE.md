@@ -4,9 +4,13 @@ Release label: `v0.7.0-alpha.1` — fictional demonstration, human evaluation pe
 
 ## Publication record
 
-Release preparation is in progress. The GitHub owner is **Nile54**, verified against the user's supplied profile and the signed-in browser account. No StepTrace remote repository has yet been created or overwritten. The intended descriptive slug is `steptrace-app-prep`; the working name has known conflicts.
+Public demo: https://steptrace-app-prep.ninandak.chatgpt.site
 
-Sites project `appgprj_6ab363105d748191a690c53ff5af2e3e` has been provisioned. Provisioning is not deployment. A public URL and deployed commit will be recorded only after successful publication and a fresh browser check. GitHub source publication and remote CI are pending authenticated CLI access; a browser sign-in alone does not authenticate Git pushes.
+Public source: https://github.com/Nile54/steptrace-app-prep
+
+The GitHub owner **Nile54** was verified against the supplied profile, signed-in browser and authenticated CLI. The repository was absent before creation; no existing repository was overwritten. The user explicitly approved the CLI Workflow permission required to publish CI. The initial source commit `beb27db009d97b9b12bff61a8ecf470cee7bac5f` is pushed to `main`; [its remote Node 22/24 CI passed](https://github.com/Nile54/steptrace-app-prep/actions/runs/35888862475).
+
+Sites project `appgprj_6ab363105d748191a690c53ff5af2e3e` was deployed publicly from that clean commit, version 1, deployment `appgdep_6ab3fc2a5dd08191bcb1e444ca596570`. A fresh public visit exposed an HTML canonical-redirect incompatibility in offline setup. A narrow service-worker repair is under final publication verification; the final deployed revision will be recorded below. Do not equate the initial successful host deployment with completed app verification.
 
 ## Reproducible artifact
 
@@ -37,3 +41,9 @@ The release audit inspected 6 pre-release commits, 141 unique historical blobs a
 The MIT license permits others to reuse, change and redistribute the software commercially while retaining its notices, with no warranty. There was no existing license to preserve. The app's data model, matching rules and schema remain unchanged in this release. New behavior is limited to portable release packaging and accurate alpha labels.
 
 See [CHECKS](CHECKS.md) for actual check results, [DEMO](DEMO.md) for the working flow and genuine screenshots, [PRIVACY](PRIVACY.md) for storage/network limits and [EVALUATION](EVALUATION.md) for pending human evidence. Public release does not complete human evaluation or authorize profile edits, recruitment or monetization.
+
+## Observed hosting behavior and release repair
+
+September 23, 2026: anonymous requests returned the application and matching clean source metadata. All authored JS, CSS and the worker matched their manifest hashes. The host redirects `/index.html` to `/` and `/preview.html` to `/preview` with 307; it adds a Cloudflare security script to delivered HTML. It serves `_headers` as a file rather than applying its directives: no CSP header was observed, and cache control was `public, max-age=0, must-revalidate`. Full delivered-HTML integrity is therefore not claimed.
+
+The original strict worker rejected both HTML redirects and reported incomplete offline setup. The repair accepts only those two exact same-origin, query-free HTML destinations, keeps all other redirects rejected, and maps canonical `/preview` to the same cached preview. Tests retain the prior cache on invalid redirects, exercise offline navigation and repair, and preserve guarded updates. No source, task, comparison or storage schema semantics changed. See CHECKS for the final public run.

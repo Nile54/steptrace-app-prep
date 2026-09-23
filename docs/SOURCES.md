@@ -19,7 +19,7 @@ These are research leads with overlapping planning, task, tracking or change-mon
 
 **StepTrace remains provisional.** A September 14, 2026 check found unrelated uses: [StepTrace crypto AI agents](https://steptrace.dev/), a [StepTrace browser-testing extension](https://chromewebstore.google.com/detail/steptrace/kjgggipjlffblobkealmgbbgeggfomlp?hl=en) and a [StepTrace fitness app](https://play.google.com/store/apps/details?id=com.hiredintech.steptrace). The crypto AI-agent site was still present when checked September 22, 2026.
 
-“StepTrace — application preparation” distinguishes this project's subject; it is not a trademark-clearance claim. The proposed descriptive GitHub slug is `steptrace-app-prep` under the owner-supplied and verified [Nile54 account](https://github.com/Nile54). Proposal does not establish repository availability or creation: actual publication status belongs in [STATE](STATE.md). No domain purchase is planned.
+“StepTrace — application preparation” distinguishes this project's subject; it is not a trademark-clearance claim. The descriptive public repository is [Nile54/steptrace-app-prep](https://github.com/Nile54/steptrace-app-prep), created September 23, 2026 only after authenticated ownership and repository availability were checked. Exact release/deployment status belongs in [RELEASE](RELEASE.md). No domain purchase is planned.
 
 ## License and claims
 

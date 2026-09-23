@@ -7,7 +7,7 @@ const workerSource = await readFile(new URL('../dist/sw.js', import.meta.url), '
 const uiSource = (await readFile(new URL('../dist/src/offline.js', import.meta.url), 'utf8')).replace('export function', 'function');
 const origin = 'http://127.0.0.1:4173';
 
-function workerHarness({ failPath, failPut, failBodyPath, connectionLimit = Infinity, revision = 'test-v5', initial = new Map() } = {}) {
+function workerHarness({ failPath, failPut, failBodyPath, redirects = {}, redirectType = 'text/html; charset=utf-8', connectionLimit = Infinity, revision = 'test-v5', initial = new Map() } = {}) {
   const handlers = new Map();
   const requests = [];
   const stores = initial;
@@ -37,7 +37,10 @@ function workerHarness({ failPath, failPut, failBodyPath, connectionLimit = Infi
       await takeConnection();
       requests.push({ url: request.url, credentials: request.credentials, cache: request.cache });
       const path = new URL(request.url).pathname;
-      const response = new Response(path === '/sw.js' ? workerSource.replace('__STEPTRACE_SHELL_REVISION__', revision) : path, { status: path === failPath ? 500 : 200 });
+      const response = new Response(path === '/sw.js' ? workerSource.replace('__STEPTRACE_SHELL_REVISION__', revision) : path, { status: path === failPath ? 500 : 200, headers: redirects[path] ? { 'Content-Type': redirectType } : {} });
+      if (redirects[path]) Object.defineProperties(response, {
+        redirected: { value: true }, url: { value: new URL(redirects[path], origin).href },
+      });
       const readBody = response.arrayBuffer.bind(response);
       response.arrayBuffer = async () => {
         try {
@@ -91,6 +94,43 @@ test('Offline installation drains bodies before waiting for remaining requests o
   assert.equal(harness.peakConnections(), 3);
   assert.equal(harness.drainedBodies(), harness.paths.length);
   assert.equal(harness.stores.get(harness.name).size, harness.paths.length);
+});
+
+test('Known same-origin HTML canonical redirects keep both URL forms available offline and during repair', async () => {
+  const harness = workerHarness({ redirects: { '/index.html': '/', '/preview.html': '/preview' }, connectionLimit: 3 });
+  await harness.fire('install');
+  assert.equal(harness.stores.get(harness.name).size, harness.paths.length);
+  const installedRequests = harness.requests.length;
+  for (const [path, body] of [['/', '/'], ['/index.html', '/index.html'], ['/preview.html', '/preview.html'], ['/preview', '/preview.html']]) {
+    const response = await harness.fire('fetch', { request: new Request(`${origin}${path}`) });
+    assert.equal(await response.text(), body);
+  }
+  assert.equal(harness.requests.length, installedRequests, 'Canonical navigation uses the cached file, not a new network request');
+  harness.stores.delete(harness.name);
+  const repaired = await harness.fire('fetch', { request: new Request(`${origin}/preview`) });
+  assert.equal(await repaired.text(), '/preview.html');
+  assert.equal(harness.activated(), 0, 'Canonical support must not force activation over open work');
+});
+
+test('Unrecognized redirects and non-HTML canonical responses fail without replacing the previous shell', async () => {
+  for (const options of [
+    { redirects: { '/index.html': 'https://example.invalid/' } },
+    { redirects: { '/index.html': '/?login=1' } },
+    { redirects: { '/index.html': '/#login' } },
+    { redirects: { '/index.html': '/login' } },
+    { redirects: { '/preview.html': '/' } },
+    { redirects: { '/': '/index.html' } },
+    { redirects: { '/src/model.js': '/model' } },
+    { redirects: { '/styles.css': '/styles' } },
+    { redirects: { '/index.html': '/' }, redirectType: 'text/plain' },
+  ]) {
+    const previous = new Map([['kept', 'old shell']]);
+    const harness = workerHarness({ ...options, initial: new Map([['steptrace-shell-old', previous]]) });
+    await assert.rejects(harness.fire('install'), /Incomplete app shell/);
+    assert.equal(harness.stores.get('steptrace-shell-old'), previous);
+    assert.equal(harness.stores.has(harness.name), false);
+    assert.equal(harness.activated(), 0);
+  }
 });
 
 test('Missing file, interrupted body or cache quota failure rejects installation and preserves the prior complete shell', async () => {
