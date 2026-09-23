@@ -1,46 +1,52 @@
 # StepTrace state
 
-Updated September 23, 2026. **Session 7 in progress: local alpha release prepared; publication verification pending. Human evaluation pending (N=0).**
+Updated September 23, 2026. **Session 7 complete: public source, verified fictional demo and labeled alpha release. Stop before Session 8. Human evaluation pending (N=0).**
 
-## Repository and authorization
+## Repository and release identity
 
 - Actual repository: `/Users/nileshnandakumar/Documents/Codex/2026-09-14/before-session-one-supplying-your-github/outputs/steptrace-local`.
-- Branch `codex/session-7`, based on `4a2ebcd` (Session 6). The starting tree was clean. Existing code, data and unrelated files are preserved; history has not been rewritten.
-- User-supplied and browser-verified GitHub owner: [Nile54](https://github.com/Nile54). Intended descriptive slug `steptrace-app-prep`; StepTrace remains provisional with known naming conflicts. Public source and no-cost fictional hosting are authorized for this session only.
-- Later sessions must read AGENTS, BRIEF, ROADMAP, STATE and EVALUATION, inspect actual git changes, preserve user work, implement only the requested milestone, run relevant checks, update STATE and commit logically. User choices supersede saved/tool-specific guidance.
-- Prior STATE/CHECKS archived under `docs/history/SESSION-6-*`. Product/evaluation scope is unchanged. No profile/resume edits, recruitment, real documents, analytics, external text uploads, AI, billing or spending.
+- Local branch `codex/session-7` tracks `origin/main`. Session 7 started from a clean `4a2ebcd`; user work and history were preserved.
+- Verified owner: **Nile54**, from the supplied URL, signed-in browser and authenticated CLI. `origin`: https://github.com/Nile54/steptrace-app-prep.git. Public visibility/default `main` confirmed through GitHub. The repository was absent before creation; nothing was overwritten.
+- Public demo: https://steptrace-app-prep.ninandak.chatgpt.site
+- Published prerelease: https://github.com/Nile54/steptrace-app-prep/releases/tag/v0.7.0-alpha.1 (not a draft).
+- Tagged/deployed source: **`fad309656719cbd1a28eef2d167123287196a9ec`**. A later documentation-only commit records the completed verification; it does not change the deployed app. Read `git log -1` for that commit.
+- Sites project `appgprj_6ab363105d748191a690c53ff5af2e3e`; saved version `appgprj_6ab363105d748191a690c53ff5af2e3e~appgver_575195336180819196cd6adf073c3d45` (version 2); successful public deployment `appgdep_6ab443a5d3c4819192f73be9df2f0900`. Reuse `.openai/hosting.json`; never create a duplicate Site. Credentials must remain out of files and output.
 
-## Prepared release
+## Delivered and checked
 
-- Package `0.7.0-alpha.1`, MIT license, concise README, architecture, sources/prior art, detailed usage and a fictional walkthrough with genuine before/after screenshots.
-- Portable static builder with an explicit app allowlist, generated worker revision, integrity manifest and static-host headers. Default output `work/release`; Sites output `build`, both ignored. Authoring remains in `dist/`; comparison/dependency/storage modules and schema 3/legacy readers are unchanged.
-- CI matrix for Node 22/24; actual remote results pending. No package dependencies or paid infrastructure.
-- Current local checks: **133 passing tests**, zero failures/skips; synthetic matched/stress outcomes unchanged. See CHECKS and RELEASE for exact evidence and limits.
-- Local real-interface walkthrough confirms completed essay/proofreading are flagged after 500→400, recommendation stays complete, and completion records survive.
+- MIT license, public README, genuine local/public screenshots, short demo, architecture, sources/prior art and honest privacy/accessibility/evaluation notes. StepTrace remains provisional because of unrelated naming conflicts; descriptive slug `steptrace-app-prep` does not establish trademark clearance.
+- Portable app allowlist, generated worker revision, clean source/asset manifest and static-host header file. `dist/` remains authored source; output is ignored `work/release/` or `build/`. Package `0.7.0-alpha.1`; no runtime/package dependencies.
+- **133 tests passed locally; 133 passed on each Node 22 and 24 remote CI job** for the deployed source. [Verified CI run](https://github.com/Nile54/steptrace-app-prep/actions/runs/35922194997). Synthetic evaluation retains favorable matched cases and the two extra-review stress costs. EVALUATION's historical Session 6 results remain unchanged.
+- Public before/after flow: 500→400, essay/proofreading reviews, all three original completions retained, unchanged recommendation untouched, added condition undecided. Exact version-1 lookup, independent mapping/downstream acknowledgments and a new reported-work-change reason verified.
+- Exact workspace equality after public reload and restore into another browser profile. Malformed/duplicate imports preserve work. Offline setup succeeds in both tested browsers. No app console errors observed; Chrome extension warnings are separately recorded.
+- Public `release.json` exactly matches the clean artifact; all 18 JS/CSS/worker hashes match. GitHub release ZIP upload digest matches local SHA-256. See CHECKS and RELEASE for actual observations, checks and limits.
+- Three broken archive links repaired. Prior notes retained in `docs/history/SESSION-6-*`. Bounded audits found no high-confidence secrets/private fixtures; no unrelated history rewrite.
 
-## Hosting and authentication
+## Hosting fix and limitations
 
-Sites project: `appgprj_6ab363105d748191a690c53ff5af2e3e`, recorded in `.openai/hosting.json`. This provisioned identity must be reused, never replaced by another creation. Version 1 from clean `beb27db` is publicly deployed at https://steptrace-app-prep.ninandak.chatgpt.site. Fresh browsing found a canonical HTML redirect incompatibility in offline setup. The bounded repair accepts only the two verified same-origin HTML aliases; other redirects still reject installation. A replacement version and full public flow are pending verification. The source credential is short-lived and must never be committed or exposed. Use the hosting skill's workflow from this checkout and build `--out build` from a clean commit.
+The first deployment exposed canonical HTML redirects that prevented offline installation. The narrow worker fix accepts only `/index.html` → `/` and `/preview.html` → `/preview` with the exact same origin and HTML content type; arbitrary redirects remain rejected. Schema 3, legacy readers, source anchors, comparison descriptors, completion and review histories are unchanged.
 
-GitHub remote `origin` is https://github.com/Nile54/steptrace-app-prep.git. The authenticated account is Nile54. The user approved the additional Workflow scope and completed browser authorization. Initial source commit `beb27db` is pushed to `main`, and its Node 22/24 CI succeeded. The official CLI v2.101.0 is under ignored `work/release-tools/`; its published SHA-256 was checked. No browser credentials were extracted. Final repaired source/CI/release verification remains.
+Sites adds a Cloudflare security script to HTML and does not apply the packaged `_headers` rules. No hosted CSP header was observed; full served-HTML integrity is not claimed. The local server's CSP is separate. Use fictional information only and read PRIVACY. The existing account's included beta hosting was used without a new paid plan, domain or payment details; limits may change. GitHub source hosting is separate from any future commercial-host decision.
 
-## Commands
+Actual human sample is zero. Setup/lookup times, comprehension, accessibility benefit, demand and revenue are unknown. No new spoken screen-reader, disconnected-browser reload or browser-crash study was performed in this release. Use one editing tab and separate JSON backups. Browser storage/drafts are not durable backups or encryption. No replacement restore, deletion, automatic eligibility, completeness guarantee or application submission.
+
+## Commands and local tooling
 
 ```sh
 ./run.sh                  # http://127.0.0.1:4173
 ./run.sh check
 ./run.sh evaluate
 ./run.sh evaluate-ui      # http://127.0.0.1:4196/evaluation/
-./run.sh build            # work/release/
+./run.sh build            # ignored work/release/
 ./run.sh build --out build
 ```
 
-Node 22+ required; no npm install. This Mac uses `/Users/nileshnandakumar/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node` (24.19.0) and git `/Users/nileshnandakumar/.cache/codex-runtimes/codex-primary-runtime/dependencies/bin/fallback/git`. Avoid system git's installer. No global identity changes. The isolated release test server currently runs on 4207; stop it at handoff.
+Node 22+; no npm install. Original Mac runtime: `/Users/nileshnandakumar/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node` (24.19.0). Git: `/Users/nileshnandakumar/.cache/codex-runtimes/codex-primary-runtime/dependencies/bin/fallback/git`. Avoid triggering system git's installer; no global git identity was changed. Official GitHub CLI v2.101.0 is under ignored `work/release-tools/`, verified against its published SHA-256. The user approved Workflow scope and completed its browser authorization. Do not expose stored credentials.
 
-## Remaining work and boundary
+Released static ZIP plus SHA-256 are in GitHub Releases and locally under ignored `work/`. It includes the built app and MIT notice; host at an HTTPS origin root. The separate build manifest describes the app assets. Local testing logs/backups remain ignored. The release test server is stopped at handoff; restart explicitly. Public demo tabs retain fictional browser-local data; no user storage was cleared.
 
-Finish Session 7: commit reviewed source, rebuild clean, deploy the existing Site publicly, verify a fresh visit/main flow/runtime and exact commit, then record actual URL. Authenticate GitHub and create/push only the verified owner's new repository, inspect remote files/CI and label the alpha release; if authentication blocks, retain the complete release artifact and give the exact action without claiming publication.
+## Next action and boundary
 
-Human usefulness remains unknown. Synthetic stress cases each add one unnecessary recommendation review. One consenting adult completing both assigned fictional blocks is the smallest feedback action; four sessions balance order. Browser storage is not backup/encryption; use one editing tab and separate JSON backups. Do not infer eligibility, checklist completeness or source authority.
+Smallest remaining product-feedback action: one consenting adult completes both assigned fictional blocks using EVALUATION-PROTOCOL, with local nonidentifying notes. Four complete sessions form a balanced order batch. Do not recruit automatically or turn synthetic fixtures into user outcomes; report checklist advantages honestly.
 
-Stop after Session 7. Do not start profile/resume or monetization work.
+Later sessions must read AGENTS, BRIEF, ROADMAP, STATE and EVALUATION; inspect actual git/user changes; preserve work; implement only the requested milestone; run relevant checks; update STATE and commit logically. Later user choices supersede saved/tool-specific instructions. **Stop here. Profile/resume changes, recruitment, monetization, billing and AI features require their own explicit scope.**

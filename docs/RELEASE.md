@@ -8,9 +8,17 @@ Public demo: https://steptrace-app-prep.ninandak.chatgpt.site
 
 Public source: https://github.com/Nile54/steptrace-app-prep
 
-The GitHub owner **Nile54** was verified against the supplied profile, signed-in browser and authenticated CLI. The repository was absent before creation; no existing repository was overwritten. The user explicitly approved the CLI Workflow permission required to publish CI. The initial source commit `beb27db009d97b9b12bff61a8ecf470cee7bac5f` is pushed to `main`; [its remote Node 22/24 CI passed](https://github.com/Nile54/steptrace-app-prep/actions/runs/35888862475).
+Published prerelease: [v0.7.0-alpha.1](https://github.com/Nile54/steptrace-app-prep/releases/tag/v0.7.0-alpha.1), September 23, 2026. GitHub confirms it is public, not a draft, and labeled prerelease.
 
-Sites project `appgprj_6ab363105d748191a690c53ff5af2e3e` was deployed publicly from that clean commit, version 1, deployment `appgdep_6ab3fc2a5dd08191bcb1e444ca596570`. A fresh public visit exposed an HTML canonical-redirect incompatibility in offline setup. A narrow service-worker repair is under final publication verification; the final deployed revision will be recorded below. Do not equate the initial successful host deployment with completed app verification.
+The owner **Nile54** was verified against the supplied profile, signed-in browser and authenticated CLI. The repository was absent before creation; nothing was overwritten. The user approved the additional Workflow scope needed for CI. Source is on `main`.
+
+Tagged and deployed source: **`fad309656719cbd1a28eef2d167123287196a9ec`**. [Remote CI](https://github.com/Nile54/steptrace-app-prep/actions/runs/35922194997) passed all 133 tests, synthetic evaluation and packaging under both Node 22 and 24. The final documentation-only commit on main records verification without changing the deployed application.
+
+Sites project `appgprj_6ab363105d748191a690c53ff5af2e3e`, saved version `appgprj_6ab363105d748191a690c53ff5af2e3e~appgver_575195336180819196cd6adf073c3d45` (version 2), deployment `appgdep_6ab443a5d3c4819192f73be9df2f0900` succeeded with public access. Fresh public visits in two browser profiles verified the main flow, backup/reload/restore, human decisions, offline setup and absence of app console errors. See [CHECKS](CHECKS.md) for the actual steps and omissions.
+
+The clean app artifact SHA-256 is `9b4babc9b7a2d4aebf47ae87e16fbff28d724d3a30417ecffe37ce2b8489195b`. The public `release.json` exactly matches it. All 18 JS/CSS/worker file hashes match; delivered HTML includes host-controlled security code and is not byte-identical.
+
+The release ZIP includes that static artifact plus the MIT notice. Its uploaded GitHub digest matches the local SHA-256: `4773b6eb93caa59335e56cbe3842430dbb3c3b0a7755028b874e3d09b4fbedc6`. A separate checksum file is attached. Extract at an HTTPS origin root. GitHub also provides source archives for the exact tag; source archives require the documented local commands.
 
 ## Reproducible artifact
 
@@ -46,4 +54,4 @@ See [CHECKS](CHECKS.md) for actual check results, [DEMO](DEMO.md) for the workin
 
 September 23, 2026: anonymous requests returned the application and matching clean source metadata. All authored JS, CSS and the worker matched their manifest hashes. The host redirects `/index.html` to `/` and `/preview.html` to `/preview` with 307; it adds a Cloudflare security script to delivered HTML. It serves `_headers` as a file rather than applying its directives: no CSP header was observed, and cache control was `public, max-age=0, must-revalidate`. Full delivered-HTML integrity is therefore not claimed.
 
-The original strict worker rejected both HTML redirects and reported incomplete offline setup. The repair accepts only those two exact same-origin, query-free HTML destinations, keeps all other redirects rejected, and maps canonical `/preview` to the same cached preview. Tests retain the prior cache on invalid redirects, exercise offline navigation and repair, and preserve guarded updates. No source, task, comparison or storage schema semantics changed. See CHECKS for the final public run.
+The original strict worker rejected both HTML redirects and reported incomplete offline setup. The repair accepts only those two exact same-origin, query-free HTML destinations, keeps all other redirects rejected, and maps canonical `/preview` to the same cached preview. Tests retain the prior cache on invalid redirects, exercise offline navigation and repair, and preserve guarded updates. No source, task, comparison or storage schema semantics changed. The final public run reached offline-ready status in both tested browsers. A physically disconnected-browser reload was not repeated for this release.

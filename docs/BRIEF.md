@@ -94,12 +94,14 @@ An obvious-conflict web search found [StepTrace crypto AI agents](https://steptr
 4. Can people explain why completed work needs review without thinking it has been erased or declared wrong?
 5. Which accessibility needs and terminology emerge from actual adult applicants? No diagnosis is required or assumed.
 6. Which internship role within tech/AI should later career material target? Current stack remains JavaScript/HTML/CSS until a concrete need justifies more.
-7. What working name should replace StepTrace before a public slug is chosen?
+7. Should the provisional StepTrace name change before broader promotion, given its known unrelated uses?
 
 No interviews, participant results, market validation, or revenue exist. The prepared questions are in `INTERVIEWS.md`.
 
 ## Session 7 release
 
-Session 7 prepares an MIT-licensed fictional alpha, version `0.7.0-alpha.1`, with a portable static build, real screenshots, architecture and demo documentation, and public-source CI. GitHub owner Nile54 was verified against the supplied URL and the signed-in browser account. Publication status and exact commits belong in [RELEASE](RELEASE.md) and STATE. The existing product and evaluation scope is unchanged. Sites hosting uses the existing account's included beta allocation; no new paid plan, domain or billing integration is authorized. GitHub source hosting is separate from the choice of any future commercial host. Revisit hosting limits and terms before monetization.
+Session 7 publishes an MIT-licensed fictional alpha, version `0.7.0-alpha.1`, with a portable static build, real screenshots, architecture and demo documentation, and public-source CI. GitHub owner Nile54 was verified against the supplied URL and the signed-in browser account. Publication status and exact commits belong in [RELEASE](RELEASE.md) and STATE. The existing product and evaluation scope is unchanged. Sites hosting uses the existing account's included beta allocation; no new paid plan, domain or billing integration is authorized. GitHub source hosting is separate from the choice of any future commercial host. Revisit hosting limits and terms before monetization.
 
 Human usefulness and accessibility benefit remain pending. The [evaluation protocol](EVALUATION-PROTOCOL.md) separates static source lookup, setup effort and return/change review, preserves missing measurements as missing, and requires honest reporting if the checklist performs better. Passing fictional checks supports only the tested engineering behavior, not the product hypothesis.
+
+Session 7 is complete: [public source](https://github.com/Nile54/steptrace-app-prep), [fictional demo](https://steptrace-app-prep.ninandak.chatgpt.site) and [labeled alpha](https://github.com/Nile54/steptrace-app-prep/releases/tag/v0.7.0-alpha.1). The hosted-routing fix preserves all model and history semantics. CHECKS records 133 passing tests locally and on Node 22/24 CI, real public flows and provider limitations; human sample remains zero. No profile or monetization work was performed.

@@ -4,7 +4,7 @@ Link a task to the exact instruction that prompted it. When instructions change,
 
 StepTrace is a local-first **alpha** for adults preparing college scholarship applications. It uses JavaScript, HTML and CSS, with no package dependencies, account, text-upload service or AI model. Use fictional information in this release. A person decides applicability and resolves uncertainty; the app does not decide eligibility, guarantee completeness or submit applications.
 
-**Human evaluation is pending: 0 participants.** The working name is provisional and has [known conflicts](docs/SOURCES.md#working-name-check). [Open the fictional demo](https://steptrace-app-prep.ninandak.chatgpt.site) · [Public source](https://github.com/Nile54/steptrace-app-prep). Exact deployed commit, verification and limitations are recorded in [RELEASE](docs/RELEASE.md).
+**Human evaluation is pending: 0 participants.** The working name is provisional and has [known conflicts](docs/SOURCES.md#working-name-check). [Open the fictional demo](https://steptrace-app-prep.ninandak.chatgpt.site) · [Public source](https://github.com/Nile54/steptrace-app-prep). [Download the labeled alpha](https://github.com/Nile54/steptrace-app-prep/releases/tag/v0.7.0-alpha.1). Exact deployed commit, verification and limitations are recorded in [RELEASE](docs/RELEASE.md).
 
 ## Run locally
 
@@ -36,7 +36,7 @@ On platforms without a POSIX shell, use `node scripts/serve.mjs`. The equivalent
 
 The [short walkthrough](docs/DEMO.md) includes genuine interface captures and separate source, downstream and work-change reviews. [Detailed usage](docs/USAGE.md) covers source selection, manual tasks, dependencies, backup/restore, keyboard options and recovery. The main example uses the real model and storage; `/preview.html` is the older, explicitly scripted preview.
 
-![Fictional 400-word source update beside the completed draft, which now has a separate review flag.](docs/images/demo-after.png)
+![Verified public demo: the 400-word source beside a completed draft with a separate review flag.](docs/images/public-demo.png)
 
 ## What is implemented
 
@@ -49,7 +49,7 @@ The [short walkthrough](docs/DEMO.md) includes genuine interface captures and se
 
 ## Evidence and limitations
 
-The [Session 6 evaluation](docs/EVALUATION.md) records 126 passing automated tests at that milestone. Each of two matched fictional briefs produced three expected affected-task flags, with no misses or extra flags. Two stress scenarios each produced one extra review of an unchanged recommendation. These are synthetic correctness results, not participant performance or proof of demand. [CHECKS](docs/CHECKS.md) records release checks separately.
+The [Session 6 evaluation](docs/EVALUATION.md) records 126 passing automated tests at that milestone. Each of two matched fictional briefs produced three expected affected-task flags, with no misses or extra flags. Two stress scenarios each produced one extra review of an unchanged recommendation. These are synthetic correctness results, not participant performance or proof of demand. The release adds packaging and hosted-routing regressions: **133 tests pass on Node 22 and 24 in [remote CI](https://github.com/Nile54/steptrace-app-prep/actions/runs/35922194997)**. [CHECKS](docs/CHECKS.md) records the public-interface and recovery checks.
 
 No one has yet completed the human comparison. Lookup time, setup effort, comprehension, accessibility benefit and preference remain unmeasured. The [adult-volunteer protocol](docs/EVALUATION-PROTOCOL.md) compares an ordinary checklist using matched briefs and four counterbalanced orders. One consenting adult trying both assigned blocks is the smallest next feedback action; a complete four-person batch balances order. No recruitment has been performed.
 
