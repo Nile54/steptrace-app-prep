@@ -36,7 +36,7 @@ On platforms without a POSIX shell, use `node scripts/serve.mjs`. The equivalent
 
 The [short walkthrough](docs/DEMO.md) includes genuine interface captures and separate source, downstream and work-change reviews. [Detailed usage](docs/USAGE.md) covers source selection, manual tasks, dependencies, backup/restore, keyboard options and recovery. The main example uses the real model and storage; `/preview.html` is the older, explicitly scripted preview.
 
-![Origin Scholar landing page with the real fictional workspace.](docs/images/origin-landing.jpg)
+![Origin Scholar landing page with the real fictional workspace.](docs/images/origin-public-landing.jpg)
 
 ![Actual source-linked workspace using the fictional Cedar plan.](dist/workspace-demo.jpg)
 
@@ -51,7 +51,7 @@ The [short walkthrough](docs/DEMO.md) includes genuine interface captures and se
 
 ## Evidence and limitations
 
-The [Session 6 evaluation](docs/EVALUATION.md) records 126 passing automated tests at that milestone. Each of two matched fictional briefs produced three expected affected-task flags, with no misses or extra flags. Two stress scenarios each produced one extra review of an unchanged recommendation. These are synthetic correctness results, not participant performance or proof of demand. The design milestone retains those results and adds navigation coverage: **134 tests passed locally on Node 24**. Prior Session 7 checks passed on Node 22 and 24; current remote status is recorded in RELEASE. [CHECKS](docs/CHECKS.md) records the public-interface and recovery checks.
+The [Session 6 evaluation](docs/EVALUATION.md) records 126 passing automated tests at that milestone. Each of two matched fictional briefs produced three expected affected-task flags, with no misses or extra flags. Two stress scenarios each produced one extra review of an unchanged recommendation. These are synthetic correctness results, not participant performance or proof of demand. The design milestone retains those results and adds navigation coverage: **134 tests passed locally and on Node 22/24 in [remote CI](https://github.com/Nile54/steptrace-app-prep/actions/runs/36015906951)**. Exact release status is recorded in RELEASE. [CHECKS](docs/CHECKS.md) records the public-interface and recovery checks.
 
 No one has yet completed the human comparison. Lookup time, setup effort, comprehension, accessibility benefit and preference remain unmeasured. The [adult-volunteer protocol](docs/EVALUATION-PROTOCOL.md) compares an ordinary checklist using matched briefs and four counterbalanced orders. One consenting adult trying both assigned blocks is the smallest next feedback action; a complete four-person batch balances order. No recruitment has been performed.
 

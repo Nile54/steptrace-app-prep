@@ -27,4 +27,8 @@ Landing loads no JavaScript, external font or video. One genuine 81,429-byte JPE
 
 ## Public release
 
-Pending clean artifact upload at this commit. Record actual URL, remote CI and public main-flow/header/asset observations in RELEASE and STATE after verification; do not count local success as publication.
+Verified live https://originscholar.pages.dev and canonical `/workspace`, source `ce37bc712db76e0fab59d39179107834f2d27858`. Fresh visit in the in-app browser: landing image/CTA, actual Cedar creation, source preview/save, 3 completions retained / 2 tasks flagged, recommendation unaffected, added condition Not decided, original 500-word source lookup, export/reload workspace equality, offline setup ready. No app console warnings/errors observed. Screenshots `images/origin-public-landing.jpg` and `images/origin-public-workspace.jpg` are genuine public captures.
+
+The public manifest equals the clean local build. All **23** non-configuration public app files match SHA-256, including HTML, CSS, JavaScript, service worker and JPEG. Pages applies the packaged CSP, no-referrer, nosniff and no-cache headers. `_headers` is a host configuration file, not counted as an app byte-match. No runtime application-data upload service is added. Cloudflare may still receive request metadata and browser network-error reporting; this is not a provider privacy certification.
+
+[Remote CI](https://github.com/Nile54/steptrace-app-prep/actions/runs/36015906951) passed on Node 22 and Node 24 for the exact source. The 24 manifest-listed files total 307,134 uncompressed bytes; landing HTML/CSS/image total 114,522 bytes. The full ZIP with MIT license is 138,658 bytes. No real-user timing or Lighthouse score measured.

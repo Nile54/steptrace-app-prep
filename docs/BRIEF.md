@@ -108,7 +108,7 @@ Session 7 is complete: [public source](https://github.com/Nile54/steptrace-app-p
 
 ## Origin Scholar design milestone — September 24, 2026
 
-User-directed scope: a welcoming dedicated landing page and redesigned working interface, navy/cream/gold, simple wordmark inspired by the supplied rough SVG, real screenshots, and primary CTA “See how it works.” No new planning engine or AI capability is added. Completion and review counts remain separate; source, dependency and storage semantics remain unchanged. The user chose a professional free subdomain instead of purchasing a domain. Cloudflare Pages project `originscholar` is reserved; actual deployment status belongs in RELEASE/STATE. The legacy Sites origin remains available for manual backup migration.
+User-directed scope: a welcoming dedicated landing page and redesigned working interface, navy/cream/gold, simple wordmark inspired by the supplied rough SVG, real screenshots, and primary CTA “See how it works.” No new planning engine or AI capability is added. Completion and review counts remain separate; source, dependency and storage semantics remain unchanged. The user chose a professional free subdomain instead of purchasing a domain. Cloudflare Pages project `originscholar` is live at https://originscholar.pages.dev; exact deployment provenance is in RELEASE/STATE. The legacy Sites origin remains available for manual backup migration.
 
 A quick name search found an unrelated custom GPT called [Origin Scholar](https://chatgpt.com/g/g-c78FSD52t-origin-scholar); this is not trademark clearance. No scholarship-preparation competitor with that exact name was identified by the bounded search. The repository slug is retained to preserve links and release history.
 

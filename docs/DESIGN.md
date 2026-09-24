@@ -36,4 +36,6 @@ Current screenshots: `images/origin-landing.jpg` and `../dist/workspace-demo.jpg
 
 ## Address and data continuity
 
-Cloudflare reserved `originscholar.pages.dev`; use RELEASE for actual live status. Direct Upload keeps GitHub source/CI separate from hosting. An old origin’s work stays at that origin; manually export and preview a restore on the new address. Never clear it to make a screenshot or test pass. Legacy Sites metadata and historical release notes are preserved.
+Cloudflare published https://originscholar.pages.dev; use RELEASE for exact provenance. Direct Upload keeps GitHub source/CI separate from hosting. An old origin’s work stays at that origin; manually export and preview a restore on the new address. Never clear it to make a screenshot or test pass. Legacy Sites metadata and historical release notes are preserved.
+
+Public before/after flow and response/header/integrity verification passed; see CHECKS. The explicit pending app update was also accepted locally with completion/review state retained. The live address was obtained without a domain purchase or paid plan.
