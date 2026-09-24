@@ -3,7 +3,7 @@
 import { createServer } from 'node:http';
 import { readFile } from 'node:fs/promises';
 const routes = new Map([
-  ['/', 'dist/index.html'], ['/index.html', 'dist/index.html'], ['/styles.css', 'dist/styles.css'],
+  ['/', 'dist/workspace.html'], ['/index.html', 'dist/workspace.html'], ['/styles.css', 'dist/styles.css'],
   ['/preview.html', 'dist/preview.html'],
   ...['app', 'bootstrap', 'demo', 'preview', 'model', 'storage', 'source-selection', 'schema-v1', 'schema-v2', 'comparison', 'review-ui', 'dependencies', 'dependency-ui', 'dependency-demo', 'drafts', 'offline'].map(name => [`/src/${name}.js`, `dist/src/${name}.js`]),
   ['/evaluation/', 'evaluation/index.html'],

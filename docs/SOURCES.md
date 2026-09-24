@@ -26,3 +26,13 @@ These are research leads with overlapping planning, task, tracking or change-mon
 The [MIT license](https://opensource.org/license/mit) permits reuse, modification and redistribution, including commercially, with its notices retained and without warranty. The repository's [LICENSE](../LICENSE) is the governing text. Open-source permission and hosting terms are separate decisions; the license does not certify accessibility, fitness for scholarship decisions, or a provider's suitability for a future paid service.
 
 All committed app fixtures and interface captures use authored fictional data. [EVALUATION](EVALUATION.md) separates synthetic checks from pending human evaluation (N=0). No participants, quotes, revenue, accessibility outcomes or product demand have been invented.
+
+## Origin Scholar design and free hosting — September 24, 2026
+
+- User-supplied rough SVG informed the origin-point wordmark; the final logo is a new simple vector/text construction in `docs/brand/origin-scholar-wordmark.svg`. The public screenshot is captured from the actual fictional application. No stock people, fabricated badges or testimonials are used.
+- Bounded name overlap: [Origin Scholar custom GPT](https://chatgpt.com/g/g-c78FSD52t-origin-scholar). This is not trademark clearance.
+- [Cloudflare Pages](https://www.cloudflare.com/products/pages/) advertises free setup without a credit card. [Static requests pricing](https://developers.cloudflare.com/pages/functions/pricing/) and [limits](https://developers.cloudflare.com/pages/platform/limits/) were reviewed: no Functions required here, 20,000 files/project and 25 MiB/file on Free; dashboard uploads cap at 1,000 files.
+- [Direct Upload](https://developers.cloudflare.com/pages/get-started/direct-upload/) explains that a direct-upload project cannot later switch to Git integration. This project uses deliberate artifact uploads; GitHub checks remain separate.
+- [Cloudflare agreement](https://www.cloudflare.com/terms/) and [Developer Platform terms](https://www.cloudflare.com/service-specific-terms-developer-platform/) apply. No future commercial-host guarantee is made; recheck current terms before paid offerings.
+
+The user declined domain purchase. Registrar research did not reserve or buy a domain.

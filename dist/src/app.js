@@ -175,7 +175,9 @@ export function startApp(storage = createStorage()) {
     const heading = element('h3', task.title); heading.id = `task-heading-${task.id}`; heading.tabIndex = -1;
     const completed = isTaskCompleted(task);
     const state = getTaskReviewState(task);
+    item.classList.toggle('needs-review', state === 'needs-review');
     item.append(heading, element('p', completed ? 'Completed' : 'Not completed', 'completion-state'), element('p', `Applicability: ${labels[task.applicability]}`, 'helper'), element('p', state === 'needs-review' ? 'Review: Needs review — completion is retained. Check the effect on this work; previously completed work may still satisfy the instructions.' : state === 'reviewed' ? 'Review: No open recorded reviews. This does not establish checklist completeness.' : 'Review: No change reviews recorded.', 'review-state'));
+    item.querySelector('.completion-state').classList.toggle('incomplete', !completed);
     if (task.reviewState === 'needs-review') item.append(element('p', 'An earlier backup retained a review flag without a version-specific reason. It remains separate from the source reviews below.', 'helper'));
     if (task.anchor) {
       item.append(element('blockquote', task.anchor.quote, 'task-quote'));
@@ -315,6 +317,9 @@ export function startApp(storage = createStorage()) {
     const legacyFlags = app.tasks.filter(task => task.reviewState === 'needs-review').length;
     if (legacyFlags) $('#review-overview').textContent += ` ${legacyFlags} earlier review flag(s) also retained.`;
     if (versionCandidate && (versionCandidate.applicationId !== app.id || versionCandidate.sourceId !== app.sources.at(-1).id)) clearVersionPreview();
+    $('#stat-completed').textContent = app.tasks.filter(isTaskCompleted).length;
+    $('#stat-review').textContent = app.tasks.filter(task => getTaskReviewState(task) === 'needs-review').length;
+    $('#stat-sources').textContent = app.sources.length;
     $('#task-count').textContent = `${app.tasks.length} task${app.tasks.length === 1 ? '' : 's'}`;
     $('#task-list').replaceChildren(...app.tasks.map(renderTask)); $('#empty-tasks').hidden = app.tasks.length > 0;
     applyTaskView(); bindDrafts(); savePreferences();
@@ -470,6 +475,8 @@ export function startApp(storage = createStorage()) {
     $('#download-original').hidden = false; $('#download-original').textContent = 'Download original stored data';
   } else showSaveStatus(initial.raw === null ? 'No work saved yet. Backup & restore is available below.' : 'Loaded saved work from this device. Download backups regularly.');
   $('#new-application').open = !workspace.applications.length; renderWorkspace();
+  const entrySection = ['#dependency-example', '#privacy-notes', '#new-application'].includes(location.hash) ? $(location.hash) : null;
+  if (entrySection) { entrySection.open = true; entrySection.querySelector('summary').focus(); }
   if (recoveredUnsaved) { showSaveStatus('Not saved. Interrupted work was recovered in this tab. Retry saving or prepare a backup before leaving.', true); $('#retry-save').hidden = false; }
   initOffline({ canReload: () => !unsaved && !storageConflict
     && !$('#application-form button[type="submit"]').disabled && !$('#restore-form button[type="submit"]').disabled

@@ -15,7 +15,7 @@ const faultId = process.env.STEPTRACE_FAULT_ID ?? 'session5';
 if (!['', 'quota', 'unavailable', 'corrupt', 'quota-once', 'interrupt-once'].includes(fault)) throw new Error('Unsupported test fault');
 if (!['', 'unavailable'].includes(sessionFault)) throw new Error('Unsupported session-storage test fault');
 if (!/^[a-zA-Z0-9_-]{1,80}$/.test(faultId)) throw new Error('Test fault ID must contain 1–80 letters, digits, underscores, or hyphens');
-const assets = new Map([['/', 'index.html'], ['/styles.css', 'styles.css'], ...['app', 'bootstrap', 'demo', 'model', 'storage', 'source-selection', 'schema-v1', 'schema-v2', 'comparison', 'review-ui', 'dependencies', 'dependency-ui', 'dependency-demo', 'drafts', 'offline'].map(name => [`/src/${name}.js`, `src/${name}.js`])]);
+const assets = new Map([['/', 'workspace.html'], ['/styles.css', 'styles.css'], ...['app', 'bootstrap', 'demo', 'model', 'storage', 'source-selection', 'schema-v1', 'schema-v2', 'comparison', 'review-ui', 'dependencies', 'dependency-ui', 'dependency-demo', 'drafts', 'offline'].map(name => [`/src/${name}.js`, `src/${name}.js`])]);
 createServer(async (request, response) => {
   const asset = assets.get(new URL(request.url, 'http://127.0.0.1').pathname);
   if (!asset) { response.writeHead(404).end(); return; }

@@ -55,3 +55,9 @@ A save reports success only after the validated workspace write succeeds. Failur
 The app currently expects an origin-root deployment over HTTPS. The host must serve JavaScript with the correct content type and honor suitable cache/security headers; `_headers` is a host convention, not a universal standard. The service worker caches only known public app files, never the workspace. It accepts only two exact same-origin HTML redirects (`/index.html` to `/` and `/preview.html` to `/preview`) and serves the canonical preview from its existing cache entry. Unexpected redirects still fail installation. Actual hosted headers and CDN-added HTML are documented in RELEASE; hosted HTML bytes can differ from the authored artifact. Updates require an explicit action and recovery checks before reloading.
 
 GitHub source hosting and demo hosting are separate choices. An open-source license does not override a host's service terms. A future commercial service needs its own hosting decision. [STATE](STATE.md) records the actual remote, deployed revision and any publication blocks; no deployment is implied by successful local packaging.
+
+## Origin Scholar presentation and routes
+
+`dist/index.html` is a static, script-free landing page styled by `styles.css` and `landing.css`. `dist/workspace.html` loads the original modular application through `bootstrap.js`. `workspace-demo.jpg` is a genuine fictional UI capture, not a rendered mockup. System fonts avoid external font requests.
+
+The new workspace path shares its origin with the landing page, so same-origin existing storage is unchanged. A change of hostname still requires user-controlled export/restore. The offline shell includes the landing, workspace and screenshot; `/workspace.html` → `/workspace` is an explicit same-origin HTML alias. No arbitrary redirects are accepted. The public server and builder both enumerate these exact assets.

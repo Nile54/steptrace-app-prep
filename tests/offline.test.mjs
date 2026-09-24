@@ -77,12 +77,12 @@ function workerHarness({ failPath, failPut, failBodyPath, redirects = {}, redire
   return { fire, stores, requests, paths: Array.from(vm.runInContext('ASSETS', context)), name: vm.runInContext('CACHE_NAME', context), activated: () => activated, claimed: () => claimed, updates: () => updates, peakConnections: () => peakConnections, drainedBodies: () => drainedBodies };
 }
 
-test('Offline installation caches every shipped module and both app entry points without workspace data', async () => {
+test('Offline installation caches every shipped module and landing, workspace and preview entry points without workspace data', async () => {
   const harness = workerHarness();
   await harness.fire('install');
   const modules = (await readdir(new URL('../dist/src/', import.meta.url))).filter(name => name.endsWith('.js')).map(name => `/src/${name}`).sort();
   assert.deepEqual(harness.paths.filter(path => path.startsWith('/src/')).sort(), modules);
-  assert.ok(harness.paths.includes('/') && harness.paths.includes('/index.html') && harness.paths.includes('/preview.html'));
+  assert.ok(harness.paths.includes('/') && harness.paths.includes('/index.html') && harness.paths.includes('/preview.html') && harness.paths.includes('/workspace.html'));
   assert.equal(harness.stores.get(harness.name).size, harness.paths.length);
   assert.equal(harness.activated(), 0, 'Installation must not force an update on an open form');
   assert.ok(harness.requests.every(request => request.credentials === 'omit' && request.cache === 'reload' && new URL(request.url).origin === origin && !new URL(request.url).search));
@@ -97,11 +97,11 @@ test('Offline installation drains bodies before waiting for remaining requests o
 });
 
 test('Known same-origin HTML canonical redirects keep both URL forms available offline and during repair', async () => {
-  const harness = workerHarness({ redirects: { '/index.html': '/', '/preview.html': '/preview' }, connectionLimit: 3 });
+  const harness = workerHarness({ redirects: { '/index.html': '/', '/workspace.html': '/workspace', '/preview.html': '/preview' }, connectionLimit: 3 });
   await harness.fire('install');
   assert.equal(harness.stores.get(harness.name).size, harness.paths.length);
   const installedRequests = harness.requests.length;
-  for (const [path, body] of [['/', '/'], ['/index.html', '/index.html'], ['/preview.html', '/preview.html'], ['/preview', '/preview.html']]) {
+  for (const [path, body] of [['/', '/'], ['/index.html', '/index.html'], ['/preview.html', '/preview.html'], ['/preview', '/preview.html'], ['/workspace', '/workspace.html'], ['/workspace.html', '/workspace.html']]) {
     const response = await harness.fire('fetch', { request: new Request(`${origin}${path}`) });
     assert.equal(await response.text(), body);
   }
@@ -119,6 +119,8 @@ test('Unrecognized redirects and non-HTML canonical responses fail without repla
     { redirects: { '/index.html': '/#login' } },
     { redirects: { '/index.html': '/login' } },
     { redirects: { '/preview.html': '/' } },
+    { redirects: { '/workspace.html': '/' } },
+    { redirects: { '/workspace.html': '/workspace?login=1' } },
     { redirects: { '/': '/index.html' } },
     { redirects: { '/src/model.js': '/model' } },
     { redirects: { '/styles.css': '/styles' } },

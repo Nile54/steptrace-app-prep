@@ -1,4 +1,4 @@
-# StepTrace project instructions
+# Origin Scholar project instructions (formerly StepTrace)
 
 Repository: `/Users/nileshnandakumar/Documents/Codex/2026-09-14/before-session-one-supplying-your-github/outputs/steptrace-local`
 
@@ -19,3 +19,9 @@ Use one editing browser tab. Browser data is specific to browser/profile and ori
 Read `docs/ACCESSIBILITY.md` and `docs/PRIVACY.md` before altering focus, announcements, draft recovery, networking, or service-worker behavior. Keep backup export available after save failures. Offline support caches public app assets only; updates must not silently reload open work. Same-tab drafts are not workspace backups. Record browser, keyboard, zoom, accessibility-tool and screen-reader checks separately, including checks unavailable in the environment.
 
 Read `docs/EVALUATION.md` and `docs/EVALUATION-PROTOCOL.md` before evaluating or making usefulness claims. `./run.sh evaluate` produces synthetic correctness results; `./run.sh evaluate-ui` serves the separate local evaluation kit on port 4196. Fixtures and automatic flags are not participant outcomes, accessibility benefit or market demand. Analyze real feedback only with consent for that use. Preserve the independent answer key, counterbalanced assignment and unfavorable results; do not turn conservative extra reviews into successes by changing the scoring oracle. Keep participant observations local and nonidentifying, and do not send recruitment messages without explicit authorization.
+
+## Current design milestone and hosting
+
+The user requested a separate redesign milestone before Session 8: Origin Scholar branding, navy/cream/gold landing page and workspace, genuine screenshots, and “See how it works.” The later decision explicitly chooses a professional free subdomain and **no domain purchase**. Cloudflare Pages `originscholar` is the selected project; read current RELEASE/STATE before publishing. The existing `.openai/hosting.json` identifies the legacy Sites deployment, not the selected new public host. Preserve it for recovery; do not automatically deploy to Sites or create a duplicate project. Direct Upload has no automatic Git integration; publish reviewed static output via the authenticated dashboard or an explicitly authorized CLI. No billing, profile/resume edits or Session 8 work.
+
+`/` is now the static landing page; `/workspace.html` (host canonical `/workspace`) is the app. Preserve the `steptrace.*` storage keys and backup format identifiers, all legacy readers, and exact anchors. A new origin requires manual export/previewed restore. Historical evaluation remains labeled StepTrace and N=0; do not rewrite past results as evidence for the redesign.

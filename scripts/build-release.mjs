@@ -9,7 +9,7 @@ const ROOT = fileURLToPath(new URL('../', import.meta.url));
 const REVISION_MARKER = '__STEPTRACE_SHELL_REVISION__';
 const FORMAT = 'steptrace-static-release';
 export const RELEASE_ASSETS = Object.freeze([
-  'index.html', 'preview.html', 'styles.css', 'sw.js',
+  'index.html', 'workspace.html', 'preview.html', 'styles.css', 'landing.css', 'workspace-demo.jpg', 'sw.js',
   ...['bootstrap', 'app', 'demo', 'preview', 'model', 'storage', 'source-selection',
     'schema-v1', 'schema-v2', 'comparison', 'review-ui', 'dependencies',
     'dependency-ui', 'dependency-demo', 'drafts', 'offline'].map(name => `src/${name}.js`),

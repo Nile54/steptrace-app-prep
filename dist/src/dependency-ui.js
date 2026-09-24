@@ -166,7 +166,7 @@ function renderWorkChanges(task, application, { onWorkChange, reportError }) {
   const form = node('form'); form.id = `work-change-form-${task.id}`;
   form.setAttribute('aria-label', `Report changed work for ${task.title}`);
   const { label, input } = noteField(`work-change-note-${task.id}`, 'What did you change? (required)');
-  const help = node('p', 'This records your report and flags dependent work for review. StepTrace does not observe edits to external files. Each report creates a separate change record, even when the instructions stay the same. Completion records are retained.', 'helper');
+  const help = node('p', 'This records your report and flags dependent work for review. Origin Scholar does not observe edits to external files. Each report creates a separate change record, even when the instructions stay the same. Completion records are retained.', 'helper');
   help.id = `work-change-help-${task.id}`;
   input.setAttribute('aria-describedby', help.id);
   const submit = node('button', 'Record work change');

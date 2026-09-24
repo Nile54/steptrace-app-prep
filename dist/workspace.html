@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="A local application-preparation workspace with exact source links and JSON backups.">
+  <title>Origin Scholar · Your workspace</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath fill='%23142b43' d='M2 30V16a14 14 0 0 1 28 0v14z'/%3E%3Ccircle cx='15' cy='17' r='8' fill='none' stroke='%23fbf8f0' stroke-width='2'/%3E%3Ccircle cx='24' cy='24' r='3' fill='%23d8b86e'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="./styles.css"><script type="module" src="./src/bootstrap.js"></script>
+</head>
+<body class="workspace-page">
+  <a class="skip-link" href="#main">Skip to workspace</a>
+  <header class="masthead"><a class="brand" href="./" aria-label="Origin Scholar home"><span class="brand-mark" aria-hidden="true">O<span>·</span></span><span>Origin <em>Scholar</em></span></a><nav aria-label="Main navigation"><a href="./#how-it-works">How it works</a><a href="#backups">Backup &amp; restore</a></nav></header>
+  <main id="main" tabindex="-1">
+    <div class="application-heading"><div><p class="eyebrow">YOUR APPLICATION COMPANION</p><h1>A little clarity.<br class="mobile-break"> A next step.</h1><p class="intro">Keep each task connected to the instructions behind it.</p></div><span class="session-label">Fictional alpha · On this device</span></div>
+    <div class="preview-notice"><strong>Explore with fictional information.</strong> This early version saves work in your browser. Keep a separate backup. <a href="#privacy-notes">Privacy &amp; limitations</a></div>
+    <section class="save-panel" aria-label="Storage status"><p id="save-status">Checking local storage…</p><div class="button-row"><button id="retry-save" class="secondary" type="button" hidden>Retry saving</button><button id="download-original" class="secondary" type="button" hidden>Download unreadable stored data</button></div></section>
+    <p id="action-status" role="status" aria-live="polite" aria-atomic="true"></p><p id="action-error" class="error-message" tabindex="-1" hidden></p>
+    <button id="return-to-control" type="button" class="secondary" hidden>Return to the control</button>
+    <section class="save-panel recovery-panel" aria-label="Reload and offline status"><p id="draft-status"></p><p id="recovery-status"></p><button id="download-recovery" type="button" class="secondary" hidden>Download interrupted-work backup</button><p id="offline-status" role="status">Offline support has not been checked yet.</p><div class="button-row"><button id="update-app" type="button" class="secondary" hidden>Update app and reload</button><button id="retry-offline" type="button" class="secondary" hidden>Retry offline setup</button></div></section>
+    <nav class="workspace-nav" aria-label="Workspace sections"><a href="#new-application">Create a plan</a><a href="#source-heading">Check sources</a><a href="#checklist-heading">Your tasks</a><a href="#source-changes">Compare updates</a><a href="#backups">Backup &amp; restore</a></nav>
+    <div class="reading-options"><label for="text-size">Text size</label><select id="text-size"><option value="standard">Standard</option><option value="large">Larger</option></select></div>
+    <details id="dependency-example" class="panel demo-panel"><summary>See how it works · Try the fictional plan</summary>
+      <p>Create a separate sample application with a completed 380-word essay, proofreading, and recommendation. Choosing the button also confirms that proofreading depends on the essay. Existing applications remain.</p>
+      <button id="create-dependency-demo" type="button" class="secondary">Create and confirm fictional plan</button>
+      <ol><li>Inspect the three completed tasks and their dependencies.</li><li>Fill the sample update, then use <strong>Preview changes</strong> and <strong>Save new source version</strong>: the maximum changes from 500 to 400 words, and a conditional study plan is added.</li><li>Essay and proofreading need review. The recommendation stays complete. Add the conditional task as <strong>Not decided</strong> when ready to consider it.</li></ol>
+      <div class="button-row"><button id="fill-dependency-update" class="secondary" type="button" disabled>Fill fictional 400-word update</button><button id="add-demo-condition" class="secondary" type="button" disabled>Add undecided conditional task</button></div>
+      <p class="helper">These are working controls that save fictional records. The 380-word draft is a scenario description; no essay file is inspected. Needing review does not mean the draft is invalid. Before you link the added text, it remains visible as unreviewed material in the comparison.</p>
+    </details>
+    <details id="new-application" class="panel creation-panel" open><summary>Create an application</summary>
+      <form id="application-form" data-global-draft="true"><input id="original-source-text" type="hidden">
+        <div class="form-heading"><p>Paste instructions or load a plain-text file. Creating the application keeps a read-only snapshot.</p><button id="fill-example" class="secondary" type="button">Fill fictional example</button></div>
+        <label for="application-title">Application name</label><input id="application-title" name="title" required maxlength="200" autocomplete="off">
+        <label for="source-label">Source label</label><input id="source-label" name="label" maxlength="200" value="Pasted instructions" required autocomplete="off">
+        <label for="source-file">Load a .txt file instead of pasting</label><input id="source-file" type="file" accept=".txt,text/plain" aria-describedby="source-file-help">
+        <p id="source-file-help" class="helper">UTF-8 plain text; up to 100,000 characters. Loading a file fills the draft below. It is never uploaded.</p>
+        <label for="source-input">Instructions</label><textarea id="source-input" name="text" rows="7" maxlength="100000" required aria-describedby="source-input-help"></textarea>
+        <p id="source-input-help" class="helper">Review this text before creating the snapshot. Later instructions are saved as a new version; original text stays intact.</p>
+        <button type="submit">Create application</button>
+      </form>
+    </details>
+    <section id="application-workspace" hidden aria-labelledby="current-application-title">
+      <div class="workspace-toolbar"><div><label for="application-select">Choose an application</label><select id="application-select"></select></div><h2 id="current-application-title" tabindex="-1"></h2></div>
+      <div class="workspace-stats" role="group" aria-label="Application overview"><div><strong id="stat-completed">0</strong><span>tasks completed</span></div><div><strong id="stat-review">0</strong><span>tasks need review</span></div><div><strong id="stat-sources">0</strong><span>source versions saved</span></div></div>
+      <p id="review-overview" class="person-decides" tabindex="-1"></p>
+      <details id="new-version" class="panel"><summary>Add updated instructions</summary>
+        <p>Paste the complete new instructions, including unchanged parts. This adds a read-only version and retains every earlier snapshot and completion record.</p>
+        <form id="version-form"><label for="version-label">New source label</label><input id="version-label" maxlength="200" required value="Updated instructions">
+          <label for="version-input">Complete updated instructions</label><textarea id="version-input" rows="7" maxlength="100000" required></textarea>
+          <button type="submit" class="secondary">Preview changes</button>
+        </form>
+        <section id="version-preview" hidden aria-labelledby="version-preview-heading"><h3 id="version-preview-heading" tabindex="-1">Preview before saving a new version</h3><p>Nothing has changed yet. Adding this version will flag uncertain source links for your review. Completed work stays completed.</p><div id="version-preview-diff"></div><button id="save-version" type="button">Save new source version</button></section>
+      </details>
+      <details id="source-changes" class="panel"><summary>Compare saved source versions</summary>
+        <p>These are text differences, not eligibility decisions. A unique identical paragraph and phrase can match automatically when neighboring paragraphs also stay unchanged. Formatting changes, repeated text, and uncertain mappings need your confirmation. A “changed” row pairs passages by position for display only.</p>
+        <label for="comparison-version">Compare this version with its predecessor</label><select id="comparison-version"></select><div id="saved-comparison"></div>
+      </details>
+      <div class="workspace">
+        <section class="source-panel" aria-labelledby="source-heading">
+          <div class="section-heading"><h2 id="source-heading">Source snapshot</h2><span id="source-version-label" class="version"></span></div><label for="source-version-select">View a source version</label><select id="source-version-select"></select><p id="source-meta" class="section-note"></p>
+          <label for="source-snapshot">Select the exact instruction for a task</label><textarea id="source-snapshot" class="snapshot" rows="11" readonly aria-describedby="selection-help"></textarea>
+          <p id="selection-help" class="helper">Highlight text with a pointer or Shift + arrow keys, then choose Use selected excerpt. New tasks link to the latest version; earlier versions remain available for lookup.</p><button id="use-selection" class="secondary" type="button">Use selected excerpt</button><p id="source-location" class="helper"></p><button id="return-to-task" type="button" class="secondary" hidden>Return to task</button>
+          <section id="located-quote" class="excerpt" hidden aria-label="Exact source for task"><h3>Exact linked excerpt</h3><blockquote id="located-quote-text"></blockquote></section>
+        </section>
+        <section class="checklist-panel" aria-labelledby="checklist-heading">
+          <div class="section-heading"><h2 id="checklist-heading">Your tasks</h2><span id="task-count" class="version"></span></div>
+          <p class="section-note">You choose what applies. A completed task can still be undecided or need review. This list does not prove that all requirements are captured.</p><fieldset class="view-options"><legend>Task view</legend><label class="checkbox-row"><input type="radio" name="task-view" value="full" checked>Full checklist</label><label class="checkbox-row"><input type="radio" name="task-view" value="one">One step at a time</label></fieldset><div id="step-navigation" hidden><label for="step-select">Choose a step</label><select id="step-select"></select><p id="step-position" class="helper"></p><div class="button-row"><button id="previous-step" type="button" class="secondary">Previous step</button><button id="next-step" type="button" class="secondary">Next step</button></div></div><ol id="task-list" class="task-list"></ol><p id="empty-tasks" class="helper">No tasks yet. Select an instruction or add a task with no source.</p>
+        </section>
+      </div>
+      <section class="panel" aria-labelledby="task-form-heading"><h2 id="task-form-heading">Add a task</h2><form id="task-form"><input id="task-anchor" type="hidden">
+        <div id="selected-excerpt" class="excerpt" hidden><h3>Selected source excerpt</h3><blockquote id="selected-quote"></blockquote><button id="clear-selection" class="secondary" type="button">Use no source instead</button></div><p id="no-source-notice" class="helper"><strong>No source linked.</strong> This is a manually entered preparation task.</p>
+        <label for="task-title">Task wording</label><input id="task-title" required maxlength="200" autocomplete="off">
+        <label for="task-applicability">Applicability — your decision</label><select id="task-applicability"><option value="not-decided">Not decided</option><option value="applies">Applies</option><option value="does-not-apply">Does not apply</option></select>
+        <p class="helper">For conditional instructions, retain the task and choose its applicability yourself. This does not decide your eligibility.</p><button type="submit">Add task</button>
+      </form></section>
+    </section>
+    <section class="panel" id="backups" aria-labelledby="backups-heading">
+      <h2 id="backups-heading">Backup &amp; restore</h2><p>Back up applications, source snapshots, task links, dependencies, work-change reports, individual review decisions, and completion history. Export is available even when local saving fails.</p><button id="prepare-backup" type="button">Prepare JSON backup</button>
+      <section id="backup-preview" hidden class="backup-output" aria-label="Prepared backup"><p id="backup-summary" class="helper"></p><label for="backup-json">Backup JSON (read-only)</label><textarea id="backup-json" rows="5" readonly spellcheck="false"></textarea><button id="download-backup" class="secondary" type="button">Download JSON backup</button><p class="helper">If your browser does not download the file, select and copy all the JSON above, then save it as a UTF-8 .json text file. Keep that file outside browser storage.</p></section>
+      <form id="restore-form" data-global-draft="true"><h3>Restore from a backup</h3><label for="restore-file">Choose an Origin Scholar or StepTrace JSON backup</label><input id="restore-file" type="file" accept=".json,application/json" aria-describedby="restore-help"><p id="restore-help" class="helper">Or paste backup JSON below. Maximum 2 MB. Nothing is applied until you inspect the preview and choose Add restored applications. Existing applications stay in place.</p><label for="restore-json">Backup JSON to inspect</label><textarea id="restore-json" rows="4" spellcheck="false"></textarea><button class="secondary" type="submit">Preview restore</button></form>
+      <section id="restore-preview" class="restore-preview" hidden aria-labelledby="restore-preview-heading"><h3 id="restore-preview-heading" tabindex="-1">Review this restore</h3><p id="restore-summary"></p><ul id="restore-applications"></ul><p id="restore-problem" class="error-message" hidden></p><p>Names may be the same; application and task IDs must be different. A backup already present here is rejected to prevent duplicates.</p><div class="button-row"><button id="apply-restore" type="button">Add restored applications</button><button id="cancel-restore" class="secondary" type="button">Cancel restore</button></div></section>
+    </section>
+    <details class="panel" id="privacy-notes"><summary>Privacy, offline use, and accessibility</summary><p>Application content and backups are processed in your browser. The app requests its own static files and checks for updates. It has no app accounts, analytics, or text-upload service. The public hosting provider serves the static files and can receive ordinary request metadata such as your IP address. Hosting-provider scripts and browser extensions are outside the app’s control. Do not enter real application or sensitive information. Browser extensions, browser sync, and operating-system assistance are outside its control.</p><p>Saved work uses local browser storage. Form drafts and interrupted-save recovery use this tab’s session storage, which can disappear when the tab closes. These are not encrypted or separate backups. Use JSON export for saved work; save or copy unsubmitted forms separately.</p><p>Offline support works only after setup succeeds for this browser and address. App updates wait for your choice and will not reload while workspace saving is unresolved. Use one editing tab and keep backups outside browser storage.</p><p>Use Tab and Shift+Tab to move, Enter or Space for buttons and disclosures, and Shift+arrow keys to select text. Full checklist and one-step views retain the same controls. Text status accompanies color. Automated and manual checks cover selected flows; full WCAG conformance is not claimed.</p></details>
+    <p class="helper"><a href="./preview.html">View the earlier scripted change-review example</a>. The workspace now records dependencies and propagates separate source-change and reported-work-change review reasons.</p><noscript><p class="error-message">Enable JavaScript to use the local workspace. No application data will be uploaded.</p></noscript>
+  </main>
+  <footer><p>Preparation stays in your hands. Origin Scholar does not decide eligibility, guarantee completeness, or submit applications.</p><span>Local processing · No app account</span></footer>
+</body>
+</html>

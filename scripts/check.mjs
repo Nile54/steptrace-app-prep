@@ -8,7 +8,7 @@ for (const file of [...(await readdir(new URL('../dist/src/', import.meta.url)))
   const result = spawnSync(process.execPath, ['--check', file], { cwd: new URL('../', import.meta.url), encoding: 'utf8' });
   assert.equal(result.status, 0, result.stderr);
 }
-for (const file of ['dist/index.html', 'dist/styles.css', 'evaluation/index.html', 'evaluation/styles.css']) {
+for (const file of ['dist/index.html', 'dist/workspace.html', 'dist/styles.css', 'dist/landing.css', 'evaluation/index.html', 'evaluation/styles.css']) {
   assert.ok((await readFile(new URL(`../${file}`, import.meta.url), 'utf8')).length > 0);
 }
 assert.equal(new Set(passages.map(p => p.id)).size, passages.length, 'Source IDs must be unique.');

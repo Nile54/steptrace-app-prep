@@ -19,7 +19,10 @@ const port = Number(process.env.PORT ?? 4191);
 const enableWorker = process.env.STEPTRACE_DIAGNOSTIC_SW === '1';
 const traceWorker = process.env.STEPTRACE_SW_TRACE === '1';
 const routes = new Map([
-  ['/', ['index.html', 'text/html']], ['/index.html', ['index.html', 'text/html']],
+  ['/', ['workspace.html', 'text/html']], ['/index.html', ['workspace.html', 'text/html']],
+  ['/landing', ['index.html', 'text/html']], ['/landing.css', ['landing.css', 'text/css']],
+  ['/workspace.html', ['workspace.html', 'text/html']], ['/workspace', ['workspace.html', 'text/html']],
+  ['/workspace-demo.jpg', ['workspace-demo.jpg', 'image/jpeg']],
   ['/preview.html', ['preview.html', 'text/html']], ['/styles.css', ['styles.css', 'text/css']],
   ['/sw.js', ['sw.js', 'text/javascript']],
   ...['app', 'bootstrap', 'demo', 'preview', 'model', 'storage', 'source-selection', 'schema-v1', 'schema-v2', 'comparison', 'review-ui', 'dependencies', 'dependency-ui', 'dependency-demo', 'drafts', 'offline'].map(name => [`/src/${name}.js`, [`src/${name}.js`, 'text/javascript']]),
@@ -52,8 +55,8 @@ createServer(async (request, response) => {
       const route = routes.get(url.pathname);
       if (!route || (url.pathname === '/sw.js' && !enableWorker)) { response.writeHead(404).end('Not found'); return; }
       [ , type ] = route;
-      body = await readFile(new URL(`../dist/${route[0]}`, import.meta.url), 'utf8');
-      if (route[0] === 'index.html' && (!enableWorker || url.searchParams.has('diagnostics'))) {
+      body = await readFile(new URL(`../dist/${route[0]}`, import.meta.url), type === 'image/jpeg' ? undefined : 'utf8');
+      if (['workspace.html', 'index.html'].includes(route[0]) && (!enableWorker || url.searchParams.has('diagnostics'))) {
         body = body.replace('<head>', '<head><script src="/__test/diagnostics.js"></script><script src="/__test/axe.min.js"></script>');
         body = body.replace('</main>', `${diagnosticsMarkup}</main>`);
       }

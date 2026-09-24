@@ -1,10 +1,14 @@
+# Origin Scholar walkthrough
+
+Start at the landing page, choose **See how it works**, then **Explore the fictional plan**. This opens `/workspace.html#dependency-example` with the sample controls expanded. The working browser interface is separate from the earlier scripted `/preview.html`. The underlying before/after steps below are unchanged.
+
 # Fictional before/after walkthrough
 
 Run `./run.sh` and open [the local workspace](http://127.0.0.1:4173), or open [the public fictional demo](https://steptrace-app-prep.ninandak.chatgpt.site) (see [RELEASE](RELEASE.md) for the deployed version). Use one editing tab. This example uses fictional instructions and normal model/save operations; it contains no actual essay or recommendation letter.
 
 ## Before the update
 
-1. Open **Try a fictional dependency example** and choose **Create and confirm fictional plan**. It adds a separate Cedar Scholarship application and explicitly confirms that proofreading depends on drafting. Existing applications remain.
+1. Open **See how it works · Try the fictional plan** and choose **Create and confirm fictional plan**. It adds a separate Cedar Scholarship application and explicitly confirms that proofreading depends on drafting. Existing applications remain.
 2. Inspect the three completed tasks: **Draft the essay (fictional 380-word draft)**, **Proofread the essay** and **Request recommendation**. Expand **This step depends on…** under proofreading.
 3. Choose **View exact source** under the draft. Its version-1 instruction says “Write an essay of at most 500 words.” Use **Return to task** to return to the task heading.
 4. In **Backup & restore**, choose **Prepare JSON backup**, then download or copy it into a separate file. Verify the file exists; preparing the on-page field alone is not a backup.
@@ -30,3 +34,5 @@ Run `./run.sh` and open [the local workspace](http://127.0.0.1:4173), or open [t
 Source versions, links, histories, human choices, dependency reasons and backup/restore are working behavior. The 380-word draft is an authored fictional description, not a measured file. The separate `/preview.html` page is the original scripted preview and should not be presented as the working implementation.
 
 This walkthrough is an engineering demonstration, not a participant study. [EVALUATION](EVALUATION.md) records human sample size zero, synthetic results and the smallest remaining feedback action. [CHECKS](CHECKS.md) records which release and browser actions actually ran.
+
+The current landing screenshot is `images/origin-landing.jpg`; the current source/task screenshot is `../dist/workspace-demo.jpg`. Earlier screenshots below retain their historical StepTrace appearance.

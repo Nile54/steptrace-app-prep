@@ -1,6 +1,6 @@
 {
   "name": "steptrace-local",
-  "version": "0.7.0-alpha.1",
+  "version": "0.7.1-alpha.1",
   "private": true,
   "type": "module",
   "description": "Local-first source-linked application preparation. Fictional alpha; human evaluation pending.",
@@ -12,5 +12,7 @@
     "evaluate": "node scripts/evaluate.mjs",
     "evaluate-ui": "node scripts/evaluation-server.mjs"
   },
-  "engines": { "node": ">=22" }
+  "engines": {
+    "node": ">=22"
+  }
 }

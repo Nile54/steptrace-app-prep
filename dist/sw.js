@@ -3,7 +3,7 @@
  * drafts remain in browser storage: this cache contains public app files only. */
 const CACHE_NAME = 'steptrace-shell-__STEPTRACE_SHELL_REVISION__';
 const ASSETS = [
-  '/', '/index.html', '/preview.html', '/styles.css',
+  '/', '/index.html', '/workspace.html', '/preview.html', '/styles.css', '/landing.css', '/workspace-demo.jpg',
   ...['bootstrap', 'app', 'demo', 'preview', 'model', 'storage', 'source-selection',
     'schema-v1', 'schema-v2', 'comparison', 'review-ui', 'dependencies',
     'dependency-ui', 'dependency-demo', 'drafts', 'offline'].map(name => `/src/${name}.js`),
@@ -11,9 +11,9 @@ const ASSETS = [
 // Static hosts may canonicalize HTML names. Only these exact destinations are
 // equivalent app entry points; login pages, query strings and other redirects
 // must still fail installation. Preserve the original cache keys on all hosts.
-const HTML_REDIRECTS = { '/index.html': '/', '/preview.html': '/preview' };
-const PATHS = new Set([...ASSETS, '/preview']);
-const cachePath = path => path === '/preview' ? '/preview.html' : path;
+const HTML_REDIRECTS = { '/index.html': '/', '/workspace.html': '/workspace', '/preview.html': '/preview' };
+const PATHS = new Set([...ASSETS, '/preview', '/workspace']);
+const cachePath = path => path === '/preview' ? '/preview.html' : path === '/workspace' ? '/workspace.html' : path;
 let repairPromise;
 
 async function cacheShell() {
@@ -86,7 +86,7 @@ self.addEventListener('fetch', event => {
       const restored = await repaired.match(cachePath(url.pathname));
       if (restored) return restored;
     } catch { /* No workspace or draft data is read or changed by repair. */ }
-    return new Response('This app file is unavailable offline. Reconnect and reload to repair the app copy. If an update is waiting, save or copy any form drafts in other open StepTrace tabs, then close all StepTrace tabs and reopen. Your saved workspace is stored separately from the app-file cache; keep an exported backup.', {
+    return new Response('This app file is unavailable offline. Reconnect and reload to repair the app copy. If an update is waiting, save or copy any form drafts in other open Origin Scholar tabs, then close all Origin Scholar tabs and reopen. Your saved workspace is stored separately from the app-file cache; keep an exported backup.', {
       status: 503, headers: { 'Content-Type': 'text/plain; charset=utf-8' },
     });
   })());

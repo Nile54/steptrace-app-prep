@@ -6,6 +6,11 @@ import { createHash } from 'node:crypto';
 const routes = new Map([
   ['/', ['index.html', 'text/html; charset=utf-8']],
   ['/index.html', ['index.html', 'text/html; charset=utf-8']],
+  ['/workspace', ['workspace.html', 'text/html; charset=utf-8']],
+  ['/workspace.html', ['workspace.html', 'text/html; charset=utf-8']],
+  ['/preview', ['preview.html', 'text/html; charset=utf-8']],
+  ['/landing.css', ['landing.css', 'text/css; charset=utf-8']],
+  ['/workspace-demo.jpg', ['workspace-demo.jpg', 'image/jpeg']],
   ['/preview.html', ['preview.html', 'text/html; charset=utf-8']],
   ['/styles.css', ['styles.css', 'text/css; charset=utf-8']],
   ['/sw.js', ['sw.js', 'text/javascript; charset=utf-8']],
@@ -59,4 +64,4 @@ server.on('error', (error) => {
     : error.message);
   process.exitCode = 1;
 });
-server.listen(port, '127.0.0.1', () => console.log(`StepTrace workspace: http://127.0.0.1:${port}`));
+server.listen(port, '127.0.0.1', () => console.log(`Origin Scholar: http://127.0.0.1:${port}`));

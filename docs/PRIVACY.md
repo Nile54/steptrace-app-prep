@@ -36,10 +36,16 @@ There is no in-app data deletion control. Browser site-data controls can remove 
 
 Static source inspection supports the app-content flow described above. CHECKS records the distinct runtime network observations, selected browser flows, failure simulations, and any untested operating-system/browser behavior. Neither inspection nor a scan establishes security certification or complete privacy against software outside the app.
 
-## Public demo hosting
+## Legacy public demo hosting — Session 7
 
 The public demo is prepared for ChatGPT Sites under the existing account’s included beta limits. Sites and its hosting infrastructure serve the app and may process ordinary network request metadata such as IP addresses and operational logs. StepTrace has no visitor account, text upload, remote application database or analytics integration. The app’s local text processing does not eliminate the host’s handling of page requests. [Sites terms](https://openai.com/policies/chatgpt-sites-terms/) and [hosting documentation](https://help.openai.com/en/articles/20001339) describe provider responsibilities and limits. Hosted behavior and observed response headers must be verified in CHECKS; local-server policy alone is not proof of a hosted policy.
 
 A hosted origin has separate browser storage from localhost and other hosts. Moving between them requires a deliberately exported and previewed backup. The fictional demo is for adults; do not use it for private application records, health information or payment data. No provider-specific confidentiality or residency guarantee is made.
 
 Observed September 23: the public host adds a Cloudflare security/challenge script to HTML and may make `/cdn-cgi/` requests. Those provider-controlled scripts and operational behavior are additional to the authored StepTrace app. The host did not apply the artifact’s `_headers` file: no Content-Security-Policy header was observed. Therefore the local server’s CSP and a byte-for-byte HTML delivery claim do not apply to this deployment. JavaScript/CSS/worker asset bytes matched the release manifest. Use fictional information only; no claim of privacy from hosting/CDN scripts is made.
+
+## Origin Scholar hosting — design milestone
+
+The selected new host is Cloudflare Pages Free, with the reserved `originscholar.pages.dev` subdomain. No registrar purchase, payment details, paid plan, analytics or application-text service is added. The host serves static files and may receive ordinary request metadata. The packaged `_headers` file requests CSP, referrer restrictions and revalidation; actual response headers must be checked after publication. Historical Sites observations above apply to that old origin, not automatically to Pages.
+
+The landing page has no JavaScript and does not read or write workspace storage. The workspace retains its existing storage keys and validators. Switching from the earlier host to the new address creates a separate browser origin: export a backup from the earlier workspace, preview the restore on the new site, then verify it. No automatic cross-origin transfer or old-data deletion is performed. The new shell also caches `/workspace.html`, `/landing.css` and `/workspace-demo.jpg`; the screenshot contains fictional data only.
