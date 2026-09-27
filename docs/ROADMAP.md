@@ -14,13 +14,13 @@ The original full prompts are in `references/session-prompts.md`. They are refer
 | 6 — complete | Prepare evaluation and fix observed problems | Reproducible simple-checklist comparison, matched briefs, four counterbalanced sequences, synthetic checks and presentation/validation fixes; human evaluation pending, actual sample 0; results and limits in EVALUATION |
 | 7 — complete | Publish a credible repository and live demo | Public Nile54 repository, verified Sites demo, v0.7.0-alpha.1 prerelease, real screenshots, MIT and portable build; 133 tests on Node 22/24 CI; exact deployed commit in RELEASE |
 | Design milestone — complete | Origin Scholar landing page, workspace and free branded URL | Real screenshots, responsive/accessible controls, retained data semantics, verified public flow and current STATE |
-| 8 | GitHub presentation, resume, and LinkedIn | Verified claims tailored to tech/AI, accurate project explanations; profile actions only within that session's authorization |
+| 8 — complete with Featured limitation | GitHub presentation, resume, and LinkedIn | Published profile README and project pin; LinkedIn Projects entry saved; Featured link previews rejected by LinkedIn, exact fallback copy supplied; three resume bullets and five grounded interview answers. See STATE. |
 | 9 — optional | Test a paid offer | Evidence-based go/no-go, bounded offer mockup; free core retained, no invented demand or premature billing |
 | 10 — optional | Implement only the justified paid capability | One validated capability, test-mode payments only if justified; separate explicit live-payment authorization |
 
 Session 6 completion means the reproducible kit, engineering checks and honest evidence record are complete; it does not mean usefulness is established. Matched fictional briefs each produce three expected reviews and no extra flags. Two conservative-matching stress cases each add one unnecessary recommendation review. Static source-linked preparation, change-review value, setup cost and accessibility benefit still require human evidence. Product scope remains unchanged. Session 7 publication is complete; RELEASE and STATE record the verified URLs and deployed commit. Monetization has not begun.
 
-The smallest next feedback action is one consenting adult completing the two blocks assigned by [EVALUATION-PROTOCOL](EVALUATION-PROTOCOL.md). The four-sequence rotation balances interface order and brief order only across a complete batch of four. Preserve negative findings, assistance, missing measurements and version differences. No recruitment messages are authorized by the roadmap. Do not present engineering fixtures as user validation in release or career materials. Stop after Session 7; profile/resume and monetization remain separate milestones.
+The smallest next feedback action is one consenting adult completing the two blocks assigned by [EVALUATION-PROTOCOL](EVALUATION-PROTOCOL.md). The four-sequence rotation balances interface order and brief order only across a complete batch of four. Preserve negative findings, assistance, missing measurements and version differences. No recruitment messages are authorized by the roadmap. Do not present engineering fixtures as user validation in release or career materials. Session 8 career presentation is separately authorized and recorded in STATE. Monetization remains a separate, unstarted milestone.
 
 ## Invariants for later milestones
 
@@ -37,4 +37,4 @@ The smallest next feedback action is one consenting adult completing the two blo
 
 If evidence changes the product scope, update BRIEF, ROADMAP, demo, README, remaining milestone guidance, and STATE together. A future session may stop at a coherent smaller boundary if its work is not finished; do not mark incomplete work complete.
 
-The user requested the design milestone between Sessions 7 and 8. Finish that scope only. The latest hosting choice is a free professional subdomain with no domain purchase; no profile/resume, billing or monetization work is authorized.
+The user requested and completed the design milestone between Sessions 7 and 8. The latest hosting choice remains a free professional subdomain with no domain purchase. Session 8 is now complete to the available profile-editing boundary; its Featured fallback is documented. Stop; no billing or monetization work is authorized.

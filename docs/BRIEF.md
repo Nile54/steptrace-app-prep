@@ -113,3 +113,7 @@ User-directed scope: a welcoming dedicated landing page and redesigned working i
 A quick name search found an unrelated custom GPT called [Origin Scholar](https://chatgpt.com/g/g-c78FSD52t-origin-scholar); this is not trademark clearance. No scholarship-preparation competitor with that exact name was identified by the bounded search. The repository slug is retained to preserve links and release history.
 
 The landing page uses product behavior and transparent limitations as trust evidence. No participant testimonials, conversion claims, scholarship outcomes or accessibility benefits are invented. Design acceptance and engineering checks are not participant evaluation. Human N remains zero.
+
+## Session 8 career presentation — September 26, 2026
+
+The user authorized GitHub/LinkedIn project presentation. Career copy uses the current Origin Scholar name, the retained repository slug, verified JavaScript/HTML/CSS implementation, transparent AI assistance and human N=0. No AI model, independent-authorship, measured outcome or market claim was added. A specific job description and resume were not supplied; the prepared entry uses general software-internship wording within the supplied tech/AI target. [Career material](career/README.md) and STATE record exact profile outcomes, including the LinkedIn Featured limitation. Product scope, implementation, prior-art position and deployment are unchanged.

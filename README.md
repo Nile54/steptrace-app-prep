@@ -69,6 +69,8 @@ Change-impact traceability has established prior art in IBM DOORS and Jama. Orig
 
 ## License and development
 
+This is an **AI-assisted personal project**. Nilesh selected the scope and design direction; Codex assisted extensively with implementation, tests, documentation and release operations. The [engineering interview guide](docs/career/INTERVIEW.md) explains the code and separates recorded behavior from personal understanding to develop. [Career materials and verified publication outcomes](docs/career/README.md) preserve the same evidence limits.
+
 [MIT](LICENSE): reuse, modification and commercial redistribution are permitted with the copyright/license notice retained; the software is provided without warranty. The license does not establish a hosting provider's suitability for a future paid service.
 
 Read [AGENTS](AGENTS.md), [BRIEF](docs/BRIEF.md), [ROADMAP](docs/ROADMAP.md) and [STATE](docs/STATE.md) before continuing a milestone. Preserve user work and historical data, implement only the requested scope, run relevant checks and update the evidence honestly.

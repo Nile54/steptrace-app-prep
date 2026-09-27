@@ -1,37 +1,40 @@
 # Origin Scholar state
 
-Updated September 24, 2026. **Design milestone complete: Origin Scholar is live on its free branded subdomain. Stop before Session 8.**
+Updated September 26, 2026. **Session 8 complete to the available profile-editing boundary. Stop before monetization/payment integration.** LinkedIn Projects is published; Featured remains blocked by link-preview errors, with exact fallback copy supplied.
 
-Repository: `/Users/nileshnandakumar/Documents/Codex/2026-09-14/before-session-one-supplying-your-github/outputs/steptrace-local`. Continue this repository. GitHub owner **Nile54**, remote `https://github.com/Nile54/steptrace-app-prep.git`. MIT unchanged. Prior state and release details preserved in `docs/history/SESSION-7-*`.
+Repository: `/Users/nileshnandakumar/Documents/Codex/2026-09-14/before-session-one-supplying-your-github/outputs/steptrace-local`. Continue this repository. GitHub owner **Nile54**, remote `https://github.com/Nile54/steptrace-app-prep.git`. Branch `codex/session-8`; starting commit `8011af3a5b7715b9af2acd7bc4721aa08854c3d7`. MIT unchanged. Previous state: [history/DESIGN-STATE](history/DESIGN-STATE.md).
 
-## Authorized scope / outcome
+## Scope and deliverables
 
-User chose **Origin Scholar**, navy/cream/gold, a landing page AND redesigned workspace, simple wordmark plus actual screenshots, and **See how it works**. User subsequently chose a professional free subdomain with **no domain purchase** and completed Cloudflare sign-in. No Session 8, profile/resume, paid plan, payment entry, monetization or AI work.
+The user explicitly authorized GitHub and LinkedIn project presentation, resume material and interview preparation. [Career materials](career/README.md) contain three resume bullets, a paste-ready project entry, information needed for a full resume revision, exact profile copy and five code-grounded interview questions/answers. No resume file was supplied or found in the task project. Wording assumes a general software internship within the stated tech/AI target; a precise role remains unknown.
 
-Landing `/` is static and script-free. Workspace `/workspace.html` (canonical `/workspace`) retains all source, task, comparison, dependencies, completion, review, storage and recovery behavior. Separate completion/review counters, readable task cards, narrow stacking and genuine screenshot. Original `steptrace.*` keys, schema 1–3 readers and backup format identifiers remain intact. No data deletion or schema change.
+AI assistance is disclosed. The user selected scope/design and authorized publication; Codex extensively assisted code, checks, documentation and release operations. Rehearsal guidance separates verified app behavior from personal technical understanding to practice. Human evaluation remains pending, N=0.
 
-## Checks and evidence
+## Actual profile outcomes
 
-134 local tests pass; real 500→400 flow retains 3 completions / 2 reviewed tasks, original exact quote, export/reload/restore equality. Responsive checks at 320/375px; landing and changed-work workspace axe scans have zero violations after fixing a contrast/landmark issue. Incomplete symbol/textarea checks remain; no full conformance or screen-reader claim. See DESIGN and CHECKS. Human evaluation is still pending, N=0; historical synthetic outcomes are unchanged.
+- **GitHub:** verified authenticated owner `Nile54`; created the previously absent public `Nile54/Nile54` profile README repository. README commit `93707d0f948404f8595c3f21e937d5d6f5c8b627`; read back from https://github.com/Nile54. Origin Scholar is featured in its README and `steptrace-app-prep` is pinned. Existing `creative-ai` and `SimpleCodeBox` cards remain; their repositories are untouched. Reorder controls did not change the pin order. No artificial activity or badges.
+- **LinkedIn:** https://www.linkedin.com/in/nilesh-nandakumar-a737ab125/details/projects/ shows the saved Origin Scholar description and both demo/repository URLs, record `1620306221`. Wording was previewed before saving. Other profile sections remain untouched; no feed announcement or messages.
+- **Featured not published:** LinkedIn failed to generate previews for either verified URL and kept Save disabled. [Exact card copy and placement guide](career/LINKEDIN.md) are ready. Retry Featured → Add a link when the service accepts previews; preserve the existing Projects entry.
+- **Project presentation:** README now discloses the development process and links to the code-grounded interview guide. Career docs and milestone records are included in the logical Session 8 documentation commit, separate from deployed app source.
 
-## Publication and next step
+## Public deployment and checks
 
-Live landing: **https://originscholar.pages.dev**. Workspace: **https://originscholar.pages.dev/workspace**. Cloudflare Pages project `originscholar`, deployment `6f327e85-b654-48a6-a4f3-6ae60126b111`, deployment URL https://6f327e85.originscholar.pages.dev. Dashboard reports success; a fresh public browser visit and the working example were verified.
+Live landing https://originscholar.pages.dev; workspace https://originscholar.pages.dev/workspace; repository https://github.com/Nile54/steptrace-app-prep. No app code or deployment changed in Session 8. Public `release.json` reverified clean deployed commit **ce37bc712db76e0fab59d39179107834f2d27858**, artifact SHA-256 `458a6139971ced9c6d98a5314775298b3bbb5cf59df87d2537780a10aa8b2c09`. Current alpha remains `v0.7.1-alpha.1`. Cloudflare Pages Direct Upload does not auto-deploy from GitHub.
 
-Deployed source: **ce37bc712db76e0fab59d39179107834f2d27858**, clean build. `release.json` matches; all 23 public app assets match local SHA-256, including HTML. CSP, no-referrer and nosniff headers are applied on Pages. Public 500→400 review, added condition undecided, exact original source, backup/reload equality and offline setup verified. No app console warnings/errors observed.
+September 26: **134 tests passed, 0 failed/skipped** with `./run.sh check`. `./run.sh evaluate` reproduced matched A/B: three expected flags, zero misses/extras; each matching stress case: one extra recommendation review. Unknown conditions/conflicting labels stayed unresolved. No participant comparison or superiority claim. Source reviewed at starting commit 8011af3; documentation-only changes do not alter engineering inputs. Prepublication CI for that commit passed: https://github.com/Nile54/steptrace-app-prep/actions/runs/36016518616. Full evidence: [career/VERIFICATION](career/VERIFICATION.md).
 
-GitHub main contains the source; CI passed on Node 22/24: https://github.com/Nile54/steptrace-app-prep/actions/runs/36015906951. Release: https://github.com/Nile54/steptrace-app-prep/releases/tag/v0.7.1-alpha.1. A later documentation-only commit records deployment evidence; do not confuse it with the deployed source. Source-hosting repo retains its original slug. `.openai/hosting.json` refers to the legacy Sites project and is preserved for recovery; it is not the selected new host.
+Fresh public browser visit loaded landing/workspace and returned the exact original 500-word excerpt from the existing fictional Cedar plan. No persistent data was changed. No captured app console warnings/errors. Prior full 500→400 flow, restore, mobile and bounded axe evidence remain in CHECKS/RELEASE; they were not relabeled as new human evidence. No new screen-reader or full accessibility audit.
 
-A new hostname has separate storage: export from the old StepTrace address and preview/restore on Origin Scholar. Do not silently transfer data or clear old storage. Direct Upload projects do not auto-deploy from GitHub pushes.
+## Commands and tooling
 
-## Commands / tooling
+`./run.sh` → localhost:4173 landing and `/workspace.html`. `./run.sh check`, `./run.sh evaluate`, `./run.sh evaluate-ui`, `./run.sh build --out build`. No npm install; Node 22+. Original Mac uses bundled Node v24.19.0.
 
-`./run.sh` → localhost:4173 landing and /workspace.html. `./run.sh check`, `./run.sh evaluate`, `./run.sh evaluate-ui`, `./run.sh build --out build`. No npm install. Node 22+. Bundled Node/Git paths are documented in SESSION-7-STATE. Local diagnostics: PORT=4198 node tests/accessibility-server.mjs, /landing and /workspace.html; ordinary server excludes diagnostics. Supporting fictional backups/reports remain ignored under work/. Development servers are stopped at handoff; restart with ./run.sh. Public screenshot evidence is docs/images/origin-public-landing.jpg and origin-public-workspace.jpg.
+Git: `/Users/nileshnandakumar/.cache/codex-runtimes/codex-primary-runtime/dependencies/bin/fallback/git`. GitHub CLI: `work/release-tools/gh_2.101.0_macOS_arm64/bin/gh` (keychain authentication; never print tokens). Do not change global Git identity; logical local commits use `Codex <codex@local.invalid>` with signing disabled per command. Use the CLI credential helper for normal non-forced pushes. Logs and proof screenshots remain ignored under `work/`.
 
-Later sessions read AGENTS, BRIEF, ROADMAP, STATE, EVALUATION and DESIGN, inspect actual git changes, preserve user work, implement only requested scope, run relevant checks, update STATE and commit logically. Stop after this design milestone.
+## Invariants, limitations and next step
 
-## Remaining limits and next action
+Later sessions read AGENTS, BRIEF, ROADMAP, STATE, EVALUATION and relevant implementation notes; inspect actual git/user changes, preserve them, implement only the requested milestone, run relevant checks, update STATE and commit logically. Tool-specific guidance remains subordinate to later user choices.
 
-No domain ownership was purchased: the professional address is a provider subdomain. Free limits/terms can change; no future paid-hosting promise. GitHub project identity is retained, and its homepage now points to Origin Scholar. The old Sites origin stays available for backup migration and is not silently redirected or erased. Source content/storage/comparison algorithms are unchanged.
+Keep exact immutable sources, schema 1–3 compatibility, `steptrace.*` keys, completion history and event-specific review reasons intact. One editing tab; browser storage is not a backup or encryption. Origin migration requires export and previewed restore. The old Sites deployment is retained for recovery; `.openai/hosting.json` is not the selected live host. No domain purchase or paid plan.
 
-No new participant testing, full WCAG audit, spoken screen-reader session, disconnected-browser reload or conversion study. Human N=0. The smallest feedback action remains one consenting adult trying both evaluation blocks; no recruitment is authorized. Future design feedback can use the live page; do not begin Session 8 automatically.
+Career next action: personally rehearse source matching with the code and demonstrate exact-source lookup. For full resume integration, supply the existing resume and a target job description. Featured needs a later link-preview retry, not another project entry. The smallest product-feedback action remains one consenting adult completing both assigned evaluation blocks; no recruitment was sent or authorized by this session. Do not begin Session 9, payments, outreach or AI features automatically.
