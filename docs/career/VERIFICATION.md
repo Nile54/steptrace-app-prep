@@ -40,3 +40,7 @@ Proof screenshots are saved locally under ignored `work/session8-evidence/`. The
 ## Career claim boundaries
 
 The user chose scope/design and authorized publication. Codex extensively assisted implementation, testing, documentation and operations. Materials disclose AI assistance and provide rehearsal work; they do not claim independently demonstrated code authorship or mastery. The target is tech/AI internships; general software-internship wording is an explicit assumption until a job description is supplied. No AI model feature, new experience, users, revenue, performance gains, accessibility outcome or checklist superiority is claimed.
+
+## Final remote confirmation
+
+Milestone commit `a365041d774da1244961bafb6829b697c88fb687` was pushed to `Nile54/steptrace-app-prep` main. The remote API confirmed that exact main commit and all six career documents. [CI run 36287461107](https://github.com/Nile54/steptrace-app-prep/actions/runs/36287461107) completed successfully on Node 22 and 24. This follow-up documentation-only record preserves the observed publication result; it does not alter the deployed app or retest claims.
